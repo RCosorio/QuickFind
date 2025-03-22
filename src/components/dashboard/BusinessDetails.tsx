@@ -1,6 +1,19 @@
-import React from 'react';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaStore, FaUtensils, FaHome, FaTimes } from 'react-icons/fa';
-import { Business } from '../../types/auth';
+import React, { useState } from 'react';
+import { 
+  FaMapMarkerAlt, 
+  FaPhone, 
+  FaEnvelope, 
+  FaStore, 
+  FaUtensils, 
+  FaHome, 
+  FaTimes, 
+  FaStar, 
+  FaClock,
+  FaChevronLeft,
+  FaChevronRight,
+  FaDollarSign
+} from 'react-icons/fa';
+import { Business, MenuItem, StoreItem, HousingUnit } from '../../types/auth';
 
 interface BusinessDetailsProps {
   business: Business;
@@ -8,6 +21,9 @@ interface BusinessDetailsProps {
 }
 
 const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) => {
+  const [activeTab, setActiveTab] = useState<'info' | 'menu' | 'reviews'>('info');
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
   const getTypeIcon = () => {
     switch (business.businessType) {
       case 'store':
@@ -47,40 +63,315 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
     }
   };
 
-  return (
-    <>
-      {/* Modal backdrop */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-20"
-        onClick={onClose}
-      ></div>
-      
-      {/* Modal content */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-full max-w-lg">
-        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-          {/* Header with close button */}
-          <div className="relative">
+  const getTypeName = () => {
+    switch (business.businessType) {
+      case 'store':
+        return 'Products';
+      case 'restaurant':
+        return 'Menu';
+      case 'housing':
+        return 'Rooms';
+      default:
+        return 'Items';
+    }
+  };
+
+  const nextPhoto = () => {
+    if (!business.photos) return;
+    setCurrentPhotoIndex((prevIndex) => 
+      prevIndex === business.photos!.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevPhoto = () => {
+    if (!business.photos) return;
+    setCurrentPhotoIndex((prevIndex) => 
+      prevIndex === 0 ? business.photos!.length - 1 : prevIndex - 1
+    );
+  };
+
+  // Render photo gallery
+  const renderPhotoGallery = () => {
+    if (!business.photos || business.photos.length === 0) return null;
+
+    return (
+      <div className="relative h-64 bg-gray-100">
+        <img 
+          src={business.photos[currentPhotoIndex]} 
+          alt={`${business.name} - Photo ${currentPhotoIndex + 1}`} 
+          className="w-full h-full object-cover"
+        />
+        
+        {business.photos.length > 1 && (
+          <>
             <button 
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
-              onClick={onClose}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full shadow-sm hover:bg-opacity-100 transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+                prevPhoto();
+              }}
             >
-              <FaTimes className="text-lg" />
+              <FaChevronLeft className="text-gray-800" />
             </button>
-            
-            <div className="p-6 pb-4">
-              <div className="flex items-center mb-1">
-                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getTypeColor()} flex items-center`}>
-                  {getTypeIcon()}
-                  <span className="ml-1.5">{getTypeText()}</span>
-                </span>
+            <button 
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 p-2 rounded-full shadow-sm hover:bg-opacity-100 transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+                nextPhoto();
+              }}
+            >
+              <FaChevronRight className="text-gray-800" />
+            </button>
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+              {business.photos.map((_, idx) => (
+                <div 
+                  key={idx}
+                  className={`w-2 h-2 rounded-full ${idx === currentPhotoIndex ? 'bg-white' : 'bg-white bg-opacity-50'}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // Render business hours
+  const renderBusinessHours = () => {
+    if (!business.businessHours) return null;
+
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
+    return (
+      <div className="mt-4">
+        <h3 className="text-sm font-medium text-gray-800 mb-2">Business Hours</h3>
+        <div className="space-y-1">
+          {days.map((day) => (
+            <div key={day} className={`flex justify-between text-sm ${day === today ? 'font-medium' : ''}`}>
+              <span className="capitalize">{day}</span>
+              <span>{business.businessHours?.[day] || 'Closed'}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Render menu items for restaurants
+  const renderMenuItems = () => {
+    if (business.businessType !== 'restaurant' || !business.menu || business.menu.length === 0) {
+      return <p className="text-gray-500 text-center py-4">No menu items available</p>;
+    }
+
+    // Group menu items by category
+    const categories = [...new Set(business.menu.map(item => item.category))];
+
+    return (
+      <div className="space-y-6">
+        {categories.map(category => (
+          <div key={category}>
+            <h3 className="font-medium text-gray-800 border-b pb-2 mb-3">{category}</h3>
+            <div className="space-y-4">
+              {business.menu
+                ?.filter(item => item.category === category)
+                .map((item) => renderMenuItem(item))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render a single menu item
+  const renderMenuItem = (item: MenuItem) => {
+    return (
+      <div key={item.id} className="flex">
+        {item.photo && (
+          <div className="w-16 h-16 mr-3">
+            <img src={item.photo} alt={item.name} className="w-full h-full object-cover rounded" />
+          </div>
+        )}
+        <div className="flex-1">
+          <div className="flex justify-between">
+            <h4 className="font-medium">{item.name}</h4>
+            <p className="font-medium text-gray-700">${item.price.toFixed(2)}</p>
+          </div>
+          <p className="text-sm text-gray-600">{item.description}</p>
+        </div>
+      </div>
+    );
+  };
+
+  // Render store items
+  const renderStoreItems = () => {
+    if (business.businessType !== 'store' || !business.items || business.items.length === 0) {
+      return <p className="text-gray-500 text-center py-4">No items available</p>;
+    }
+
+    // Group items by category
+    const categories = [...new Set(business.items.map(item => item.category))];
+
+    return (
+      <div className="space-y-6">
+        {categories.map(category => (
+          <div key={category}>
+            <h3 className="font-medium text-gray-800 border-b pb-2 mb-3">{category}</h3>
+            <div className="grid gap-4 grid-cols-2">
+              {business.items
+                ?.filter(item => item.category === category)
+                .map((item) => renderStoreItem(item))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render a single store item
+  const renderStoreItem = (item: StoreItem) => {
+    return (
+      <div key={item.id} className="border rounded-lg overflow-hidden bg-white">
+        {item.photo && (
+          <div className="h-32 w-full">
+            <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
+          </div>
+        )}
+        <div className="p-3">
+          <div className="flex justify-between items-start">
+            <h4 className="font-medium">{item.name}</h4>
+            <p className="font-medium text-gray-700">${item.price.toFixed(2)}</p>
+          </div>
+          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{item.description}</p>
+          <div className="mt-2">
+            <span className={`text-xs px-2 py-0.5 rounded ${item.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {item.inStock ? 'In Stock' : 'Out of Stock'}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render housing units
+  const renderHousingUnits = () => {
+    if (business.businessType !== 'housing' || !business.rooms || business.rooms.length === 0) {
+      return <p className="text-gray-500 text-center py-4">No units available</p>;
+    }
+
+    return (
+      <div className="space-y-4">
+        {business.rooms.map((room) => renderHousingUnit(room))}
+      </div>
+    );
+  };
+
+  // Render a single housing unit
+  const renderHousingUnit = (unit: HousingUnit) => {
+    return (
+      <div key={unit.id} className="border rounded-lg overflow-hidden bg-white">
+        {unit.photos && unit.photos.length > 0 && (
+          <div className="h-48 w-full relative">
+            <img src={unit.photos[0]} alt={unit.name} className="w-full h-full object-cover" />
+            {unit.photos.length > 1 && (
+              <div className="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                +{unit.photos.length - 1} more
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">{business.name}</h2>
-              <p className="text-gray-600">{business.description}</p>
+            )}
+          </div>
+        )}
+        <div className="p-4">
+          <div className="flex justify-between items-start">
+            <h4 className="font-medium text-lg">{unit.name}</h4>
+            <div>
+              <p className="font-bold text-gray-800">${unit.price.toFixed(0)}</p>
+              <p className="text-xs text-gray-500">per month</p>
             </div>
           </div>
           
-          {/* Body with details */}
-          <div className="border-t border-gray-100 p-6 space-y-4">
+          <div className="flex items-center space-x-4 mt-2 text-sm">
+            <span><strong>{unit.bedrooms}</strong> {unit.bedrooms === 1 ? 'bed' : 'beds'}</span>
+            <span><strong>{unit.bathrooms}</strong> {unit.bathrooms === 1 ? 'bath' : 'baths'}</span>
+          </div>
+          
+          <p className="text-sm text-gray-600 mt-3">{unit.description}</p>
+          
+          {unit.amenities && unit.amenities.length > 0 && (
+            <div className="mt-3">
+              <h5 className="text-sm font-medium text-gray-700 mb-1">Amenities:</h5>
+              <div className="flex flex-wrap gap-1">
+                {unit.amenities.map((amenity, idx) => (
+                  <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                    {amenity}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="mt-4">
+            <span className={`text-sm px-2 py-1 rounded font-medium ${unit.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {unit.available ? 'Available Now' : 'Not Available'}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render reviews
+  const renderReviews = () => {
+    if (!business.reviews || business.reviews.length === 0) {
+      return <p className="text-gray-500 text-center py-4">No reviews yet</p>;
+    }
+
+    // Sort reviews by date (most recent first)
+    const sortedReviews = [...business.reviews].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+
+    return (
+      <div className="space-y-4">
+        {/* Rating summary */}
+        {business.rating !== undefined && (
+          <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+            <div className="text-3xl font-bold text-gray-800 mr-4">{business.rating.toFixed(1)}</div>
+            <div>
+              <div className="flex text-yellow-400 mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar key={i} className={i < Math.round(business.rating || 0) ? "text-yellow-400" : "text-gray-200"} />
+                ))}
+              </div>
+              <div className="text-sm text-gray-500">{business.reviews.length} {business.reviews.length === 1 ? 'review' : 'reviews'}</div>
+            </div>
+          </div>
+        )}
+        
+        {/* Individual reviews */}
+        {sortedReviews.map((review) => (
+          <div key={review.id} className="border-b pb-4">
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">{review.userName}</span>
+              <span className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</span>
+            </div>
+            <div className="flex text-yellow-400 mb-2">
+              {[...Array(5)].map((_, i) => (
+                <FaStar key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-200"} size={14} />
+              ))}
+            </div>
+            <p className="text-gray-700">{review.comment}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render business type specific content based on active tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'info':
+        return (
+          <div className="space-y-4">
             <div className="flex items-start">
               <FaMapMarkerAlt className="text-gray-400 mt-1 mr-3" />
               <div>
@@ -104,16 +395,105 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
                 <p className="text-gray-600">{business.ownerEmail}</p>
               </div>
             </div>
+            
+            {renderBusinessHours()}
+          </div>
+        );
+      case 'menu':
+        switch (business.businessType) {
+          case 'restaurant':
+            return renderMenuItems();
+          case 'store':
+            return renderStoreItems();
+          case 'housing':
+            return renderHousingUnits();
+          default:
+            return <p className="text-gray-500 text-center py-4">No items available</p>;
+        }
+      case 'reviews':
+        return renderReviews();
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      {/* Modal backdrop */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-20 animate-fadeIn"
+        onClick={onClose}
+      ></div>
+      
+      {/* Modal content */}
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-full max-w-2xl animate-slideIn">
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden max-h-[85vh] flex flex-col">
+          {/* Close button */}
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors z-10"
+            onClick={onClose}
+          >
+            <FaTimes className="text-lg shadow-sm" />
+          </button>
+          
+          {/* Photo gallery */}
+          {renderPhotoGallery()}
+          
+          {/* Header */}
+          <div className="p-6 pb-3">
+            <div className="flex items-center mb-1">
+              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getTypeColor()} flex items-center`}>
+                {getTypeIcon()}
+                <span className="ml-1.5">{getTypeText()}</span>
+              </span>
+              
+              {business.rating !== undefined && (
+                <div className="flex items-center ml-3">
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar key={i} className={i < Math.round(business.rating || 0) ? "text-yellow-400" : "text-gray-200"} size={14} />
+                    ))}
+                  </div>
+                  <span className="ml-1.5 text-sm text-gray-500">
+                    {business.rating.toFixed(1)}
+                  </span>
+                </div>
+              )}
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">{business.name}</h2>
+            <p className="text-gray-600">{business.description}</p>
           </div>
           
-          {/* Actions */}
-          <div className="border-t border-gray-100 p-6 flex justify-end">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              Close
-            </button>
+          {/* Tabs */}
+          <div className="px-6 border-b">
+            <div className="flex space-x-6">
+              <button
+                className={`py-3 relative ${activeTab === 'info' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('info')}
+              >
+                Info
+                {activeTab === 'info' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
+              </button>
+              <button
+                className={`py-3 relative ${activeTab === 'menu' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('menu')}
+              >
+                {getTypeName()}
+                {activeTab === 'menu' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
+              </button>
+              <button
+                className={`py-3 relative ${activeTab === 'reviews' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('reviews')}
+              >
+                Reviews
+                {activeTab === 'reviews' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
+              </button>
+            </div>
+          </div>
+          
+          {/* Tab content */}
+          <div className="p-6 overflow-y-auto">
+            {renderTabContent()}
           </div>
         </div>
       </div>

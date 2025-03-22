@@ -17,6 +17,15 @@ export interface Business {
   description: string;
   location: string;
   contactInfo: string;
+  rating?: number;
+  reviews?: Review[];
+  photos?: string[];
+  businessHours?: {
+    [key: string]: string;
+  };
+  menu?: MenuItem[];
+  items?: StoreItem[];
+  rooms?: HousingUnit[];
 }
 
 export interface AuthState {
@@ -24,4 +33,44 @@ export interface AuthState {
   user: User | null;
   business: Business | null;
   loading: boolean;
+}
+
+export interface Review {
+  id: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+export interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  photo?: string;
+}
+
+export interface StoreItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  inStock: boolean;
+  photo?: string;
+}
+
+export interface HousingUnit {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  available: boolean;
+  photos?: string[];
+  amenities?: string[];
 } 
