@@ -52,6 +52,17 @@ body {
   }
 }
 
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Apply animations to modal */
 .fixed.inset-0 {
   animation: fadeIn 0.2s ease-out forwards;
@@ -59,4 +70,59 @@ body {
 
 .fixed.top-1\/2.left-1\/2 {
   animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Add animation classes for smooth transitions */
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-in forwards;
+  will-change: opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.animate-slideIn {
+  animation: dropIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Ensure backdrop stays put during transitions */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Prevent flicker on transitions */
+.fixed.inset-0.z-20 {
+  isolation: isolate;
+  contain: strict;
+}
+
+.transition-opacity {
+  transition: opacity 0.15s ease-in-out;
+}
+
+.transition-all {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Add this for section transitions */
+.section-transition-enter {
+  opacity: 0;
+  transform: translateY(5px);
+}
+.section-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms, transform 200ms;
+}
+.section-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.section-transition-exit-active {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 200ms, transform 200ms;
 }
