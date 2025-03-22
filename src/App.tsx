@@ -6,9 +6,8 @@ import Register from './pages/Register';
 import BusinessLogin from './pages/BusinessLogin';
 import BusinessRegister from './pages/BusinessRegister';
 import Dashboard from './pages/Dashboard';
+import BusinessDashboard from './pages/BusinessDashboard';
 
-// Placeholder component for future implementation
-const BusinessDashboard = () => <div className="p-8 text-center"><h1 className="text-3xl">Business Dashboard (Coming Soon)</h1></div>;
 const NotFound = () => <div className="p-8 text-center"><h1 className="text-3xl">404 - Page Not Found</h1></div>;
 
 // Protected route component

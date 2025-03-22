@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { User, Business, AuthState } from '../types/auth';
+import { mockBusinesses } from '../data/mockData';
 
 // Initial auth state
 const initialState: AuthState = {
@@ -15,6 +16,7 @@ interface AuthContextType extends AuthState {
   register: (userData: Partial<User>, password: string) => Promise<boolean>;
   registerBusiness: (businessData: Partial<Business>, password: string) => Promise<boolean>;
   logout: () => void;
+  createBusiness: (businessData: Partial<Business>) => Promise<Business>;
 }
 
 // Create context
@@ -33,29 +35,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (isBusinessLogin) {
-        // Mock business login
-        const mockBusiness: Business = {
-          id: 'b123',
-          name: 'Sample Business',
-          ownerEmail: email,
-          businessType: 'store',
-          description: 'A sample business',
-          location: '123 Business St',
-          contactInfo: '555-123-4567'
-        };
+        // Find business by owner email
+        const foundBusiness = mockBusinesses.find(b => b.ownerEmail.toLowerCase() === email.toLowerCase());
         
-        setAuthState({
-          isAuthenticated: true,
-          user: {
-            id: 'u123',
-            email,
-            firstName: 'Business',
-            lastName: 'Owner',
-            role: 'business'
-          },
-          business: mockBusiness,
-          loading: false
-        });
+        if (foundBusiness) {
+          setAuthState({
+            isAuthenticated: true,
+            user: {
+              id: `u-${foundBusiness.id}`,
+              email,
+              firstName: 'Business',
+              lastName: 'Owner',
+              role: 'business'
+            },
+            business: foundBusiness,
+            loading: false
+          });
+        } else {
+          // If no business matches, create a default one
+          const mockBusiness: Business = {
+            id: 'b123',
+            name: 'Sample Business',
+            ownerEmail: email,
+            businessType: 'store',
+            description: 'A sample business',
+            location: '123 Business St',
+            contactInfo: '555-123-4567',
+            businessHours: {
+              monday: '9:00 AM - 5:00 PM',
+              tuesday: '9:00 AM - 5:00 PM',
+              wednesday: '9:00 AM - 5:00 PM',
+              thursday: '9:00 AM - 5:00 PM',
+              friday: '9:00 AM - 5:00 PM',
+              saturday: 'Closed',
+              sunday: 'Closed'
+            }
+          };
+          
+          setAuthState({
+            isAuthenticated: true,
+            user: {
+              id: 'u123',
+              email,
+              firstName: 'Business',
+              lastName: 'Owner',
+              role: 'business'
+            },
+            business: mockBusiness,
+            loading: false
+          });
+        }
       } else {
         // Mock student login
         setAuthState({
@@ -150,6 +179,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAuthState(initialState);
   };
 
+  // Add a method to create a business
+  const createBusiness = async (businessData: Partial<Business>) => {
+    // In a real app, this would make an API call
+    console.log('Creating business:', businessData);
+    
+    // Mock API call success
+    const newBusiness: Business = {
+      id: `new-${Date.now()}`,
+      name: businessData.name || 'New Business',
+      ownerEmail: authState.user?.email || 'user@example.com',
+      businessType: businessData.businessType || 'store',
+      description: businessData.description || '',
+      location: businessData.location || '',
+      contactInfo: businessData.contactInfo || '',
+      businessHours: businessData.businessHours || {},
+      photos: [],
+      reviews: []
+    };
+    
+    // Update business in state
+    setAuthState(prevState => ({
+      ...prevState,
+      business: newBusiness
+    }));
+    
+    return newBusiness;
+  };
+
   // Provide auth context
   return (
     <AuthContext.Provider
@@ -158,7 +215,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         register,
         registerBusiness,
-        logout
+        logout,
+        createBusiness
       }}
     >
       {children}
