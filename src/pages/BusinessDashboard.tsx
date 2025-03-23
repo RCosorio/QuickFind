@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaStore, 
   FaUtensils, 
@@ -10,13 +11,20 @@ import {
   FaStar, 
   FaCheck, 
   FaArrowLeft,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaSignOutAlt
 } from 'react-icons/fa';
 import { Business, BusinessType } from '../types/auth';
 
 const BusinessDashboard: React.FC = () => {
-  const { user, business, createBusiness } = useAuth();
+  const { user, business, createBusiness, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   // If no business exists, show create business form
   if (!business) {
@@ -32,7 +40,16 @@ const BusinessDashboard: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="p-6">
-          <h1 className="text-2xl font-bold mb-4">{business.name}</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold">{business.name}</h1>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
+            >
+              <FaSignOutAlt className="mr-2" />
+              Logout
+            </button>
+          </div>
           <p className="text-gray-600 mb-6">{business.description}</p>
           
           {/* Dashboard tabs */}
@@ -317,6 +334,9 @@ interface BusinessFormData {
 const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreated }) => {
   const [step, setStep] = useState<number>(1);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<BusinessFormData>({
     name: '',
@@ -330,7 +350,7 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
       wednesday: '9:00 AM - 5:00 PM',
       thursday: '9:00 AM - 5:00 PM',
       friday: '9:00 AM - 5:00 PM',
-      saturday: '10:00 AM - 3:00 PM',
+      saturday: 'Closed',
       sunday: 'Closed'
     },
     email: '',
@@ -338,6 +358,11 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
     address: '',
     city: ''
   });
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   // Helper functions
   const nextStep = () => setStep(prev => prev + 1);
@@ -431,7 +456,16 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">Create Your Business Profile</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Create Your Business Profile</h2>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
+          >
+            <FaSignOutAlt className="mr-2" />
+            Logout
+          </button>
+        </div>
         
         {/* Progress Steps */}
         <div className="mb-8">
