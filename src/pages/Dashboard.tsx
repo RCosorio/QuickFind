@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
   
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
-  const { getAllUnreadCount } = useChat();
+  const { getAllUnreadCount, clearActiveChat } = useChat();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -512,6 +512,12 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  const handleMessagesClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    clearActiveChat();
+    navigate('/messages');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -560,8 +566,8 @@ const Dashboard: React.FC = () => {
                   <span>Housing</span>
                 </button>
                 
-                <Link
-                  to="/messages"
+                <button
+                  onClick={handleMessagesClick}
                   className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
                 >
                   <div className="relative">
@@ -573,7 +579,7 @@ const Dashboard: React.FC = () => {
                     )}
                   </div>
                   <span>Messages</span>
-                </Link>
+                </button>
               </div>
               
               <div className="relative">

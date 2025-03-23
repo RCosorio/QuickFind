@@ -35,6 +35,7 @@ interface ChatContextType extends ChatState {
   sendMessage: (text: string) => void;
   markConversationAsRead: (conversationId: string) => void;
   getAllUnreadCount: () => number;
+  clearActiveChat: () => void;
 }
 
 // Create context
@@ -222,6 +223,15 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     return "Thank you for your message! We'll get back to you as soon as possible. If you have any urgent inquiries, please call the number listed on our profile.";
   };
 
+  // Clear active chat when navigating between pages
+  const clearActiveChat = () => {
+    setChatState(prev => ({
+      ...prev,
+      activeConversation: null,
+      activeBusiness: null
+    }));
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -230,7 +240,8 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         closeChat,
         sendMessage,
         markConversationAsRead,
-        getAllUnreadCount
+        getAllUnreadCount,
+        clearActiveChat
       }}
     >
       {children}

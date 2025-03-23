@@ -22,13 +22,19 @@ import ActiveChat from '../components/chat/ActiveChat';
 
 const BusinessDashboard: React.FC = () => {
   const { user, business, createBusiness, logout } = useAuth();
-  const { getAllUnreadCount } = useChat();
+  const { getAllUnreadCount, clearActiveChat } = useChat();
   const [activeTab, setActiveTab] = useState<string>('overview');
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleMessagesClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    clearActiveChat();
+    navigate('/business-messages');
   };
 
   // If no business exists, show create business form
@@ -49,8 +55,8 @@ const BusinessDashboard: React.FC = () => {
             <h1 className="text-2xl font-bold">{business.name}</h1>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Link
-                  to="/business-messages"
+                <button
+                  onClick={handleMessagesClick}
                   className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
                 >
                   <div className="relative">
@@ -62,7 +68,7 @@ const BusinessDashboard: React.FC = () => {
                     )}
                   </div>
                   <span>Messages</span>
-                </Link>
+                </button>
               </div>
               <button 
                 onClick={handleLogout}
@@ -362,7 +368,7 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { logout } = useAuth();
-  const { getAllUnreadCount } = useChat();
+  const { getAllUnreadCount, clearActiveChat } = useChat();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<BusinessFormData>({
@@ -389,6 +395,12 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleMessagesClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    clearActiveChat();
+    navigate('/business-messages');
   };
 
   // Helper functions
@@ -487,8 +499,8 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
           <h2 className="text-2xl font-bold">Create Your Business Profile</h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <Link
-                to="/business-messages"
+              <button
+                onClick={handleMessagesClick}
                 className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
               >
                 <div className="relative">
@@ -500,7 +512,7 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
                   )}
                 </div>
                 <span>Messages</span>
-              </Link>
+              </button>
             </div>
             <button 
               onClick={handleLogout}

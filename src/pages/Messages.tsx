@@ -5,12 +5,13 @@ import { mockBusinesses } from '../data/mockData';
 import { FaComment, FaRegComment, FaEnvelope, FaRegEnvelope, FaSearch, FaStore, FaUtensils, FaHome, FaArrowLeft } from 'react-icons/fa';
 import ActiveChat from '../components/chat/ActiveChat';
 import { Business } from '../types/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Messages: React.FC = () => {
-  const { conversations, openChat, activeBusiness } = useChat();
+  const { conversations, openChat, activeBusiness, clearActiveChat } = useChat();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   
   if (!user) {
     return (
@@ -19,6 +20,12 @@ const Messages: React.FC = () => {
       </div>
     );
   }
+  
+  const handleBackToDashboard = (e: React.MouseEvent) => {
+    e.preventDefault();
+    clearActiveChat();
+    navigate('/dashboard');
+  };
   
   // Sort conversations by last updated time (newest first)
   const sortedConversations = [...conversations].sort(
@@ -71,13 +78,13 @@ const Messages: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Link
-                to="/dashboard"
+              <button
+                onClick={handleBackToDashboard}
                 className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
               >
                 <FaArrowLeft className="mr-2" />
                 <span>Back to Dashboard</span>
-              </Link>
+              </button>
               <h1 className="text-xl font-semibold text-gray-900">Messages</h1>
             </div>
           </div>
