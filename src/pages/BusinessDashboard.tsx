@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useChat } from '../context/ChatContext';
 import { 
   FaStore, 
   FaUtensils, 
@@ -12,12 +13,16 @@ import {
   FaCheck, 
   FaArrowLeft,
   FaExclamationTriangle,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaComment,
+  FaBell
 } from 'react-icons/fa';
 import { Business, BusinessType } from '../types/auth';
+import ActiveChat from '../components/chat/ActiveChat';
 
 const BusinessDashboard: React.FC = () => {
   const { user, business, createBusiness, logout } = useAuth();
+  const { getAllUnreadCount } = useChat();
   const [activeTab, setActiveTab] = useState<string>('overview');
   const navigate = useNavigate();
 
@@ -42,13 +47,31 @@ const BusinessDashboard: React.FC = () => {
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">{business.name}</h1>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
-            >
-              <FaSignOutAlt className="mr-2" />
-              Logout
-            </button>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Link
+                  to="/business-messages"
+                  className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
+                >
+                  <div className="relative">
+                    <FaComment />
+                    {getAllUnreadCount() > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {getAllUnreadCount() > 9 ? '9+' : getAllUnreadCount()}
+                      </span>
+                    )}
+                  </div>
+                  <span>Messages</span>
+                </Link>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
+              >
+                <FaSignOutAlt className="mr-2" />
+                Logout
+              </button>
+            </div>
           </div>
           <p className="text-gray-600 mb-6">{business.description}</p>
           
@@ -309,6 +332,9 @@ const BusinessDashboard: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Active Chat Window */}
+      <ActiveChat />
     </div>
   );
 };
@@ -336,6 +362,7 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { logout } = useAuth();
+  const { getAllUnreadCount } = useChat();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<BusinessFormData>({
@@ -458,13 +485,31 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Create Your Business Profile</h2>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
-          >
-            <FaSignOutAlt className="mr-2" />
-            Logout
-          </button>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Link
+                to="/business-messages"
+                className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
+              >
+                <div className="relative">
+                  <FaComment />
+                  {getAllUnreadCount() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                      {getAllUnreadCount() > 9 ? '9+' : getAllUnreadCount()}
+                    </span>
+                  )}
+                </div>
+                <span>Messages</span>
+              </Link>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-md hover:bg-red-100 transition-colors"
+            >
+              <FaSignOutAlt className="mr-2" />
+              Logout
+            </button>
+          </div>
         </div>
         
         {/* Progress Steps */}
@@ -823,6 +868,9 @@ const CreateBusinessForm: React.FC<CreateBusinessFormProps> = ({ onBusinessCreat
           )}
         </form>
       </div>
+      
+      {/* Active Chat Window */}
+      <ActiveChat />
     </div>
   );
 };

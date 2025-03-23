@@ -9,6 +9,7 @@ import BusinessRegister from './pages/BusinessRegister';
 import Dashboard from './pages/Dashboard';
 import BusinessDashboard from './pages/BusinessDashboard';
 import Messages from './pages/Messages';
+import BusinessMessages from './pages/BusinessMessages';
 
 const NotFound = () => <div className="p-8 text-center"><h1 className="text-3xl">404 - Page Not Found</h1></div>;
 
@@ -65,6 +66,14 @@ function App() {
               element={
                 <ProtectedRoute requiresBusinessRole>
                   <BusinessDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/business-messages" 
+              element={
+                <ProtectedRoute requiresBusinessRole>
+                  <BusinessMessages />
                 </ProtectedRoute>
               } 
             />
