@@ -14,6 +14,7 @@ import {
   FaDollarSign
 } from 'react-icons/fa';
 import { Business, MenuItem, StoreItem, HousingUnit } from '../../types/auth';
+import ChatButton from '../chat/ChatButton';
 
 interface BusinessDetailsProps {
   business: Business;
@@ -134,6 +135,14 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
         )}
       </div>
     );
+  };
+
+  // Format business hours for current day
+  const getCurrentBusinessHours = () => {
+    if (!business.businessHours) return null;
+    
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+    return business.businessHours[today];
   };
 
   // Render business hours
@@ -418,86 +427,137 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
   };
 
   return (
-    <>
-      {/* Modal backdrop */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-20 animate-fadeIn"
-        onClick={onClose}
-      ></div>
-      
-      {/* Modal content */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 w-full max-w-2xl animate-slideIn">
-        <div className="bg-white rounded-xl shadow-xl overflow-hidden max-h-[85vh] flex flex-col">
-          {/* Close button */}
-          <button 
-            className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors z-10"
-            onClick={onClose}
-          >
-            <FaTimes className="text-lg shadow-sm" />
-          </button>
-          
-          {/* Photo gallery */}
-          {renderPhotoGallery()}
-          
-          {/* Header */}
-          <div className="p-6 pb-3">
-            <div className="flex items-center mb-1">
-              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getTypeColor()} flex items-center`}>
-                {getTypeIcon()}
-                <span className="ml-1.5">{getTypeText()}</span>
-              </span>
-              
-              {business.rating !== undefined && (
-                <div className="flex items-center ml-3">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar key={i} className={i < Math.round(business.rating || 0) ? "text-yellow-400" : "text-gray-200"} size={14} />
-                    ))}
-                  </div>
-                  <span className="ml-1.5 text-sm text-gray-500">
-                    {business.rating.toFixed(1)}
-                  </span>
+    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-3xl w-full max-h-90vh overflow-hidden flex flex-col">
+        {/* Business Header */}
+        <div className="relative">
+          {business.photos && business.photos.length > 0 && (
+            <div className="h-56 bg-gray-200 relative">
+              <img 
+                src={business.photos[currentPhotoIndex]} 
+                alt={business.name} 
+                className="w-full h-full object-cover"
+              />
+              {business.photos.length > 1 && (
+                <div className="absolute inset-0 flex items-center justify-between px-4">
+                  <button 
+                    onClick={prevPhoto}
+                    className="bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-opacity"
+                  >
+                    <FaChevronLeft />
+                  </button>
+                  <button 
+                    onClick={nextPhoto}
+                    className="bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-opacity"
+                  >
+                    <FaChevronRight />
+                  </button>
                 </div>
               )}
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">{business.name}</h2>
-            <p className="text-gray-600">{business.description}</p>
-          </div>
-          
-          {/* Tabs */}
-          <div className="px-6 border-b">
-            <div className="flex space-x-6">
-              <button
-                className={`py-3 relative ${activeTab === 'info' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('info')}
+              <button 
+                onClick={onClose}
+                className="absolute top-4 right-4 bg-white p-2 rounded-full text-gray-700 hover:bg-gray-100"
               >
-                Info
-                {activeTab === 'info' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
-              </button>
-              <button
-                className={`py-3 relative ${activeTab === 'menu' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('menu')}
-              >
-                {getTypeName()}
-                {activeTab === 'menu' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
-              </button>
-              <button
-                className={`py-3 relative ${activeTab === 'reviews' ? 'text-baby-blue font-medium' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('reviews')}
-              >
-                Reviews
-                {activeTab === 'reviews' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-baby-blue"></div>}
+                <FaTimes />
               </button>
             </div>
-          </div>
+          )}
           
-          {/* Tab content */}
-          <div className="p-6 overflow-y-auto">
-            {renderTabContent()}
+          {!business.photos && (
+            <button 
+              onClick={onClose}
+              className="absolute top-4 right-4 bg-white p-2 rounded-full text-gray-700 hover:bg-gray-100 z-10"
+            >
+              <FaTimes />
+            </button>
+          )}
+          
+          <div className={`px-6 pt-6 ${!business.photos ? 'pt-12' : ''}`}>
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-800">{business.name}</h2>
+                  <div className="ml-3">{getTypeIcon()}</div>
+                </div>
+                
+                {business.rating !== undefined && (
+                  <div className="flex items-center mt-1">
+                    <div className="flex text-yellow-400">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar key={i} className={i < Math.round(business.rating || 0) ? "text-yellow-400" : "text-gray-200"} size={16} />
+                      ))}
+                    </div>
+                    <span className="ml-2 text-sm text-gray-600">
+                      {business.rating.toFixed(1)}
+                      {business.reviews && <span className="text-sm"> ({business.reviews.length} reviews)</span>}
+                    </span>
+                  </div>
+                )}
+                
+                <p className="text-gray-600 mt-2">{business.description}</p>
+              </div>
+              
+              <ChatButton 
+                business={business}
+                className="text-white bg-baby-blue hover:bg-blue-600 py-2 px-4 rounded-lg text-sm font-medium"
+              />
+            </div>
+            
+            <div className="flex flex-wrap items-center mt-4 text-sm text-gray-600">
+              <div className="flex items-center mr-6 mb-2">
+                <FaMapMarkerAlt className="text-gray-400 mr-2" />
+                <span>{business.location}</span>
+              </div>
+              
+              {getCurrentBusinessHours() && (
+                <div className="flex items-center mr-6 mb-2">
+                  <FaClock className="text-gray-400 mr-2" />
+                  <span>{getCurrentBusinessHours()}</span>
+                </div>
+              )}
+              
+              <div className="flex items-center mb-2">
+                <FaPhone className="text-gray-400 mr-2" />
+                <span>{business.contactInfo}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mt-6">
+            <button
+              className={`px-6 py-3 text-sm font-medium ${
+                activeTab === 'info' ? 'text-baby-blue border-b-2 border-baby-blue' : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('info')}
+            >
+              Info
+            </button>
+            <button
+              className={`px-6 py-3 text-sm font-medium ${
+                activeTab === 'menu' ? 'text-baby-blue border-b-2 border-baby-blue' : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('menu')}
+            >
+              {getTypeName()}
+            </button>
+            <button
+              className={`px-6 py-3 text-sm font-medium ${
+                activeTab === 'reviews' ? 'text-baby-blue border-b-2 border-baby-blue' : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('reviews')}
+            >
+              Reviews
+            </button>
           </div>
         </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto flex-grow">
+          {renderTabContent()}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
