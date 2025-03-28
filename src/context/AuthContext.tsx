@@ -17,6 +17,7 @@ interface AuthContextType extends AuthState {
   registerBusiness: (businessData: Partial<Business>, password: string) => Promise<boolean>;
   logout: () => void;
   createBusiness: (businessData: Partial<Business>) => Promise<Business>;
+  updateBusiness: (businessData: Partial<Business>) => Promise<Business>;
 }
 
 // Create context
@@ -207,6 +208,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return newBusiness;
   };
 
+  // Add a method to update a business
+  const updateBusiness = async (businessData: Partial<Business>) => {
+    // In a real app, this would make an API call to update the business
+    console.log('Updating business:', businessData);
+    
+    if (!authState.business) {
+      throw new Error('No business found to update');
+    }
+    
+    // Create updated business by merging current business with new data
+    const updatedBusiness: Business = {
+      ...authState.business,
+      ...businessData,
+      // Ensure nested properties are properly updated
+      businessHours: {
+        ...authState.business.businessHours,
+        ...(businessData.businessHours || {})
+      }
+    };
+    
+    // Update state with the updated business
+    setAuthState({
+      ...authState,
+      business: updatedBusiness
+    });
+    
+    return updatedBusiness;
+  };
+
   // Provide auth context
   return (
     <AuthContext.Provider
@@ -216,7 +246,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         registerBusiness,
         logout,
-        createBusiness
+        createBusiness,
+        updateBusiness
       }}
     >
       {children}
