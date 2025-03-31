@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { User, Business, AuthState } from '../types/auth';
-import { mockBusinesses } from '../data/mockData';
+import { authApi, businessApi } from '../services/api';
 
 // Initial auth state
 const initialState: AuthState = {
@@ -27,39 +27,40 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>(initialState);
 
-  // Mock login function - would connect to backend in real implementation
+  // Login function using API
   const login = async (email: string, password: string, isBusinessLogin = false): Promise<boolean> => {
     setAuthState({ ...authState, loading: true });
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call the login API
+      const credentials = { email, password };
+      const response = await authApi.login(credentials);
       
+      // Check if this is a business login
       if (isBusinessLogin) {
-        // Find business by owner email
-        const foundBusiness = mockBusinesses.find(b => b.ownerEmail.toLowerCase() === email.toLowerCase());
+        if (response.user.role !== 'business') {
+          throw new Error('Not a business account');
+        }
+        
+        // Find the associated business
+        const businesses = await businessApi.getAll();
+        const foundBusiness = businesses.find(b => b.ownerEmail.toLowerCase() === email.toLowerCase());
         
         if (foundBusiness) {
           setAuthState({
             isAuthenticated: true,
-            user: {
-              id: `u-${foundBusiness.id}`,
-              email,
-              firstName: 'Business',
-              lastName: 'Owner',
-              role: 'business'
-            },
+            user: response.user,
             business: foundBusiness,
             loading: false
           });
+          return true;
         } else {
-          // If no business matches, create a default one
-          const mockBusiness: Business = {
-            id: 'b123',
-            name: 'Sample Business',
+          // For demo purposes, create a default business if none exists
+          const defaultBusiness: Omit<Business, 'id'> = {
+            name: 'New Business',
             ownerEmail: email,
             businessType: 'store',
-            description: 'A sample business',
+            description: 'A new business',
             location: '123 Business St',
             contactInfo: '555-123-4567',
             businessHours: {
@@ -73,80 +74,84 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
           };
           
+          const newBusiness = await businessApi.create(defaultBusiness as Business);
+          
           setAuthState({
             isAuthenticated: true,
-            user: {
-              id: 'u123',
-              email,
-              firstName: 'Business',
-              lastName: 'Owner',
-              role: 'business'
-            },
-            business: mockBusiness,
+            user: response.user,
+            business: newBusiness,
             loading: false
           });
+          return true;
         }
       } else {
-        // Mock student login
+        // Regular student login
         setAuthState({
           isAuthenticated: true,
-          user: {
-            id: 'u456',
-            email,
-            firstName: 'Student',
-            lastName: 'User',
-            role: 'student'
-          },
+          user: response.user,
           business: null,
           loading: false
         });
+        return true;
       }
-      
-      return true;
     } catch (error) {
+      console.error('Login error:', error);
       setAuthState({ ...initialState, loading: false });
       return false;
     }
   };
 
-  // Mock register function
+  // Register function using API
   const register = async (userData: Partial<User>, password: string): Promise<boolean> => {
     setAuthState({ ...authState, loading: true });
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Create registration data
+      const registrationData = {
+        email: userData.email || '',
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        password: password,
+        role: 'student' as 'student' | 'business'
+      };
+      
+      // Call the register API endpoint
+      const response = await authApi.register(registrationData);
       
       setAuthState({
         isAuthenticated: true,
-        user: {
-          id: 'new123',
-          email: userData.email || '',
-          firstName: userData.firstName || '',
-          lastName: userData.lastName || '',
-          role: 'student'
-        },
+        user: response.user,
         business: null,
         loading: false
       });
       
       return true;
     } catch (error) {
+      console.error('Registration error:', error);
       setAuthState({ ...initialState, loading: false });
       return false;
     }
   };
 
-  // Mock business registration function
+  // Business registration function using API
   const registerBusiness = async (businessData: Partial<Business>, password: string): Promise<boolean> => {
     setAuthState({ ...authState, loading: true });
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Register the business owner as a user first
+      const userRegistrationData = {
+        email: businessData.ownerEmail || '',
+        firstName: 'Business', // Default values
+        lastName: 'Owner',
+        password,
+        role: 'business' as 'business' | 'student'
+      };
       
-      const newBusiness: Business = {
-        id: 'bnew123',
+      // Register the user first
+      const userResponse = await authApi.register(userRegistrationData);
+      
+      // Then create the business
+      const business: Omit<Business, 'id'> = {
         name: businessData.name || '',
         ownerEmail: businessData.ownerEmail || '',
         businessType: businessData.businessType || 'store',
@@ -155,21 +160,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         contactInfo: businessData.contactInfo || ''
       };
       
+      const newBusiness = await businessApi.create(business as Business);
+      
       setAuthState({
         isAuthenticated: true,
-        user: {
-          id: 'u888',
-          email: businessData.ownerEmail || '',
-          firstName: 'Business',
-          lastName: 'Owner',
-          role: 'business'
-        },
+        user: userResponse.user,
         business: newBusiness,
         loading: false
       });
       
       return true;
     } catch (error) {
+      console.error('Business registration error:', error);
       setAuthState({ ...initialState, loading: false });
       return false;
     }
@@ -180,61 +182,59 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAuthState(initialState);
   };
 
-  // Add a method to create a business
+  // Create a business using API
   const createBusiness = async (businessData: Partial<Business>) => {
-    // In a real app, this would make an API call
-    console.log('Creating business:', businessData);
-    
-    // Mock API call success
-    const newBusiness: Business = {
-      id: `new-${Date.now()}`,
-      name: businessData.name || 'New Business',
-      ownerEmail: authState.user?.email || 'user@example.com',
-      businessType: businessData.businessType || 'store',
-      description: businessData.description || '',
-      location: businessData.location || '',
-      contactInfo: businessData.contactInfo || '',
-      businessHours: businessData.businessHours || {},
-      photos: [],
-      reviews: []
-    };
-    
-    // Update business in state
-    setAuthState(prevState => ({
-      ...prevState,
-      business: newBusiness
-    }));
-    
-    return newBusiness;
+    try {
+      if (!authState.user) {
+        throw new Error('User must be logged in to create a business');
+      }
+      
+      const business: Omit<Business, 'id'> = {
+        name: businessData.name || 'New Business',
+        ownerEmail: authState.user.email,
+        businessType: businessData.businessType || 'store',
+        description: businessData.description || '',
+        location: businessData.location || '',
+        contactInfo: businessData.contactInfo || '',
+        businessHours: businessData.businessHours || {}
+      };
+      
+      const newBusiness = await businessApi.create(business as Business);
+      
+      setAuthState(prevState => ({
+        ...prevState,
+        business: newBusiness
+      }));
+      
+      return newBusiness;
+    } catch (error) {
+      console.error('Error creating business:', error);
+      throw error;
+    }
   };
 
-  // Add a method to update a business
+  // Update a business using API
   const updateBusiness = async (businessData: Partial<Business>) => {
-    // In a real app, this would make an API call to update the business
-    console.log('Updating business:', businessData);
-    
-    if (!authState.business) {
-      throw new Error('No business found to update');
-    }
-    
-    // Create updated business by merging current business with new data
-    const updatedBusiness: Business = {
-      ...authState.business,
-      ...businessData,
-      // Ensure nested properties are properly updated
-      businessHours: {
-        ...authState.business.businessHours,
-        ...(businessData.businessHours || {})
+    try {
+      if (!authState.business) {
+        throw new Error('No business found to update');
       }
-    };
-    
-    // Update state with the updated business
-    setAuthState({
-      ...authState,
-      business: updatedBusiness
-    });
-    
-    return updatedBusiness;
+      
+      const updatedBusiness = await businessApi.update(
+        authState.business.id,
+        businessData
+      );
+      
+      setAuthState({
+        ...authState,
+        business: updatedBusiness
+      });
+      
+      return updatedBusiness;
+    } catch (error) {
+      console.error('Error updating business:', error);
+      throw error;
+    }
   };
 
   // Provide auth context

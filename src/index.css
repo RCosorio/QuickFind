@@ -23,6 +23,18 @@ body {
   }
 }
 
+/* Chat component styles */
+.chat-popup {
+  z-index: 9999 !important; /* Ensure chat is always on top */
+  position: fixed !important;
+  bottom: 5rem !important;
+  right: 2rem !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2) !important;
+}
+
 /* Custom classes */
 .line-clamp-2 {
   display: -webkit-box;

@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Business, BusinessType } from '../types/auth';
 import BusinessCard from '../components/dashboard/BusinessCard';
 import BusinessDetails from '../components/dashboard/BusinessDetails';
-import { mockBusinesses } from '../data/mockData';
+import { businessApi } from '../services/api';
 import ActiveChat from '../components/chat/ActiveChat';
 
 const Dashboard: React.FC = () => {
@@ -16,6 +16,7 @@ const Dashboard: React.FC = () => {
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeProfileSection, setActiveProfileSection] = useState<'main' | 'edit-profile' | 'change-password' | 'account-settings'>('main');
+  const [isLoading, setIsLoading] = useState(true);
   
   // Form state
   const [profileForm, setProfileForm] = useState({
@@ -43,18 +44,31 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Filter businesses based on active tab and search query
-    const filtered = mockBusinesses.filter(business => {
-      const matchesType = business.businessType === activeTab;
-      const matchesSearch = searchQuery === '' || 
-        business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        business.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        business.location.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      return matchesType && matchesSearch;
-    });
+    // Fetch businesses from API
+    const fetchBusinesses = async () => {
+      setIsLoading(true);
+      try {
+        const allBusinesses = await businessApi.getAll();
+        const filtered = allBusinesses.filter(business => {
+          const matchesType = business.businessType === activeTab;
+          const matchesSearch = searchQuery === '' || 
+            business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            business.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            business.location.toLowerCase().includes(searchQuery.toLowerCase());
+          
+          return matchesType && matchesSearch;
+        });
+        
+        setBusinesses(filtered);
+      } catch (error) {
+        console.error('Error fetching businesses:', error);
+        setBusinesses([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    setBusinesses(filtered);
+    fetchBusinesses();
   }, [activeTab, searchQuery]);
 
   // Initialize form with user data
@@ -519,9 +533,9 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
+      <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div>
@@ -602,7 +616,7 @@ const Dashboard: React.FC = () => {
       </header>
       
       {/* Main content */}
-      <div className="pt-24 pb-10 px-4 max-w-6xl mx-auto">
+      <main className="flex-grow container mx-auto px-4 py-8">
         {/* Search bar */}
         <div className="relative mb-8">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -617,24 +631,33 @@ const Dashboard: React.FC = () => {
           />
         </div>
         
-        {/* Business list */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {businesses.length > 0 ? (
-            businesses.map(business => (
-              <BusinessCard 
-                key={business.id} 
-                business={business}
-                onClick={() => openBusinessDetails(business)}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-500">No {activeTab === 'store' ? 'stores' : activeTab === 'restaurant' ? 'restaurants' : 'housing options'} found.</p>
-              <p className="text-gray-400 text-sm mt-2">Try a different search term or switch tabs.</p>
+        {/* Loading indicator */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-baby-blue"></div>
+          </div>
+        ) : (
+          <>
+            {/* Business list */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {businesses.length > 0 ? (
+                businesses.map(business => (
+                  <BusinessCard 
+                    key={business.id} 
+                    business={business}
+                    onClick={() => openBusinessDetails(business)}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-gray-500">No {activeTab === 'store' ? 'stores' : activeTab === 'restaurant' ? 'restaurants' : 'housing options'} found.</p>
+                  <p className="text-gray-400 text-sm mt-2">Try a different search term or switch tabs.</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
+      </main>
       
       {/* Business details modal */}
       {selectedBusiness && (
@@ -649,7 +672,7 @@ const Dashboard: React.FC = () => {
         <ProfileMenu />
       )}
       
-      {/* Active Chat Window */}
+      {/* Active Chat Window - ensure it's always the last element */}
       <ActiveChat />
     </div>
   );

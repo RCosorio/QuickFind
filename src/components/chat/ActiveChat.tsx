@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPaperPlane, FaTimes, FaRegSmile } from 'react-icons/fa';
 import { useChat } from '../../context/ChatContext';
+import { useAuth } from '../../context/AuthContext';
 
 const predefinedMessages = [
   "Hi! I'm interested in your business. Can you provide more information?",
@@ -12,9 +13,12 @@ const predefinedMessages = [
 
 const ActiveChat: React.FC = () => {
   const { activeConversation, activeBusiness, conversations, closeChat, sendMessage, markConversationAsRead } = useChat();
+  const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
   const [showPredefinedMessages, setShowPredefinedMessages] = useState(false);
+  const [visible, setVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
   
   // Find the current conversation and its messages
   const currentConversation = activeConversation 
@@ -22,6 +26,48 @@ const ActiveChat: React.FC = () => {
     : null;
     
   const messages = currentConversation?.messages || [];
+  
+  // Set visible to true after a short delay
+  useEffect(() => {
+    console.log('ActiveChat effect: activeBusiness changed to:', activeBusiness?.name);
+    console.log('ActiveChat effect: activeConversation changed to:', activeConversation);
+    
+    if (activeBusiness && activeConversation && user) {
+      console.log('Setting visible to true for business:', activeBusiness.name);
+      setVisible(true);
+      
+      // Force visibility through DOM as well
+      if (chatWindowRef.current) {
+        chatWindowRef.current.style.display = 'flex';
+        chatWindowRef.current.style.visibility = 'visible';
+        chatWindowRef.current.style.opacity = '1';
+      }
+    } else {
+      setVisible(false);
+    }
+  }, [activeBusiness, activeConversation, user]);
+  
+  // Listen for chat-opened event
+  useEffect(() => {
+    const handleChatOpened = (e: any) => {
+      console.log('chat-opened event received with detail:', e.detail);
+      setVisible(true);
+      
+      // Force visibility through DOM
+      if (chatWindowRef.current) {
+        chatWindowRef.current.style.display = 'flex';
+        chatWindowRef.current.style.visibility = 'visible';
+        chatWindowRef.current.style.opacity = '1';
+        console.log('Force applied visibility in event handler');
+      }
+    };
+
+    window.addEventListener('chat-opened', handleChatOpened);
+    
+    return () => {
+      window.removeEventListener('chat-opened', handleChatOpened);
+    };
+  }, []);
   
   // Scroll to bottom of messages when they change
   useEffect(() => {
@@ -35,8 +81,17 @@ const ActiveChat: React.FC = () => {
     }
   }, [activeConversation, markConversationAsRead]);
   
-  if (!activeBusiness || !activeConversation) {
-    return null;
+  // If there's no active business or conversation, render nothing
+  // but maintain the DOM node for direct manipulation
+  if (!activeBusiness || !activeConversation || !user) {
+    return (
+      <div 
+        ref={chatWindowRef}
+        id="active-chat-window"
+        className="chat-popup"
+        style={{ display: 'none' }}
+      ></div>
+    );
   }
   
   const handleSendMessage = () => {
@@ -62,17 +117,22 @@ const ActiveChat: React.FC = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
   
-  console.log("ActiveChat rendering", { activeBusiness, activeConversation });
-  
   return (
-    <div className="fixed z-50 bottom-20 right-8 w-80 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col h-96">
+    <div 
+      ref={chatWindowRef}
+      className="chat-popup w-80 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col h-96"
+      style={{ 
+        display: visible ? 'flex' : 'none'
+      }}
+      id="active-chat-window"
+    >
       {/* Chat Header */}
       <div className="flex items-center justify-between bg-blue-600 text-white p-3 rounded-t-lg">
         <div className="font-medium truncate">
           {activeBusiness.name}
         </div>
         <button 
-          onClick={closeChat}
+          onClick={() => closeChat()}
           className="text-white hover:text-gray-200 transition-colors"
         >
           <FaTimes />
@@ -90,18 +150,18 @@ const ActiveChat: React.FC = () => {
           messages.map((message) => (
             <div 
               key={message.id}
-              className={`mb-3 ${message.senderId === 'user123' ? 'flex justify-end' : 'flex justify-start'}`}
+              className={`mb-3 ${message.senderId === user.id ? 'flex justify-end' : 'flex justify-start'}`}
             >
               <div 
                 className={`max-w-3/4 p-3 rounded-lg ${
-                  message.senderId === 'user123' 
+                  message.senderId === user.id 
                     ? 'bg-blue-600 text-white rounded-br-none' 
                     : 'bg-gray-200 text-gray-800 rounded-bl-none'
                 }`}
               >
                 <p className="text-sm">{message.text}</p>
                 <p className={`text-xs mt-1 ${
-                  message.senderId === 'user123' ? 'text-blue-100' : 'text-gray-500'
+                  message.senderId === user.id ? 'text-blue-100' : 'text-gray-500'
                 }`}>
                   {formatTime(message.timestamp)}
                 </p>
@@ -164,4 +224,4 @@ const ActiveChat: React.FC = () => {
   );
 };
 
-export default ActiveChat; 
+export default ActiveChat;

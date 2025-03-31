@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "email": "asd@gmail.com",
+      "firstName": "asd",
+      "lastName": "asd",
+      "role": "student",
+      "password": "123123"
+    },
+    {
+      "id": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "email": "qq@gmail.com",
+      "firstName": "hello",
+      "lastName": "bye",
+      "role": "student",
+      "password": "123123"
+    },
+    {
+      "id": "01d19c72-0e36-4256-a5c6-319ad5098321",
+      "email": "jol@gmail.com",
+      "firstName": "Business",
+      "lastName": "Owner",
+      "role": "business",
+      "password": "123123"
+    }
+  ]
+}

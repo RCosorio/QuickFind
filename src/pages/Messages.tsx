@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChat } from '../context/ChatContext';
 import { useAuth } from '../context/AuthContext';
-import { mockBusinesses } from '../data/mockData';
 import { FaComment, FaRegComment, FaEnvelope, FaRegEnvelope, FaSearch, FaStore, FaUtensils, FaHome, FaArrowLeft } from 'react-icons/fa';
 import ActiveChat from '../components/chat/ActiveChat';
 import { Business } from '../types/auth';
 import { Link, useNavigate } from 'react-router-dom';
+import { businessApi } from '../services/api';
 
 const Messages: React.FC = () => {
   const { conversations, openChat, activeBusiness, clearActiveChat } = useChat();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
+  // Fetch businesses from API
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        setLoading(true);
+        const data = await businessApi.getAll();
+        setBusinesses(data);
+      } catch (error) {
+        console.error('Error fetching businesses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchBusinesses();
+  }, []);
   
   if (!user) {
     return (
@@ -34,7 +53,7 @@ const Messages: React.FC = () => {
   
   // Filter conversations by search term
   const filteredConversations = sortedConversations.filter(conversation => {
-    const business = mockBusinesses.find(b => b.id === conversation.businessId);
+    const business = businesses.find(b => b.id === conversation.businessId);
     if (!business) return false;
     
     const businessNameMatch = business.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -46,7 +65,7 @@ const Messages: React.FC = () => {
   });
   
   const getBusinessDetails = (businessId: string): Business | undefined => {
-    return mockBusinesses.find(b => b.id === businessId);
+    return businesses.find(b => b.id === businessId);
   };
   
   const getLastMessage = (messages: any[]): string => {
@@ -70,6 +89,14 @@ const Messages: React.FC = () => {
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
   };
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-baby-blue"></div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-gray-50">
