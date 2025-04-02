@@ -312,7 +312,10 @@ const Dashboard: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-blue-100 px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-1">
-                <h1 className="text-xl font-semibold text-gray-800">QuickFind</h1>
+                <div className="flex items-center">
+                  <FaSearch className="text-baby-blue mr-1" />
+                  <h1 className="text-xl font-semibold text-gray-800">QuickFind</h1>
+                </div>
                 <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">Beta</span>
               </div>
               

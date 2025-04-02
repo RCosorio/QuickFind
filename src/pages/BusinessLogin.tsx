@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBriefcase, FaEnvelope, FaLock, FaUserGraduate, FaBuilding, FaStore, FaUtensils, FaHome } from 'react-icons/fa';
+import { FaBriefcase, FaEnvelope, FaLock, FaUserGraduate, FaBuilding, FaStore, FaUtensils, FaHome, FaSearch } from 'react-icons/fa';
 import FormInput from '../components/auth/FormInput';
 import Button from '../components/auth/Button';
 import { useAuth } from '../context/AuthContext';
@@ -38,13 +38,19 @@ const BusinessLogin: React.FC = () => {
     <div className="min-h-screen gradient-bg flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-6">
+          <div className="text-2xl font-bold text-blue-600 mb-4">QuickFind</div>
           <div className="flex justify-center mb-3">
             <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center">
               <FaBriefcase className="text-4xl text-blue-600" />
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-800">Business Portal</h1>
-          <p className="text-gray-600 mt-2">Manage your QuickFind business account</p>
+          <p className="text-gray-600 mt-2">
+            <span className="inline-flex items-center">
+              <FaSearch className="text-baby-blue mr-1" />
+              Manage your QuickFind business account
+            </span>
+          </p>
         </div>
         
         <div className="flex justify-center gap-4 mb-6">

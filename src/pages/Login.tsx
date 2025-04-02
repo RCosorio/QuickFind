@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserGraduate, FaEnvelope, FaLock, FaSchool } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaSchool, FaSearch } from 'react-icons/fa';
 import FormInput from '../components/auth/FormInput';
 import Button from '../components/auth/Button';
 import { useAuth } from '../context/AuthContext';
@@ -38,13 +38,19 @@ const Login: React.FC = () => {
     <div className="min-h-screen gradient-bg flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-6">
+          <div className="text-2xl font-bold text-baby-blue mb-4">QuickFind</div>
           <div className="flex justify-center mb-3">
             <div className="h-20 w-20 rounded-full bg-baby-blue bg-opacity-20 flex items-center justify-center">
-              <FaUserGraduate className="text-4xl text-baby-blue" />
+              <FaUser className="text-4xl text-baby-blue" />
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-800">User Login</h1>
-          <p className="text-gray-600 mt-2">Access your QuickFind account</p>
+          <p className="text-gray-600 mt-2">
+            <span className="inline-flex items-center">
+              <FaSearch className="text-baby-blue mr-1" />
+              Access your QuickFind account
+            </span>
+          </p>
         </div>
         
         {error && (

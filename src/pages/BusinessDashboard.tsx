@@ -23,7 +23,8 @@ import {
   FaComment,
   FaBell,
   FaCheck,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaSearch
 } from 'react-icons/fa';
 import { Business, BusinessType } from '../types/auth';
 import ProductModal from '../components/business/ProductModal';
@@ -493,7 +494,10 @@ const BusinessDashboard: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-blue-100 px-4 py-3">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl font-semibold text-gray-800">Business Dashboard</h1>
+                <div className="flex items-center">
+                  <FaSearch className="text-baby-blue mr-1" />
+                  <h1 className="text-xl font-semibold text-gray-800">Business Dashboard</h1>
+                </div>
                 {business && (
                   <p className="text-blue-600">{business.name}</p>
                 )}
