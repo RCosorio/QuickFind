@@ -295,6 +295,14 @@
           "date": "2025-04-02",
           "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
           "rating": 1
+        },
+        {
+          "id": "5b48a732-e2a4-4fd2-873e-34c3bfd79779",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "THE ASD asd",
+          "comment": "this is inquiryyyy",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8"
         }
       ],
       "rating": 3,
@@ -307,6 +315,24 @@
           "category": "General",
           "inStock": true,
           "photo": ""
+        },
+        {
+          "id": "item-1743595669494",
+          "name": "cure to brain rot",
+          "description": "hehe",
+          "price": 90,
+          "category": "IT IS",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1523381294911-8d3cead13475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "item-1743595783282",
+          "name": "whaat?",
+          "description": "the one",
+          "price": 1818,
+          "category": "IT IS",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ],
       "businessHours": {
@@ -342,6 +368,1594 @@
         }
       ],
       "rating": 0
+    },
+    {
+      "id": "store-101",
+      "name": "Urban Electronics",
+      "ownerEmail": "store1@example.com",
+      "businessType": "store",
+      "description": "Cutting-edge electronics store with the latest gadgets, accessories, and tech solutions for everyday needs. Expert staff available for consultations.",
+      "location": "221 Tech Avenue, San Francisco, CA",
+      "contactInfo": "415-555-8901",
+      "rating": 4.5,
+      "photos": [
+        "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 8:00 PM",
+        "tuesday": "9:00 AM - 8:00 PM",
+        "wednesday": "9:00 AM - 8:00 PM",
+        "thursday": "9:00 AM - 8:00 PM",
+        "friday": "9:00 AM - 9:00 PM",
+        "saturday": "10:00 AM - 9:00 PM",
+        "sunday": "11:00 AM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-101-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Amazing selection of products and knowledgeable staff! Highly recommend for tech enthusiasts.",
+          "date": "2023-11-15"
+        },
+        {
+          "id": "store-101-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Good prices compared to other electronics stores in the area. Would shop here again.",
+          "date": "2024-01-20"
+        }
+      ],
+      "items": [
+        {
+          "id": "ue-001",
+          "name": "Premium Wireless Headphones",
+          "description": "Noise-cancelling over-ear headphones with 30-hour battery life",
+          "price": 249.99,
+          "category": "Audio",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ue-002",
+          "name": "4K Ultra HD Smart TV - 55\"",
+          "description": "Crystal clear display with smart features and voice control",
+          "price": 699.99,
+          "category": "Televisions",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1593784991095-a205069533b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ue-003",
+          "name": "Smartphone Charging Station",
+          "description": "Multi-device charging dock with fast-charge capability",
+          "price": 49.99,
+          "category": "Accessories",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ue-004",
+          "name": "Wireless Gaming Mouse",
+          "description": "Ergonomic design with customizable RGB lighting and programmable buttons",
+          "price": 79.99,
+          "category": "Computer Accessories",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-102",
+      "name": "Fashionable Finds",
+      "ownerEmail": "store2@example.com",
+      "businessType": "store",
+      "description": "Trendy clothing boutique offering contemporary styles for all occasions. Curated collections that blend comfort with the latest fashion trends.",
+      "location": "543 Style Street, Los Angeles, CA",
+      "contactInfo": "310-555-7612",
+      "rating": 4.7,
+      "photos": [
+        "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "10:00 AM - 7:00 PM",
+        "tuesday": "10:00 AM - 7:00 PM",
+        "wednesday": "10:00 AM - 7:00 PM",
+        "thursday": "10:00 AM - 8:00 PM",
+        "friday": "10:00 AM - 8:00 PM",
+        "saturday": "10:00 AM - 8:00 PM",
+        "sunday": "12:00 PM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-102-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Love the selection of clothes! Found perfect outfits for both work and weekend outings.",
+          "date": "2023-12-10"
+        },
+        {
+          "id": "store-102-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Great quality clothes but a bit pricey. Sales staff is very helpful though.",
+          "date": "2024-02-05"
+        }
+      ],
+      "items": [
+        {
+          "id": "ff-001",
+          "name": "Designer Denim Jacket",
+          "description": "Premium quality denim jacket with modern cut and styling",
+          "price": 129.99,
+          "category": "Outerwear",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ff-002",
+          "name": "Casual Cotton T-Shirt",
+          "description": "Soft, breathable cotton t-shirt available in multiple colors",
+          "price": 24.99,
+          "category": "Tops",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ff-003",
+          "name": "Slim Fit Chino Pants",
+          "description": "Versatile pants perfect for casual or business casual settings",
+          "price": 59.99,
+          "category": "Bottoms",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1584865288642-42078afe6942?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ff-004",
+          "name": "Summer Floral Dress",
+          "description": "Light, airy dress with floral pattern perfect for warm weather",
+          "price": 79.99,
+          "category": "Dresses",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-103",
+      "name": "Home Essentials",
+      "ownerEmail": "store3@example.com",
+      "businessType": "store",
+      "description": "Everything you need to make your house a home. Quality furniture, decor, and household essentials at affordable prices.",
+      "location": "789 Interior Lane, Chicago, IL",
+      "contactInfo": "312-555-9034",
+      "rating": 4.3,
+      "photos": [
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1583847268964-b28fef5b6b95?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 6:00 PM",
+        "tuesday": "9:00 AM - 6:00 PM",
+        "wednesday": "9:00 AM - 6:00 PM",
+        "thursday": "9:00 AM - 8:00 PM",
+        "friday": "9:00 AM - 8:00 PM",
+        "saturday": "9:00 AM - 7:00 PM",
+        "sunday": "11:00 AM - 5:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-103-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 4,
+          "comment": "Great selection of home goods. Found everything I needed to furnish my new apartment.",
+          "date": "2023-10-25"
+        },
+        {
+          "id": "store-103-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Do you offer assembly services for the furniture purchased in-store?",
+          "date": "2024-01-15",
+          "ownerReply": "Yes, we offer assembly services for a small fee. Please inquire at the time of purchase for details.",
+          "ownerReplyDate": "2024-01-16"
+        }
+      ],
+      "items": [
+        {
+          "id": "he-001",
+          "name": "Modern Coffee Table",
+          "description": "Sleek design with storage compartments and solid wood construction",
+          "price": 199.99,
+          "category": "Furniture",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "he-002",
+          "name": "Decorative Throw Pillows (Set of 2)",
+          "description": "Accent pillows with removable covers in various designs",
+          "price": 39.99,
+          "category": "Home Decor",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "he-003",
+          "name": "Ceramic Dinnerware Set - 16 Piece",
+          "description": "Complete service for 4 with dinner plates, salad plates, bowls and mugs",
+          "price": 89.99,
+          "category": "Kitchen",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1603199866259-80b3c0b38b0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "he-004",
+          "name": "LED Floor Lamp",
+          "description": "Modern floor lamp with adjustable brightness and color temperature",
+          "price": 129.99,
+          "category": "Lighting",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-104",
+      "name": "Outdoor Adventure Gear",
+      "ownerEmail": "store4@example.com",
+      "businessType": "store",
+      "description": "Specialized store for outdoor enthusiasts. From camping gear to hiking equipment, we've got everything for your next adventure.",
+      "location": "456 Mountain View Rd, Denver, CO",
+      "contactInfo": "303-555-2187",
+      "rating": 4.8,
+      "photos": [
+        "https://images.unsplash.com/photo-1519981337-7a6a8e9a819d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1535530992830-e25d07cfa780?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "8:00 AM - 7:00 PM",
+        "tuesday": "8:00 AM - 7:00 PM",
+        "wednesday": "8:00 AM - 7:00 PM",
+        "thursday": "8:00 AM - 7:00 PM",
+        "friday": "8:00 AM - 8:00 PM",
+        "saturday": "7:00 AM - 8:00 PM",
+        "sunday": "8:00 AM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-104-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Staff really know their stuff. Got great advice about gear for my Appalachian Trail hike.",
+          "date": "2023-07-12",
+          "ownerReply": "Thanks for your kind words! Always happy to help fellow outdoor enthusiasts. Hope your hike was amazing!",
+          "ownerReplyDate": "2023-07-13"
+        },
+        {
+          "id": "store-104-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "Best selection of climbing gear in the city. Prices are competitive too.",
+          "date": "2023-09-29"
+        }
+      ],
+      "items": [
+        {
+          "id": "oag-001",
+          "name": "3-Season Backpacking Tent",
+          "description": "Lightweight tent with waterproof rainfly, perfect for three-season camping",
+          "price": 299.99,
+          "category": "Camping",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oag-002",
+          "name": "Hiking Backpack - 65L",
+          "description": "Internal frame backpack with multiple compartments and adjustable fit",
+          "price": 179.99,
+          "category": "Backpacks",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1622260614153-03220cba8e25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oag-003",
+          "name": "Trekking Poles - Pair",
+          "description": "Adjustable aluminum trekking poles with cork grips",
+          "price": 89.99,
+          "category": "Hiking",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1561997968-aa846c2bf255?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oag-004",
+          "name": "Portable Water Filter",
+          "description": "Compact water filtration system for backpacking and emergency use",
+          "price": 39.99,
+          "category": "Water & Hydration",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-105",
+      "name": "Wellness Apothecary",
+      "ownerEmail": "store5@example.com",
+      "businessType": "store",
+      "description": "Natural health and wellness products for mind, body, and spirit. Featuring organic skincare, supplements, and self-care items.",
+      "location": "123 Holistic Way, Portland, OR",
+      "contactInfo": "503-555-8543",
+      "rating": 4.6,
+      "photos": [
+        "https://images.unsplash.com/photo-1470072508033-061eda750012?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1555633514-abcee6ab92e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1556760544-74068565f05c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "10:00 AM - 6:00 PM",
+        "tuesday": "10:00 AM - 6:00 PM",
+        "wednesday": "10:00 AM - 6:00 PM",
+        "thursday": "10:00 AM - 7:00 PM",
+        "friday": "10:00 AM - 7:00 PM",
+        "saturday": "10:00 AM - 5:00 PM",
+        "sunday": "11:00 AM - 4:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-105-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Their essential oil selection is amazing! Staff is knowledgeable about different uses too.",
+          "date": "2023-11-18"
+        },
+        {
+          "id": "store-105-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Do you offer consultations for personalized wellness regimens?",
+          "date": "2024-02-12",
+          "ownerReply": "Yes, we offer 30-minute wellness consultations by appointment. Please call or visit us to schedule.",
+          "ownerReplyDate": "2024-02-12"
+        }
+      ],
+      "items": [
+        {
+          "id": "wa-001",
+          "name": "Organic Face Serum",
+          "description": "Antioxidant-rich facial serum with vitamin C and hyaluronic acid",
+          "price": 49.99,
+          "category": "Skincare",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1609964728690-69e1abb25fd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "wa-002",
+          "name": "Aromatherapy Essential Oil Set",
+          "description": "Collection of 8 pure essential oils for diffusion or topical use",
+          "price": 59.99,
+          "category": "Aromatherapy",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "wa-003",
+          "name": "Herbal Tea Collection",
+          "description": "Assortment of loose-leaf herbal teas for various wellness benefits",
+          "price": 29.99,
+          "category": "Herbal Remedies",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "wa-004",
+          "name": "Natural Bath Salts",
+          "description": "Dead Sea and Epsom salt blend with calming lavender",
+          "price": 18.99,
+          "category": "Bath & Body",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1570194065650-d99fb4a8e9ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-106",
+      "name": "Book Nook",
+      "ownerEmail": "store6@example.com",
+      "businessType": "store",
+      "description": "Cozy independent bookstore with a curated selection of fiction, non-fiction, and children's books. Regular author events and reading groups.",
+      "location": "345 Literary Lane, Seattle, WA",
+      "contactInfo": "206-555-7291",
+      "rating": 4.9,
+      "photos": [
+        "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1521056787327-865ce453230a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1519682337058-a94d519337bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "10:00 AM - 7:00 PM",
+        "tuesday": "10:00 AM - 7:00 PM",
+        "wednesday": "10:00 AM - 7:00 PM",
+        "thursday": "10:00 AM - 8:00 PM",
+        "friday": "10:00 AM - 8:00 PM",
+        "saturday": "9:00 AM - 8:00 PM",
+        "sunday": "10:00 AM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-106-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Absolutely love this bookstore! Great selection and the staff recommendations are always spot on.",
+          "date": "2023-08-22",
+          "ownerReply": "Thank you for your kind words! We pride ourselves on our carefully curated collection.",
+          "ownerReplyDate": "2023-08-23"
+        },
+        {
+          "id": "store-106-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "My favorite place to discover new authors. The reading nook in the back is perfect for trying out books.",
+          "date": "2023-10-15"
+        }
+      ],
+      "items": [
+        {
+          "id": "bn-001",
+          "name": "Contemporary Fiction Bestseller",
+          "description": "Award-winning novel exploring themes of identity and belonging",
+          "price": 24.99,
+          "category": "Fiction",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "bn-002",
+          "name": "Illustrated Children's Book",
+          "description": "Beautifully illustrated adventure story for ages 5-8",
+          "price": 18.99,
+          "category": "Children's Books",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "bn-003",
+          "name": "Self-Improvement Guide",
+          "description": "Practical strategies for personal growth and development",
+          "price": 22.99,
+          "category": "Non-Fiction",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "bn-004",
+          "name": "Local History Collection",
+          "description": "Comprehensive history of the region with rare photographs",
+          "price": 29.99,
+          "category": "Local Interest",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1461360228754-6e81c478b882?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-107",
+      "name": "Vinyl Revival",
+      "ownerEmail": "store7@example.com",
+      "businessType": "store",
+      "description": "Music store specializing in vinyl records, both new releases and vintage classics. We also carry turntables and audio equipment.",
+      "location": "678 Melody Street, Austin, TX",
+      "contactInfo": "512-555-3912",
+      "rating": 4.7,
+      "photos": [
+        "https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1619983081593-e2ba5b543168?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1502773860571-211a597d6e4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "11:00 AM - 7:00 PM",
+        "tuesday": "11:00 AM - 7:00 PM",
+        "wednesday": "11:00 AM - 7:00 PM",
+        "thursday": "11:00 AM - 8:00 PM",
+        "friday": "11:00 AM - 9:00 PM",
+        "saturday": "10:00 AM - 9:00 PM",
+        "sunday": "12:00 PM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-107-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Found some rare jazz records I've been hunting for years! The owner is a walking encyclopedia of music knowledge.",
+          "date": "2023-09-10"
+        },
+        {
+          "id": "store-107-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Great selection of new indie releases. Prices for vintage stuff can be high, but quality is always excellent.",
+          "date": "2024-01-05"
+        }
+      ],
+      "items": [
+        {
+          "id": "vr-001",
+          "name": "Classic Rock Vinyl LP",
+          "description": "180g audiophile pressing of timeless rock album",
+          "price": 34.99,
+          "category": "Rock & Pop",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "vr-002",
+          "name": "Entry-Level Turntable",
+          "description": "Belt-driven turntable with built-in preamp for easy setup",
+          "price": 249.99,
+          "category": "Equipment",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1461784180009-27c1f1c1e1a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "vr-003",
+          "name": "Jazz Collection Box Set",
+          "description": "5-LP box set featuring essential jazz recordings",
+          "price": 129.99,
+          "category": "Jazz",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1629276301820-0f3eedc29fd0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "vr-004",
+          "name": "Record Cleaning Kit",
+          "description": "Complete kit for maintaining and cleaning vinyl records",
+          "price": 39.99,
+          "category": "Accessories",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1596140096558-95b86d2f46a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-108",
+      "name": "Culinary Corner",
+      "ownerEmail": "store8@example.com",
+      "businessType": "store",
+      "description": "Specialty kitchenware store offering high-quality cookware, bakeware, and kitchen gadgets for home chefs and professionals alike.",
+      "location": "921 Gourmet Boulevard, San Diego, CA",
+      "contactInfo": "619-555-4267",
+      "rating": 4.5,
+      "photos": [
+        "https://images.unsplash.com/photo-1556911220-bda9f7b24446?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1588854337116-d1e482a1d895?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 6:00 PM",
+        "tuesday": "9:00 AM - 6:00 PM",
+        "wednesday": "9:00 AM - 6:00 PM",
+        "thursday": "9:00 AM - 7:00 PM",
+        "friday": "9:00 AM - 7:00 PM",
+        "saturday": "9:00 AM - 7:00 PM",
+        "sunday": "10:00 AM - 5:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-108-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 4,
+          "comment": "Excellent selection of quality cookware. The knife sharpening service is also very convenient.",
+          "date": "2023-12-03"
+        },
+        {
+          "id": "store-108-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Do you offer cooking classes or demonstrations?",
+          "date": "2024-02-18",
+          "ownerReply": "Yes, we host cooking demonstrations every other Saturday at 2 PM. Our schedule is posted on our website.",
+          "ownerReplyDate": "2024-02-19"
+        }
+      ],
+      "items": [
+        {
+          "id": "cc-001",
+          "name": "Professional Chef's Knife",
+          "description": "8-inch high-carbon stainless steel knife with ergonomic handle",
+          "price": 119.99,
+          "category": "Cutlery",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1593618998160-e34014e67546?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cc-002",
+          "name": "Cast Iron Dutch Oven",
+          "description": "6-quart enameled cast iron pot for versatile cooking",
+          "price": 249.99,
+          "category": "Cookware",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cc-003",
+          "name": "Silicone Baking Mat Set",
+          "description": "Non-stick, heat-resistant baking mats for perfect results",
+          "price": 29.99,
+          "category": "Bakeware",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cc-004",
+          "name": "Digital Kitchen Scale",
+          "description": "Precise weight measurement for cooking and baking",
+          "price": 34.99,
+          "category": "Gadgets",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1591261730799-ee4e6c5592f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-109",
+      "name": "Green Thumb Garden Center",
+      "ownerEmail": "store9@example.com",
+      "businessType": "store",
+      "description": "Complete garden center with indoor and outdoor plants, gardening tools, soil, and expert advice for both beginners and experienced gardeners.",
+      "location": "567 Botanical Way, Phoenix, AZ",
+      "contactInfo": "602-555-7814",
+      "rating": 4.6,
+      "photos": [
+        "https://images.unsplash.com/photo-1590931989004-1cd40377acee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1566938064504-a379175168b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1525219884859-389f736c06a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "8:00 AM - 6:00 PM",
+        "tuesday": "8:00 AM - 6:00 PM",
+        "wednesday": "8:00 AM - 6:00 PM",
+        "thursday": "8:00 AM - 6:00 PM",
+        "friday": "8:00 AM - 7:00 PM",
+        "saturday": "7:00 AM - 7:00 PM",
+        "sunday": "8:00 AM - 5:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-109-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Amazing selection of desert plants that are perfect for our climate. Staff gave me great advice for drought-resistant landscaping.",
+          "date": "2023-11-05",
+          "ownerReply": "Thank you for your review! We're glad our native plant knowledge was helpful.",
+          "ownerReplyDate": "2023-11-06"
+        },
+        {
+          "id": "store-109-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Good quality plants at reasonable prices. Would be five stars if they had more rare varieties.",
+          "date": "2024-01-30"
+        }
+      ],
+      "items": [
+        {
+          "id": "gt-001",
+          "name": "Low-Maintenance Succulent Collection",
+          "description": "Set of 5 assorted succulents in 2-inch pots",
+          "price": 24.99,
+          "category": "Indoor Plants",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1508022713622-df2d8fb7b4cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-002",
+          "name": "Ergonomic Garden Tool Set",
+          "description": "5-piece set of essential garden tools with comfort grips",
+          "price": 49.99,
+          "category": "Tools",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1601133006233-68d7eba24d7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-003",
+          "name": "Organic Potting Soil - 10L",
+          "description": "Premium organic soil blend for container plants",
+          "price": 15.99,
+          "category": "Soil & Amendments",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1640272583538-62a3e98dbe33?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-004",
+          "name": "Self-Watering Planter",
+          "description": "Modern planter with reservoir system for easy plant care",
+          "price": 39.99,
+          "category": "Containers",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1677272660625-339be7508cc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "store-110",
+      "name": "Pet Paradise",
+      "ownerEmail": "store10@example.com",
+      "businessType": "store",
+      "description": "Full-service pet store with premium pet food, toys, accessories, and grooming supplies for dogs, cats, and small animals.",
+      "location": "432 Paws Avenue, Miami, FL",
+      "contactInfo": "305-555-9236",
+      "rating": 4.8,
+      "photos": [
+        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1548767797-d8c844163c4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 7:00 PM",
+        "tuesday": "9:00 AM - 7:00 PM",
+        "wednesday": "9:00 AM - 7:00 PM",
+        "thursday": "9:00 AM - 7:00 PM",
+        "friday": "9:00 AM - 8:00 PM",
+        "saturday": "9:00 AM - 8:00 PM",
+        "sunday": "10:00 AM - 6:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "store-110-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "My dog absolutely loves this place! They even have a treat bar where you can pick out special treats. Staff remembers my pet's name!",
+          "date": "2023-10-28"
+        },
+        {
+          "id": "store-110-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Do you offer pet adoption services or work with local rescues?",
+          "date": "2024-02-05",
+          "ownerReply": "We don't handle adoptions directly, but we partner with local shelters for monthly adoption events in our store. Check our calendar for upcoming dates!",
+          "ownerReplyDate": "2024-02-06"
+        }
+      ],
+      "items": [
+        {
+          "id": "pp-001",
+          "name": "Premium Grain-Free Dog Food - 12lb",
+          "description": "High-protein formula for all life stages with real meat as first ingredient",
+          "price": 54.99,
+          "category": "Dog Food",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "pp-002",
+          "name": "Interactive Cat Toy",
+          "description": "Electronic toy that stimulates hunting instincts",
+          "price": 29.99,
+          "category": "Cat Supplies",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1592951620317-7f65ee4f7a3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "pp-003",
+          "name": "Orthopedic Pet Bed - Medium",
+          "description": "Memory foam bed for joint support and comfort",
+          "price": 69.99,
+          "category": "Beds & Furniture",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1544464114-32d88421ed01?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "pp-004",
+          "name": "Adjustable Dog Harness",
+          "description": "No-pull harness with padded chest plate for comfort",
+          "price": 32.99,
+          "category": "Collars & Leashes",
+          "inStock": true,
+          "photo": "https://images.unsplash.com/photo-1608034954988-9f54d48a2b00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-101",
+      "name": "Sapore Italiano",
+      "ownerEmail": "restaurant1@example.com",
+      "businessType": "restaurant",
+      "description": "Authentic Italian restaurant featuring hand-made pasta, wood-fired pizzas, and a curated selection of Italian wines. Family recipes passed down through generations.",
+      "location": "234 Pasta Lane, Boston, MA",
+      "contactInfo": "617-555-3891",
+      "rating": 4.8,
+      "photos": [
+        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1579684947550-22e945225d9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1602785165042-db45805c52fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "Closed",
+        "tuesday": "5:00 PM - 10:00 PM",
+        "wednesday": "5:00 PM - 10:00 PM",
+        "thursday": "5:00 PM - 10:00 PM",
+        "friday": "5:00 PM - 11:00 PM",
+        "saturday": "12:00 PM - 11:00 PM",
+        "sunday": "12:00 PM - 9:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-101-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Best Italian food I've had outside of Italy. The homemade pasta is exceptional, and the tiramisu is to die for!",
+          "date": "2023-09-18",
+          "ownerReply": "Grazie mille for your kind words! We're delighted you enjoyed our pasta and desserts.",
+          "ownerReplyDate": "2023-09-19"
+        },
+        {
+          "id": "restaurant-101-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Excellent food and service. Only giving 4 stars because it's quite pricey, but the quality is undeniable.",
+          "date": "2023-12-05"
+        }
+      ],
+      "menu": [
+        {
+          "id": "si-001",
+          "name": "Spaghetti Carbonara",
+          "description": "Classic Roman pasta with eggs, pecorino cheese, pancetta, and black pepper",
+          "price": 18.99,
+          "category": "Pasta",
+          "photo": "https://images.unsplash.com/photo-1600803734709-83f30a59f16e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "si-002",
+          "name": "Margherita Pizza",
+          "description": "Traditional pizza with San Marzano tomatoes, fresh mozzarella, and basil",
+          "price": 16.99,
+          "category": "Pizza",
+          "photo": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "si-003",
+          "name": "Osso Buco",
+          "description": "Braised veal shanks with gremolata and saffron risotto",
+          "price": 29.99,
+          "category": "Main Courses",
+          "photo": "https://images.unsplash.com/photo-1608835291093-394b0c943a75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "si-004",
+          "name": "Tiramisu",
+          "description": "Classic coffee-flavored Italian dessert with mascarpone and cocoa",
+          "price": 9.99,
+          "category": "Desserts",
+          "photo": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-102",
+      "name": "Spice Route",
+      "ownerEmail": "restaurant2@example.com",
+      "businessType": "restaurant",
+      "description": "Contemporary Indian cuisine with a focus on regional specialties and fresh ingredients. Offering both traditional favorites and modern interpretations.",
+      "location": "567 Curry Boulevard, Chicago, IL",
+      "contactInfo": "312-555-7432",
+      "rating": 4.6,
+      "photos": [
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1585937421612-70a008356c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "tuesday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "wednesday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "thursday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "friday": "11:30 AM - 2:30 PM, 5:00 PM - 10:30 PM",
+        "saturday": "12:00 PM - 10:30 PM",
+        "sunday": "12:00 PM - 9:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-102-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Incredible flavors! The butter chicken is the best I've ever had, and they were accommodating with spice levels.",
+          "date": "2023-11-12"
+        },
+        {
+          "id": "restaurant-102-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Do you offer catering services for events?",
+          "date": "2024-01-18",
+          "ownerReply": "Yes, we offer catering for events of all sizes. Please contact us directly for a customized menu and quote.",
+          "ownerReplyDate": "2024-01-19"
+        }
+      ],
+      "menu": [
+        {
+          "id": "sr-001",
+          "name": "Butter Chicken",
+          "description": "Tender chicken in a rich, creamy tomato sauce with Indian spices",
+          "price": 17.99,
+          "category": "Main Courses",
+          "photo": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sr-002",
+          "name": "Vegetable Samosas",
+          "description": "Crispy pastries filled with spiced potatoes and peas",
+          "price": 7.99,
+          "category": "Appetizers",
+          "photo": "https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sr-003",
+          "name": "Lamb Biryani",
+          "description": "Fragrant basmati rice with tender lamb and aromatic spices",
+          "price": 19.99,
+          "category": "Rice Dishes",
+          "photo": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sr-004",
+          "name": "Garlic Naan",
+          "description": "Soft flatbread with garlic and butter, baked in tandoor oven",
+          "price": 4.99,
+          "category": "Breads",
+          "photo": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-103",
+      "name": "Ocean Harvest",
+      "ownerEmail": "restaurant3@example.com",
+      "businessType": "restaurant",
+      "description": "Seafood restaurant specializing in sustainably sourced fish and shellfish. Fresh catch delivered daily and prepared with seasonal, local ingredients.",
+      "location": "789 Harbor Road, Seattle, WA",
+      "contactInfo": "206-555-6129",
+      "rating": 4.7,
+      "photos": [
+        "https://images.unsplash.com/photo-1537639622086-67261ce569fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1551218808-94e220e084d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1510130387422-82bed34b37e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "4:00 PM - 9:00 PM",
+        "tuesday": "4:00 PM - 9:00 PM",
+        "wednesday": "4:00 PM - 9:00 PM",
+        "thursday": "4:00 PM - 9:00 PM",
+        "friday": "4:00 PM - 10:00 PM",
+        "saturday": "12:00 PM - 10:00 PM",
+        "sunday": "12:00 PM - 8:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-103-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "The seafood here is incredibly fresh! Their commitment to sustainability is evident in both the food quality and restaurant practices.",
+          "date": "2023-08-15",
+          "ownerReply": "Thank you for noticing our dedication to sustainability. We work closely with local fishermen to ensure the best quality.",
+          "ownerReplyDate": "2023-08-16"
+        },
+        {
+          "id": "restaurant-103-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Excellent oyster selection and the crab cakes were delicious. Service was a bit slow on a busy Friday night.",
+          "date": "2023-10-20"
+        }
+      ],
+      "menu": [
+        {
+          "id": "oh-001",
+          "name": "Fresh Oysters - Half Dozen",
+          "description": "Locally harvested oysters served with mignonette sauce",
+          "price": 19.99,
+          "category": "Raw Bar",
+          "photo": "https://images.unsplash.com/photo-1466553556096-7e2c59ea6486?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oh-002",
+          "name": "Grilled Wild Salmon",
+          "description": "Pacific salmon with lemon herb butter and seasonal vegetables",
+          "price": 28.99,
+          "category": "Main Courses",
+          "photo": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oh-003",
+          "name": "Seafood Paella",
+          "description": "Saffron rice with mussels, clams, shrimp, and fish",
+          "price": 32.99,
+          "category": "House Specialties",
+          "photo": "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "oh-004",
+          "name": "Crab Cakes",
+          "description": "Lump crab meat cakes with minimal filler, served with remoulade",
+          "price": 16.99,
+          "category": "Appetizers",
+          "photo": "https://images.unsplash.com/photo-1581788604067-915fd44f4268?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-104",
+      "name": "Green Table",
+      "ownerEmail": "restaurant4@example.com",
+      "businessType": "restaurant",
+      "description": "Farm-to-table vegetarian and vegan restaurant focusing on organic, seasonal ingredients. Creative plant-based dishes that appeal to all dietary preferences.",
+      "location": "421 Harvest Lane, Portland, OR",
+      "contactInfo": "503-555-9748",
+      "rating": 4.9,
+      "photos": [
+        "https://images.unsplash.com/photo-1600335895229-6e75511892c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1530062845289-9109b2c9c868?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "11:00 AM - 3:00 PM, 5:00 PM - 9:00 PM",
+        "tuesday": "11:00 AM - 3:00 PM, 5:00 PM - 9:00 PM",
+        "wednesday": "11:00 AM - 3:00 PM, 5:00 PM - 9:00 PM",
+        "thursday": "11:00 AM - 3:00 PM, 5:00 PM - 9:00 PM",
+        "friday": "11:00 AM - 3:00 PM, 5:00 PM - 10:00 PM",
+        "saturday": "9:00 AM - 3:00 PM, 5:00 PM - 10:00 PM",
+        "sunday": "9:00 AM - 3:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-104-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Even as a non-vegetarian, I was blown away by the flavors and creativity. Their mushroom risotto made me forget I wasn't eating meat!",
+          "date": "2023-09-08"
+        },
+        {
+          "id": "restaurant-104-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "The best vegan restaurant I've ever visited. Everything is so fresh and flavorful, and they're great with accommodating allergies.",
+          "date": "2023-12-15",
+          "ownerReply": "Thank you for your wonderful review! We pride ourselves on accommodating all dietary needs while maintaining exceptional flavor.",
+          "ownerReplyDate": "2023-12-16"
+        }
+      ],
+      "menu": [
+        {
+          "id": "gt-001",
+          "name": "Wild Mushroom Risotto",
+          "description": "Creamy arborio rice with seasonal wild mushrooms and truffle oil",
+          "price": 18.99,
+          "category": "Main Courses",
+          "photo": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-002",
+          "name": "Roasted Beet Salad",
+          "description": "Mixed greens with roasted beets, goat cheese, candied walnuts, and balsamic reduction",
+          "price": 12.99,
+          "category": "Salads",
+          "photo": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-003",
+          "name": "Cauliflower Buffalo Wings",
+          "description": "Crispy cauliflower florets in spicy buffalo sauce with vegan ranch dipping sauce",
+          "price": 10.99,
+          "category": "Appetizers",
+          "photo": "https://images.unsplash.com/photo-1631228198154-90a1bc712263?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "gt-004",
+          "name": "Chocolate Avocado Mousse",
+          "description": "Rich chocolate mousse made with avocado and coconut milk, topped with berries",
+          "price": 8.99,
+          "category": "Desserts",
+          "photo": "https://images.unsplash.com/photo-1622621746668-59fb299bc4d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-105",
+      "name": "Burger Republic",
+      "ownerEmail": "restaurant5@example.com",
+      "businessType": "restaurant",
+      "description": "Gourmet burger joint serving hand-crafted burgers with premium ingredients. Featuring specialty beef, chicken, and vegetarian options alongside craft beers.",
+      "location": "876 Patty Place, Austin, TX",
+      "contactInfo": "512-555-3476",
+      "rating": 4.5,
+      "photos": [
+        "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1525268771113-32d9e9021a97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1561758033-d89a9ad46330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "11:00 AM - 10:00 PM",
+        "tuesday": "11:00 AM - 10:00 PM",
+        "wednesday": "11:00 AM - 10:00 PM",
+        "thursday": "11:00 AM - 10:00 PM",
+        "friday": "11:00 AM - 12:00 AM",
+        "saturday": "11:00 AM - 12:00 AM",
+        "sunday": "11:00 AM - 9:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-105-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 4,
+          "comment": "Great burgers with unique toppings. The truffle fries are addictive! Only downside is it gets very crowded at peak times.",
+          "date": "2023-11-25"
+        },
+        {
+          "id": "restaurant-105-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "Best burgers in town! The Bourbon BBQ Burger is life-changing, and they don't skimp on the portions.",
+          "date": "2024-01-13",
+          "ownerReply": "Thanks for the awesome review! The Bourbon BBQ is one of our most popular creations. Hope to see you again soon!",
+          "ownerReplyDate": "2024-01-14"
+        }
+      ],
+      "menu": [
+        {
+          "id": "br-001",
+          "name": "Classic Cheeseburger",
+          "description": "6oz Angus beef patty with aged cheddar, lettuce, tomato, onion, and house sauce",
+          "price": 13.99,
+          "category": "Burgers",
+          "photo": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "br-002",
+          "name": "Bourbon BBQ Burger",
+          "description": "Beef patty with bourbon BBQ sauce, crispy onion strings, bacon, and smoked gouda",
+          "price": 16.99,
+          "category": "Specialty Burgers",
+          "photo": "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "br-003",
+          "name": "Truffle Parmesan Fries",
+          "description": "Crispy fries tossed with truffle oil, parmesan cheese, and herbs",
+          "price": 7.99,
+          "category": "Sides",
+          "photo": "https://images.unsplash.com/photo-1585109649139-366815a0d713?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "br-004",
+          "name": "Craft Beer Flight",
+          "description": "Sampler of four local craft beers",
+          "price": 12.99,
+          "category": "Drinks",
+          "photo": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-106",
+      "name": "Sushi Zen",
+      "ownerEmail": "restaurant6@example.com",
+      "businessType": "restaurant",
+      "description": "Authentic Japanese sushi restaurant featuring the freshest fish and traditional preparation methods. Offering both traditional favorites and creative fusion rolls.",
+      "location": "543 Wasabi Way, San Francisco, CA",
+      "contactInfo": "415-555-8271",
+      "rating": 4.5,
+      "photos": [
+        "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1611143669185-af224c5e3252?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1553621042-f6e147245754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "Closed",
+        "tuesday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "wednesday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "thursday": "11:30 AM - 2:30 PM, 5:00 PM - 9:30 PM",
+        "friday": "11:30 AM - 2:30 PM, 5:00 PM - 10:30 PM",
+        "saturday": "5:00 PM - 10:30 PM",
+        "sunday": "Closed"
+      },
+      "reviews": [
+        {
+          "id": "restaurant-106-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Exceptional sushi! The fish was incredibly fresh, and the chef's special rolls were creative without being too over-the-top.",
+          "date": "2023-10-05",
+          "ownerReply": "Thank you for your kind review. We take great pride in the quality and freshness of our ingredients.",
+          "ownerReplyDate": "2023-10-06"
+        },
+        {
+          "id": "restaurant-106-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Excellent sushi but a bit on the pricey side. The omakase experience is well worth trying if you're willing to splurge.",
+          "date": "2023-12-19"
+        },
+        {
+          "id": "a7468040-42f6-4edd-96dd-a1f801a0ce68",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "comment": "Do you have sushi?",
+          "date": "2025-04-02",
+          "businessId": "restaurant-106"
+        }
+      ],
+      "menu": [
+        {
+          "id": "sz-001",
+          "name": "Chef's Choice Omakase",
+          "description": "Multi-course dining experience featuring the freshest seasonal selections",
+          "price": 85,
+          "category": "Specialty",
+          "photo": "https://images.unsplash.com/photo-1579398937948-576d4e3fb9de?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sz-002",
+          "name": "Nigiri Assortment - 10 Piece",
+          "description": "Chef's selection of fresh fish over seasoned rice",
+          "price": 32.99,
+          "category": "Sushi",
+          "photo": "https://images.unsplash.com/photo-1615361200098-9e630ec29b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sz-003",
+          "name": "Dragon Roll",
+          "description": "Eel and cucumber roll topped with avocado and eel sauce",
+          "price": 18.99,
+          "category": "Specialty Rolls",
+          "photo": "https://images.unsplash.com/photo-1553621042-f6e147245754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "sz-004",
+          "name": "Miso Soup",
+          "description": "Traditional Japanese soup with tofu, seaweed, and green onion",
+          "price": 4.99,
+          "category": "Appetizers",
+          "photo": "https://images.unsplash.com/photo-1623424402552-462883124615?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "restaurant-107",
+      "name": "Taqueria El Fuego",
+      "ownerEmail": "restaurant7@example.com",
+      "businessType": "restaurant",
+      "description": "Authentic Mexican street food in a vibrant, casual setting. Known for handmade tortillas, fresh salsas, and traditional recipes passed down through generations.",
+      "location": "420 Cinco Avenue, Austin, TX",
+      "contactInfo": "512-555-7123",
+      "rating": 4.7,
+      "photos": [
+        "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1613514785940-daed07799d9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "11:00 AM - 9:00 PM",
+        "tuesday": "11:00 AM - 9:00 PM",
+        "wednesday": "11:00 AM - 9:00 PM",
+        "thursday": "11:00 AM - 10:00 PM",
+        "friday": "11:00 AM - 11:00 PM",
+        "saturday": "11:00 AM - 11:00 PM",
+        "sunday": "12:00 PM - 8:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "tacos-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "The most authentic tacos I've had outside of Mexico! The salsa bar is incredible.",
+          "date": "2023-10-15"
+        },
+        {
+          "id": "tacos-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 4,
+          "comment": "Great food at reasonable prices. The service can be a bit slow during rush hours.",
+          "date": "2024-01-05",
+          "ownerReply": "Thank you for your feedback! We're working on improving our service during busy times.",
+          "ownerReplyDate": "2024-01-06"
+        }
+      ],
+      "menu": [
+        {
+          "id": "taco-001",
+          "name": "Street Tacos - Trio",
+          "description": "Three authentic street tacos with your choice of meat, topped with onion, cilantro, and lime",
+          "price": 9.99,
+          "category": "Tacos",
+          "photo": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "taco-002",
+          "name": "Birria Quesadilla",
+          "description": "Slow-cooked beef birria with melted cheese in a crispy tortilla, served with consomé for dipping",
+          "price": 12.99,
+          "category": "Specialties",
+          "photo": "https://images.unsplash.com/photo-1618040976776-8ee6e1fc1d0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "taco-003",
+          "name": "Enchiladas Verdes",
+          "description": "Three chicken enchiladas topped with tomatillo sauce, crema, queso fresco, and avocado",
+          "price": 14.99,
+          "category": "Entrees",
+          "photo": "https://images.unsplash.com/photo-1534352956036-cd81e27dd333?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "taco-004",
+          "name": "Elote - Mexican Street Corn",
+          "description": "Grilled corn on the cob topped with mayo, cotija cheese, chili powder, and lime",
+          "price": 5.99,
+          "category": "Sides",
+          "photo": "https://images.unsplash.com/photo-1577805945964-b9e8ede15de5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "housing-101",
+      "name": "Riverside Apartments",
+      "ownerEmail": "housing1@example.com",
+      "businessType": "housing",
+      "description": "Modern apartment complex with scenic river views. Featuring spacious floor plans, updated amenities, and a convenient location near downtown and public transportation.",
+      "location": "123 Riverside Drive, Portland, OR",
+      "contactInfo": "503-555-7812",
+      "rating": 4.5,
+      "photos": [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 6:00 PM",
+        "tuesday": "9:00 AM - 6:00 PM",
+        "wednesday": "9:00 AM - 6:00 PM",
+        "thursday": "9:00 AM - 7:00 PM",
+        "friday": "9:00 AM - 6:00 PM",
+        "saturday": "10:00 AM - 4:00 PM",
+        "sunday": "Closed"
+      },
+      "reviews": [
+        {
+          "id": "housing-101-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 5,
+          "comment": "Beautiful apartments with amazing views! The management is responsive and the common areas are always clean. Highly recommend!",
+          "date": "2023-08-12",
+          "ownerReply": "Thank you for your kind review! We're committed to providing an excellent living experience for all our residents.",
+          "ownerReplyDate": "2023-08-13"
+        },
+        {
+          "id": "housing-101-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "Are utilities included in the rent? Also, do you allow pets?",
+          "date": "2024-01-28",
+          "ownerReply": "Water and trash are included, but electricity and internet are tenant responsibility. We are pet-friendly with a one-time pet deposit and monthly pet rent. Please contact our office for specific details!",
+          "ownerReplyDate": "2024-01-29"
+        }
+      ],
+      "rooms": [
+        {
+          "id": "ra-001",
+          "name": "Studio Apartment",
+          "description": "Modern 500 sq ft studio with full kitchen, river views, and built-in storage",
+          "price": 1250,
+          "category": "Studio",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ra-002",
+          "name": "One Bedroom - Standard",
+          "description": "700 sq ft one bedroom with separate living area, updated kitchen, and balcony",
+          "price": 1550,
+          "category": "1 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ra-003",
+          "name": "One Bedroom - Deluxe",
+          "description": "800 sq ft corner unit with large windows, upgraded finishes, and river views",
+          "price": 1750,
+          "category": "1 Bedroom",
+          "available": false,
+          "photo": "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "ra-004",
+          "name": "Two Bedroom Suite",
+          "description": "1100 sq ft two bedroom with two bathrooms, open concept living area, and large balcony",
+          "price": 2200,
+          "category": "2 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "housing-102",
+      "name": "Campus View Residences",
+      "ownerEmail": "housing2@example.com",
+      "businessType": "housing",
+      "description": "Student-focused apartment complex just steps from university campus. Furnished options available with study spaces, high-speed internet, and student-friendly amenities.",
+      "location": "456 College Avenue, Berkeley, CA",
+      "contactInfo": "510-555-3421",
+      "rating": 4.3,
+      "photos": [
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1515263487990-61b07816b324?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 7:00 PM",
+        "tuesday": "9:00 AM - 7:00 PM",
+        "wednesday": "9:00 AM - 7:00 PM",
+        "thursday": "9:00 AM - 7:00 PM",
+        "friday": "9:00 AM - 6:00 PM",
+        "saturday": "10:00 AM - 5:00 PM",
+        "sunday": "1:00 PM - 5:00 PM"
+      },
+      "reviews": [
+        {
+          "id": "housing-102-rev1",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 4,
+          "comment": "Great location for students! The study rooms and free printing are super convenient. Only giving 4 stars because the walls are a bit thin.",
+          "date": "2023-09-05"
+        },
+        {
+          "id": "housing-102-rev2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "I've lived here for two years and love it. Management hosts regular events for residents and the maintenance team is always responsive.",
+          "date": "2023-12-10",
+          "ownerReply": "Thank you for being a valued long-term resident! We're glad you enjoy our community events and service.",
+          "ownerReplyDate": "2023-12-11"
+        }
+      ],
+      "rooms": [
+        {
+          "id": "cvr-001",
+          "name": "Shared Two Bedroom",
+          "description": "Furnished 2 bedroom/1 bathroom apartment with shared common areas and individual leases",
+          "price": 950,
+          "category": "Shared",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cvr-002",
+          "name": "Private Studio",
+          "description": "Compact 400 sq ft studio with full kitchen, furnished options available",
+          "price": 1350,
+          "category": "Studio",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cvr-003",
+          "name": "One Bedroom Suite",
+          "description": "650 sq ft apartment with separate bedroom, study nook, and full kitchen",
+          "price": 1650,
+          "category": "1 Bedroom",
+          "available": false,
+          "photo": "https://images.unsplash.com/photo-1628611225249-6c3c7c689552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "cvr-004",
+          "name": "Premium Two Bedroom",
+          "description": "900 sq ft apartment with two bedrooms, two bathrooms, and in-unit laundry",
+          "price": 2400,
+          "category": "2 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
+    },
+    {
+      "id": "housing-103",
+      "name": "Mountain View Estates",
+      "ownerEmail": "housing3@example.com",
+      "businessType": "housing",
+      "description": "Luxury homes in a gated community with breathtaking mountain views. Spacious floor plans, high-end finishes, and resort-style community amenities.",
+      "location": "789 Summit Drive, Boulder, CO",
+      "contactInfo": "303-555-8976",
+      "rating": 4.9,
+      "photos": [
+        "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      ],
+      "businessHours": {
+        "monday": "9:00 AM - 5:00 PM",
+        "tuesday": "9:00 AM - 5:00 PM",
+        "wednesday": "9:00 AM - 5:00 PM",
+        "thursday": "9:00 AM - 5:00 PM",
+        "friday": "9:00 AM - 5:00 PM",
+        "saturday": "10:00 AM - 4:00 PM",
+        "sunday": "Closed"
+      },
+      "rooms": [
+        {
+          "id": "103-room-1",
+          "name": "Mountain Vista Home",
+          "description": "Spacious 4-bedroom home with panoramic mountain views, gourmet kitchen, and spa-like master bath.",
+          "price": 750000,
+          "category": "4 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "103-room-2",
+          "name": "Summit View Residence",
+          "description": "Elegant 3-bedroom home with floor-to-ceiling windows showcasing breathtaking mountain scenery.",
+          "price": 625000,
+          "category": "3 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1416331108676-a22ccb276e35?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "103-room-3",
+          "name": "Alpine Retreat",
+          "description": "Cozy 2-bedroom home with rustic charm, stone fireplace, and private outdoor living space.",
+          "price": 495000,
+          "category": "2 Bedroom",
+          "available": false,
+          "photo": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "103-room-4",
+          "name": "Mountain Contemporary",
+          "description": "Modern 5-bedroom luxury home with media room, home gym, and expansive outdoor entertaining area.",
+          "price": 950000,
+          "category": "5 Bedroom",
+          "available": true,
+          "photo": "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        }
+      ]
     }
   ]
 }

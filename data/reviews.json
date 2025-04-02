@@ -120,6 +120,157 @@
       "date": "2025-04-02",
       "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
       "rating": 1
+    },
+    {
+      "id": "5b48a732-e2a4-4fd2-873e-34c3bfd79779",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "THE ASD asd",
+      "comment": "this is inquiryyyy",
+      "date": "2025-04-02",
+      "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8"
+    },
+    {
+      "id": "store-rev-001",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Amazing selection of products and knowledgeable staff! Highly recommend for tech enthusiasts.",
+      "date": "2023-11-15",
+      "businessId": "store-101"
+    },
+    {
+      "id": "store-rev-002",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 4,
+      "comment": "Good prices compared to other electronics stores in the area. Would shop here again.",
+      "date": "2024-01-20",
+      "businessId": "store-101"
+    },
+    {
+      "id": "store-rev-003",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Love the selection of clothes! Found perfect outfits for both work and weekend outings.",
+      "date": "2023-12-10",
+      "businessId": "store-102"
+    },
+    {
+      "id": "store-rev-004",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 4,
+      "comment": "Great quality clothes but a bit pricey. Sales staff is very helpful though.",
+      "date": "2024-02-05",
+      "businessId": "store-102"
+    },
+    {
+      "id": "store-rev-005",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 4,
+      "comment": "Great selection of home goods. Found everything I needed to furnish my new apartment.",
+      "date": "2023-10-25",
+      "businessId": "store-103"
+    },
+    {
+      "id": "store-rev-006",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "comment": "Do you offer assembly services for the furniture purchased in-store?",
+      "date": "2024-01-15",
+      "businessId": "store-103",
+      "ownerReply": "Yes, we offer assembly services for a small fee. Please inquire at the time of purchase for details.",
+      "ownerReplyDate": "2024-01-16"
+    },
+    {
+      "id": "restaurant-rev-001",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Best Italian food I've had outside of Italy. The homemade pasta is exceptional, and the tiramisu is to die for!",
+      "date": "2023-09-18",
+      "businessId": "restaurant-101",
+      "ownerReply": "Grazie mille for your kind words! We're delighted you enjoyed our pasta and desserts.",
+      "ownerReplyDate": "2023-09-19"
+    },
+    {
+      "id": "restaurant-rev-002",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 4,
+      "comment": "Excellent food and service. Only giving 4 stars because it's quite pricey, but the quality is undeniable.",
+      "date": "2023-12-05",
+      "businessId": "restaurant-101"
+    },
+    {
+      "id": "restaurant-rev-003",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Incredible flavors! The butter chicken is the best I've ever had, and they were accommodating with spice levels.",
+      "date": "2023-11-12",
+      "businessId": "restaurant-102"
+    },
+    {
+      "id": "restaurant-rev-004",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "comment": "Do you offer catering services for events?",
+      "date": "2024-01-18",
+      "businessId": "restaurant-102",
+      "ownerReply": "Yes, we offer catering for events of all sizes. Please contact us directly for a customized menu and quote.",
+      "ownerReplyDate": "2024-01-19"
+    },
+    {
+      "id": "housing-rev-001",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Beautiful apartments with amazing views! The management is responsive and the common areas are always clean. Highly recommend!",
+      "date": "2023-08-12",
+      "businessId": "housing-101",
+      "ownerReply": "Thank you for your kind review! We're committed to providing an excellent living experience for all our residents.",
+      "ownerReplyDate": "2023-08-13"
+    },
+    {
+      "id": "housing-rev-002",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "comment": "Are utilities included in the rent? Also, do you allow pets?",
+      "date": "2024-01-28",
+      "businessId": "housing-101",
+      "ownerReply": "Water and trash are included, but electricity and internet are tenant responsibility. We are pet-friendly with a one-time pet deposit and monthly pet rent. Please contact our office for specific details!",
+      "ownerReplyDate": "2024-01-29"
+    },
+    {
+      "id": "housing-rev-003",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 4,
+      "comment": "Great location for students! The study rooms and free printing are super convenient. Only giving 4 stars because the walls are a bit thin.",
+      "date": "2023-09-05",
+      "businessId": "housing-102"
+    },
+    {
+      "id": "housing-rev-004",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 5,
+      "comment": "I've lived here for two years and love it. Management hosts regular events for residents and the maintenance team is always responsive.",
+      "date": "2023-12-10",
+      "businessId": "housing-102",
+      "ownerReply": "Thank you for being a valued long-term resident! We're glad you enjoy our community events and service.",
+      "ownerReplyDate": "2023-12-11"
+    },
+    {
+      "id": "a7468040-42f6-4edd-96dd-a1f801a0ce68",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "comment": "Do you have sushi?",
+      "date": "2025-04-02",
+      "businessId": "restaurant-106"
     }
   ]
 }

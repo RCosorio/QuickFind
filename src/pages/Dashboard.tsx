@@ -307,65 +307,68 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+      <header className="sticky top-4 z-10 mb-4">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div>
-              <h1 className="text-xl font-bold text-baby-blue">QuickFind</h1>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex space-x-2">
-                <button
-                  onClick={() => handleTabChange('store')}
-                  className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
-                    activeTab === 'store' 
-                      ? 'bg-red-100 text-red-600' 
-                      : 'text-gray-500 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaStore />
-                  <span>Stores</span>
-                </button>
-                
-                <button
-                  onClick={() => handleTabChange('restaurant')}
-                  className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
-                    activeTab === 'restaurant' 
-                      ? 'bg-green-100 text-green-600' 
-                      : 'text-gray-500 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaUtensils />
-                  <span>Restaurants</span>
-                </button>
-                
-                <button
-                  onClick={() => handleTabChange('housing')}
-                  className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
-                    activeTab === 'housing' 
-                      ? 'bg-purple-100 text-purple-600' 
-                      : 'text-gray-500 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaHome />
-                  <span>Housing</span>
-                </button>
+          <div className="bg-white rounded-xl shadow-sm border border-blue-100 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1">
+                <h1 className="text-xl font-semibold text-gray-800">QuickFind</h1>
+                <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">Beta</span>
               </div>
               
-              <div className="relative">
-                <button 
-                  onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-                  aria-expanded={showProfileMenu}
-                  aria-haspopup="true"
-                >
-                  <div className="w-8 h-8 rounded-full bg-baby-blue flex items-center justify-center text-white">
-                    {user?.firstName?.charAt(0)}
-                  </div>
-                  <span className="text-sm">{user?.firstName}</span>
-                  <FaAngleDown className={`text-gray-500 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
-                </button>
+              <div className="flex items-center space-x-4">
+                <div className="hidden sm:flex space-x-2">
+                  <button
+                    onClick={() => handleTabChange('store')}
+                    className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
+                      activeTab === 'store' 
+                        ? 'bg-red-100 text-red-600' 
+                        : 'text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaStore />
+                    <span>Stores</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleTabChange('restaurant')}
+                    className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
+                      activeTab === 'restaurant' 
+                        ? 'bg-green-100 text-green-600' 
+                        : 'text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaUtensils />
+                    <span>Restaurants</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleTabChange('housing')}
+                    className={`flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors ${
+                      activeTab === 'housing' 
+                        ? 'bg-purple-100 text-purple-600' 
+                        : 'text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaHome />
+                    <span>Housing</span>
+                  </button>
+                </div>
+                
+                <div className="relative">
+                  <button 
+                    onClick={toggleProfileMenu}
+                    className="flex items-center space-x-2 py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                    aria-expanded={showProfileMenu}
+                    aria-haspopup="true"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-baby-blue flex items-center justify-center text-white">
+                      {user?.firstName?.charAt(0)}
+                    </div>
+                    <span className="text-sm">{user?.firstName}</span>
+                    <FaAngleDown className={`text-gray-500 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -438,7 +441,7 @@ const Dashboard: React.FC = () => {
         {/* Menu content */}
         <div 
           ref={profileMenuRef}
-          className="absolute right-4 top-16 mt-2 z-30 w-80 bg-white rounded-xl shadow-xl overflow-hidden animate-slideIn"
+          className="absolute right-4 top-16 mt-2 z-30 w-80 bg-white rounded-xl border border-blue-100 shadow-xl overflow-hidden animate-slideIn"
           style={{ maxHeight: 'calc(100vh - 5rem)', overflowY: 'auto' }}
         >
           {/* Profile header - only show on main menu */}

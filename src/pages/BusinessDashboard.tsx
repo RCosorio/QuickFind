@@ -11,7 +11,7 @@ import {
   FaTrash, 
   FaPlus, 
   FaStar, 
-  FaArrowLeft, 
+  FaArrowLeft,
   FaSignOutAlt,
   FaChartBar, 
   FaMapMarkerAlt, 
@@ -280,7 +280,7 @@ const BusinessDashboard: React.FC = () => {
       }));
     }
   };
-
+  
   // Edit business details handlers
   const startEditing = () => {
     if (business) {
@@ -488,30 +488,32 @@ const BusinessDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Top Header */}
-      <header className="bg-gradient-to-r from-baby-blue to-blue-500 text-white shadow-lg">
+      <header className="sticky top-4 z-10 mb-4">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4">
-            <div>
-              <h1 className="text-2xl font-bold">Business Dashboard</h1>
-              {business && (
-                <p className="text-blue-100">{business.name}</p>
-              )}
-            </div>
-            
-            <div className="flex items-center">
+          <div className="bg-white rounded-xl shadow-sm border border-blue-100 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-xl font-semibold text-gray-800">Business Dashboard</h1>
+                {business && (
+                  <p className="text-blue-600">{business.name}</p>
+                )}
+              </div>
+              
+              <div className="flex items-center">
               <div className="relative">
-                <button 
-                  onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 py-2 px-3 rounded-lg text-white hover:bg-white hover:bg-opacity-20 transition-colors"
-                  aria-expanded={showProfileMenu}
-                  aria-haspopup="true"
-                >
-                  <div className="w-8 h-8 rounded-full bg-white bg-opacity-30 flex items-center justify-center overflow-hidden">
-                    {user?.firstName?.charAt(0)}
+                <button
+                    onClick={toggleProfileMenu}
+                    className="flex items-center space-x-2 py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                    aria-expanded={showProfileMenu}
+                    aria-haspopup="true"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-baby-blue flex items-center justify-center text-white overflow-hidden">
+                      {user?.firstName?.charAt(0)}
                   </div>
-                  <span className="text-sm">{user?.firstName}</span>
-                  <FaAngleDown className={`transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                    <span className="text-sm">{user?.firstName}</span>
+                    <FaAngleDown className={`text-gray-500 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
                 </button>
+              </div>
               </div>
             </div>
           </div>
@@ -531,7 +533,7 @@ const BusinessDashboard: React.FC = () => {
         {/* Menu content */}
         <div 
           ref={profileMenuRef}
-          className="absolute right-4 top-16 mt-2 z-50 w-52 bg-white rounded-lg shadow-lg overflow-hidden"
+          className="absolute right-4 top-16 mt-2 z-50 w-52 bg-white rounded-xl border border-blue-100 shadow-lg overflow-hidden"
         >
           <div className="py-2">
             <Link 
@@ -546,26 +548,26 @@ const BusinessDashboard: React.FC = () => {
               <span>Change Password</span>
             </Link>
             <div className="border-t my-2"></div>
-            <button 
+              <button 
               className="w-full px-6 py-3 flex items-center text-red-600 hover:bg-gray-50"
-              onClick={handleLogout}
-            >
+                onClick={handleLogout}
+              >
               <FaSignOutAlt className="mr-3" />
               <span>Log Out</span>
-            </button>
+              </button>
+            </div>
           </div>
-        </div>
       </div>
       
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Sidebar Navigation */}
-          <div className="w-full md:w-48 bg-white p-4 rounded-lg h-min shadow-sm">
+          <div className="w-full md:w-48 bg-white p-4 rounded-xl border border-blue-100 shadow-sm h-min sticky top-24">
             <nav>
               <ul className="space-y-1">
                 <li>
-                  <button
+                <button
                     onClick={() => setActiveTab('overview')}
                     className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
                       activeTab === 'overview' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
@@ -573,7 +575,7 @@ const BusinessDashboard: React.FC = () => {
                   >
                     <FaStore className="mr-2" />
                     Overview
-                  </button>
+                </button>
                 </li>
                 <li>
                   <button
@@ -617,12 +619,12 @@ const BusinessDashboard: React.FC = () => {
           {/* Content Area */}
           <div className="flex-1">
             {/* Overview Tab - Show business details and stats */}
-            {activeTab === 'overview' && (
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+          {activeTab === 'overview' && (
+              <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
                 <div className="flex justify-between items-start mb-6">
                   <h2 className="text-xl font-semibold">Business Overview</h2>
                   {!isEditing ? (
-                    <button 
+                    <button
                       onClick={startEditing}
                       className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
                     >
@@ -630,13 +632,13 @@ const BusinessDashboard: React.FC = () => {
                     </button>
                   ) : (
                     <div className="flex space-x-2">
-                      <button 
+                      <button
                         onClick={cancelEditing}
                         className="text-gray-600 hover:text-gray-800 flex items-center text-sm"
                       >
                         <FaTimes className="mr-1" /> Cancel
                       </button>
-                      <button 
+                      <button
                         onClick={saveBusinessDetails}
                         className="text-green-600 hover:text-green-800 flex items-center text-sm"
                       >
@@ -658,7 +660,7 @@ const BusinessDashboard: React.FC = () => {
                           {business.businessType === 'store' ? 'Store' : 
                            business.businessType === 'restaurant' ? 'Restaurant' : 'Housing'}
                         </span>
-                      </div>
+                    </div>
                     </div>
                     
                     <div>
@@ -765,27 +767,27 @@ const BusinessDashboard: React.FC = () => {
                               >
                                 <FaTrash size={12} />
                               </button>
-                            </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+                      </div>
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     {/* Business editing form */}
-                    <div>
+                      <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">Business Name</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={editedBusiness?.name || ''}
-                        onChange={handleBusinessChange}
+                        <input
+                          type="text"
+                          name="name"
+                          value={editedBusiness?.name || ''}
+                          onChange={handleBusinessChange}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
+                        />
+                      </div>
                     
-                    <div>
+                      <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">Description</label>
                       <textarea
                         name="description"
@@ -798,22 +800,22 @@ const BusinessDashboard: React.FC = () => {
                     
                     <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">Location</label>
-                      <input
-                        type="text"
-                        name="location"
-                        value={editedBusiness?.location || ''}
-                        onChange={handleBusinessChange}
+                        <input
+                          type="text"
+                          name="location"
+                          value={editedBusiness?.location || ''}
+                          onChange={handleBusinessChange}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
+                        />
+                      </div>
                     
-                    <div>
+                      <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">Contact Information</label>
-                      <input
-                        type="text"
-                        name="contactInfo"
-                        value={editedBusiness?.contactInfo || ''}
-                        onChange={handleBusinessChange}
+                        <input
+                          type="text"
+                          name="contactInfo"
+                          value={editedBusiness?.contactInfo || ''}
+                          onChange={handleBusinessChange}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -827,28 +829,28 @@ const BusinessDashboard: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
-            
+            </div>
+          )}
+          
             {/* Products/Menu/Rooms Management Tab */}
-            {activeTab === 'management' && (
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+          {activeTab === 'management' && (
+              <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-semibold">
                     {business.businessType === 'store' && 'Products Management'}
-                    {business.businessType === 'restaurant' && 'Menu Management'}
+                  {business.businessType === 'restaurant' && 'Menu Management'}
                     {business.businessType === 'housing' && 'Rooms Management'}
-                  </h2>
-                  <button 
-                    onClick={() => openProductModal()}
+                </h2>
+                      <button 
+                        onClick={() => openProductModal()}
                     className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 flex items-center text-sm"
-                  >
+                      >
                     <FaPlus className="mr-1" /> 
                     {business.businessType === 'store' && 'Add Product'}
                     {business.businessType === 'restaurant' && 'Add Menu Item'}
                     {business.businessType === 'housing' && 'Add Room'}
-                  </button>
-                </div>
+                      </button>
+                    </div>
                 
                 {/* Products/Menu Items/Rooms Grid */}
                 <div className={business.businessType === 'housing' ? "space-y-4" : "grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}>
@@ -857,11 +859,11 @@ const BusinessDashboard: React.FC = () => {
                     business.items && business.items.length > 0 ? (
                       business.items.map(item => (
                         <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
-                          {item.photo && (
+                            {item.photo && (
                             <div className="h-40 overflow-hidden">
                               <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
-                            </div>
-                          )}
+                              </div>
+                            )}
                           <div className="p-4">
                             <div className="flex justify-between items-start">
                               <h3 className="font-medium">{item.name}</h3>
@@ -873,23 +875,23 @@ const BusinessDashboard: React.FC = () => {
                                 {item.inStock ? 'In Stock' : 'Out of Stock'}
                               </span>
                               <div className="flex space-x-2">
-                                <button 
-                                  onClick={() => openProductModal(item)}
+                              <button 
+                                onClick={() => openProductModal(item)}
                                   className="text-blue-600 hover:text-blue-800"
                                   title="Edit"
-                                >
+                              >
                                   <FaEdit />
-                                </button>
-                                <button 
-                                  onClick={() => handleDeleteProduct(item.id)}
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteProduct(item.id)}
                                   className="text-red-600 hover:text-red-800"
                                   title="Delete"
-                                >
+                              >
                                   <FaTrash />
-                                </button>
-                              </div>
+                              </button>
                             </div>
                           </div>
+                      </div>
                         </div>
                       ))
                     ) : (
@@ -903,18 +905,18 @@ const BusinessDashboard: React.FC = () => {
                         </button>
                       </div>
                     )
-                  )}
-                  
+                )}
+                
                   {/* Restaurant Menu Items */}
-                  {business.businessType === 'restaurant' && (
+                {business.businessType === 'restaurant' && (
                     business.menu && business.menu.length > 0 ? (
                       business.menu.map(item => (
                         <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
-                          {item.photo && (
+                            {item.photo && (
                             <div className="h-40 overflow-hidden">
                               <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
-                            </div>
-                          )}
+                              </div>
+                            )}
                           <div className="p-4">
                             <div className="flex justify-between items-start">
                               <h3 className="font-medium">{item.name}</h3>
@@ -941,7 +943,7 @@ const BusinessDashboard: React.FC = () => {
                               </button>
                             </div>
                           </div>
-                        </div>
+                      </div>
                       ))
                     ) : (
                       <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg">
@@ -954,10 +956,10 @@ const BusinessDashboard: React.FC = () => {
                         </button>
                       </div>
                     )
-                  )}
-                  
+                )}
+                
                   {/* Housing Rooms */}
-                  {business.businessType === 'housing' && (
+                {business.businessType === 'housing' && (
                     business.rooms && business.rooms.length > 0 ? (
                       business.rooms.map(room => (
                         <div key={room.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
@@ -967,21 +969,21 @@ const BusinessDashboard: React.FC = () => {
                               {room.photos.length > 1 && (
                                 <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                                   +{room.photos.length - 1} photos
-                                </div>
+                    </div>
                               )}
-                            </div>
-                          )}
+                              </div>
+                            )}
                           <div className="p-4">
                             <div className="flex justify-between items-start mb-2">
                               <h3 className="font-medium text-lg">{room.name}</h3>
                               <div>
                                 <div className="font-bold">${room.price}/month</div>
                               </div>
-                            </div>
+                              </div>
                             <div className="flex mb-2 text-sm">
                               <div className="mr-4">{room.bedrooms} {room.bedrooms === 1 ? 'bed' : 'beds'}</div>
                               <div>{room.bathrooms} {room.bathrooms === 1 ? 'bath' : 'baths'}</div>
-                            </div>
+                              </div>
                             <p className="text-sm text-gray-600 mb-3">{room.description}</p>
                             
                             {room.amenities && room.amenities.length > 0 && (
@@ -1019,7 +1021,7 @@ const BusinessDashboard: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
+                      </div>
                       ))
                     ) : (
                       <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -1032,16 +1034,22 @@ const BusinessDashboard: React.FC = () => {
                         </button>
                       </div>
                     )
-                  )}
+                    )}
                 </div>
+                  </div>
+                )}
+            
+            {/* Reviews Tab */}
+            {activeTab === 'reviews' && (
+              <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
+                <h2 className="text-xl font-semibold mb-6">Reviews & Inquiries</h2>
+                <ReviewManagement />
               </div>
             )}
             
-            {activeTab === 'reviews' && <ReviewManagement />}
-            
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
                 <h2 className="text-xl font-semibold mb-6">Business Analytics</h2>
                 
                 {/* Analytics Summary Cards */}
@@ -1050,14 +1058,16 @@ const BusinessDashboard: React.FC = () => {
                     <div className="text-gray-500 text-sm mb-1">Profile Views</div>
                     <div className="text-3xl font-bold">
                       {(() => {
-                        // Calculate views based on business id to create consistent data
-                        const baseViews = parseInt(business.id) * 7;
-                        const randomViews = baseViews + Math.floor(baseViews * 0.3);
-                        return randomViews;
+                        // Fixed calculation with base number
+                        const businessId = business?.id;
+                        // Ensure we have a numeric value to work with
+                        const seed = businessId ? parseInt(businessId.replace(/\D/g, '').substring(0, 2) || '10') : 10;
+                        // Generate a consistent view count based on seed
+                        return seed * 8 + 20;
                       })()}
-                    </div>
+              </div>
                     <div className="text-green-500 text-sm mt-1">
-                      ↑ {Math.floor(business.reviews?.length || 0) * 3 + 5}% from last week
+                      ↑ {23}% from last week
                     </div>
                   </div>
                   
@@ -1075,11 +1085,17 @@ const BusinessDashboard: React.FC = () => {
                     <div className="text-gray-500 text-sm mb-1">Engagement Rate</div>
                     <div className="text-3xl font-bold">
                       {(() => {
-                        // Calculate engagement based on reviews and profile views
+                        // Fixed calculation that doesn't rely on profile views
                         const totalReviews = business.reviews?.length || 0;
-                        const baseViews = parseInt(business.id) * 7;
-                        const engagementRate = Math.min(Math.round((totalReviews / baseViews) * 100) + 5, 100);
-                        return `${engagementRate}%`;
+                        const seed = business?.id ? 
+                          parseInt(business.id.replace(/\D/g, '').substring(0, 2) || '10') : 10;
+                        
+                        // Generate a reasonable engagement percentage
+                        const baseEngagement = totalReviews > 0 ? 
+                          Math.min(Math.round((totalReviews / seed) * 100), 100) : 0;
+                        
+                        // Ensure we have at least some engagement percentage for display
+                        return `${Math.max(baseEngagement, 0)}%`;
                       })()}
                     </div>
                     <div className="text-gray-500 text-sm mt-1">Based on reviews and inquiries</div>
@@ -1094,8 +1110,9 @@ const BusinessDashboard: React.FC = () => {
                       <div className="space-y-3">
                         {[5, 4, 3, 2, 1].map(rating => {
                           const count = business.reviews?.filter(r => r.rating === rating).length || 0;
-                          const percentage = business.reviews && business.reviews.filter(r => r.rating !== undefined).length > 0
-                            ? Math.round((count / business.reviews.filter(r => r.rating !== undefined).length) * 100)
+                          const totalReviewsWithRating = business.reviews?.filter(r => r.rating !== undefined).length || 0;
+                          const percentage = totalReviewsWithRating > 0
+                            ? Math.round((count / totalReviewsWithRating) * 100)
                             : 0;
                           
                           return (
@@ -1121,11 +1138,11 @@ const BusinessDashboard: React.FC = () => {
                     ) : (
                       <div className="text-center py-6 text-gray-500">
                         No rating data available yet. Encourage customers to leave reviews.
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
+            </div>
+          )}
+        </div>
+      </div>
+      
                 {/* Performance Over Time */}
                 <div className="mb-8">
                   <h3 className="text-lg font-medium mb-4">Performance Metrics</h3>
@@ -1175,7 +1192,7 @@ const BusinessDashboard: React.FC = () => {
                               return (
                                 <div 
                                   className={`h-4 rounded-full ${satisfactionPercentage >= 80 ? 'bg-green-500' : satisfactionPercentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                  style={{ width: `${satisfactionPercentage}%` }}
+                                  style={{ width: `${satisfactionPercentage || 0}%` }}
                                 ></div>
                               );
                             })()}
@@ -1185,7 +1202,7 @@ const BusinessDashboard: React.FC = () => {
                               const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
                               const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
                               const avgRating = reviewsWithRatings.length > 0 ? totalRatings / reviewsWithRatings.length : 0;
-                              return Math.round((avgRating / 5) * 100);
+                              return Math.round((avgRating / 5) * 100) || 0;
                             })()}%
                           </span>
                         </div>
@@ -1307,8 +1324,9 @@ const BusinessDashboard: React.FC = () => {
                         <div className="text-2xl font-bold mb-1">
                           {(() => {
                             // Calculate a consistent response time based on business id
-                            return Math.max(12, Math.floor(24 / parseInt(business.id.substring(0, 1) || '1')));
-                          })()}h
+                            if (!business.id) return "24h";
+                            return Math.max(12, Math.floor(24 / (parseInt(business.id.substring(0, 1) || '1')))) + "h";
+                          })()}
                         </div>
                         <div className="text-xs text-gray-500">Average time to respond to inquiries</div>
                       </div>

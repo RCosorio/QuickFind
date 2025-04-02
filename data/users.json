@@ -25,26 +25,242 @@
       "password": "123123"
     },
     {
-      "id": "64b5d803-233c-4cef-b3ef-8943e9b3497a",
-      "email": "11@gmail.com",
-      "firstName": "ryu",
-      "lastName": "uuy",
-      "role": "student",
-      "password": "123123"
-    },
-    {
-      "id": "145a9aba-622c-4514-8266-2f422f31f20f",
-      "email": "tt@gmail.com",
-      "firstName": "Business",
-      "lastName": "Owner",
+      "id": "store-owner-1",
+      "email": "store1@example.com",
+      "firstName": "John",
+      "lastName": "Storekeeper",
       "role": "business",
       "password": "123123"
     },
     {
-      "id": "6c1a6dac-65f3-48cb-a9ba-06f9031204a5",
-      "email": "aa@gmail.com",
-      "firstName": "Business",
-      "lastName": "Owner",
+      "id": "store-owner-2",
+      "email": "store2@example.com",
+      "firstName": "Sarah",
+      "lastName": "Shopowner",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-3",
+      "email": "store3@example.com",
+      "firstName": "Michael",
+      "lastName": "Merchant",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-4",
+      "email": "store4@example.com",
+      "firstName": "Emma",
+      "lastName": "Retailer",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-5",
+      "email": "store5@example.com",
+      "firstName": "David",
+      "lastName": "Vendor",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-6",
+      "email": "store6@example.com",
+      "firstName": "Lisa",
+      "lastName": "Trader",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-7",
+      "email": "store7@example.com",
+      "firstName": "Robert",
+      "lastName": "Dealer",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-8",
+      "email": "store8@example.com",
+      "firstName": "Jessica",
+      "lastName": "Purveyor",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-9",
+      "email": "store9@example.com",
+      "firstName": "Thomas",
+      "lastName": "Marketer",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "store-owner-10",
+      "email": "store10@example.com",
+      "firstName": "Jennifer",
+      "lastName": "Supplier",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-1",
+      "email": "restaurant1@example.com",
+      "firstName": "Antonio",
+      "lastName": "Chef",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-2",
+      "email": "restaurant2@example.com",
+      "firstName": "Maria",
+      "lastName": "Restaurateur",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-3",
+      "email": "restaurant3@example.com",
+      "firstName": "Carlos",
+      "lastName": "Cook",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-4",
+      "email": "restaurant4@example.com",
+      "firstName": "Sophie",
+      "lastName": "Server",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-5",
+      "email": "restaurant5@example.com",
+      "firstName": "James",
+      "lastName": "Baker",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-6",
+      "email": "restaurant6@example.com",
+      "firstName": "Elena",
+      "lastName": "Cuisine",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-7",
+      "email": "restaurant7@example.com",
+      "firstName": "Marco",
+      "lastName": "Foodie",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-8",
+      "email": "restaurant8@example.com",
+      "firstName": "Olivia",
+      "lastName": "Bistro",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-9",
+      "email": "restaurant9@example.com",
+      "firstName": "Daniel",
+      "lastName": "Gastronomy",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "restaurant-owner-10",
+      "email": "restaurant10@example.com",
+      "firstName": "Isabella",
+      "lastName": "Culinary",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-1",
+      "email": "housing1@example.com",
+      "firstName": "Richard",
+      "lastName": "Landlord",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-2",
+      "email": "housing2@example.com",
+      "firstName": "Patricia",
+      "lastName": "Realtor",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-3",
+      "email": "housing3@example.com",
+      "firstName": "William",
+      "lastName": "Property",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-4",
+      "email": "housing4@example.com",
+      "firstName": "Elizabeth",
+      "lastName": "Estate",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-5",
+      "email": "housing5@example.com",
+      "firstName": "George",
+      "lastName": "Residence",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-6",
+      "email": "housing6@example.com",
+      "firstName": "Barbara",
+      "lastName": "Apartment",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-7",
+      "email": "housing7@example.com",
+      "firstName": "Henry",
+      "lastName": "House",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-8",
+      "email": "housing8@example.com",
+      "firstName": "Margaret",
+      "lastName": "Condo",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-9",
+      "email": "housing9@example.com",
+      "firstName": "Alexander",
+      "lastName": "Leasing",
+      "role": "business",
+      "password": "123123"
+    },
+    {
+      "id": "housing-owner-10",
+      "email": "housing10@example.com",
+      "firstName": "Victoria",
+      "lastName": "Realty",
       "role": "business",
       "password": "123123"
     }
