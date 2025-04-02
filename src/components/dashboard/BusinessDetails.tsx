@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   FaMapMarkerAlt, 
   FaPhone, 
@@ -11,19 +11,37 @@ import {
   FaClock,
   FaChevronLeft,
   FaChevronRight,
-  FaDollarSign
+  FaDollarSign,
+  FaComment,
+  FaQuestionCircle
 } from 'react-icons/fa';
-import { Business, MenuItem, StoreItem, HousingUnit } from '../../types/auth';
-import ChatButton from '../chat/ChatButton';
+import { Business, MenuItem, StoreItem, HousingUnit, Review } from '../../types/auth';
+import { useAuth } from '../../context/AuthContext';
+import { reviewApi } from '../../services/api';
+import { businessApi } from '../../services/api';
 
 interface BusinessDetailsProps {
-  business: Business;
+  initialBusiness: Business;
   onClose: () => void;
 }
 
-const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) => {
+const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onClose }) => {
+  const [business, setBusiness] = useState<Business>(initialBusiness);
   const [activeTab, setActiveTab] = useState<'info' | 'menu' | 'reviews'>('info');
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const [rating, setRating] = useState(5);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState('');
+  const [isInquiry, setIsInquiry] = useState(false);
+  const { user } = useAuth();
+  const reviewFormRef = useRef<HTMLDivElement>(null);
+
+  // Update business state if props change
+  useEffect(() => {
+    setBusiness(initialBusiness);
+  }, [initialBusiness]);
 
   const getTypeIcon = () => {
     switch (business.businessType) {
@@ -328,21 +346,20 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
     );
   };
 
-  // Render reviews
+  // Render reviews with inquiry form
   const renderReviews = () => {
-    if (!business.reviews || business.reviews.length === 0) {
-      return <p className="text-gray-500 text-center py-4">No reviews yet</p>;
-    }
-
+    // If no reviews, show empty state but still show the form
+    const hasReviews = business.reviews && business.reviews.length > 0;
+    
     // Sort reviews by date (most recent first)
-    const sortedReviews = [...business.reviews].sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const sortedReviews = hasReviews && business.reviews 
+      ? [...business.reviews].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      : [];
 
     return (
-      <div className="space-y-4">
-        {/* Rating summary */}
-        {business.rating !== undefined && (
+      <div className="space-y-6">
+        {/* Rating summary - only show if there are reviews */}
+        {hasReviews && business.rating !== undefined && (
           <div className="flex items-center p-4 bg-gray-50 rounded-lg">
             <div className="text-3xl font-bold text-gray-800 mr-4">{business.rating.toFixed(1)}</div>
             <div>
@@ -351,26 +368,210 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
                   <FaStar key={i} className={i < Math.round(business.rating || 0) ? "text-yellow-400" : "text-gray-200"} />
                 ))}
               </div>
-              <div className="text-sm text-gray-500">{business.reviews.length} {business.reviews.length === 1 ? 'review' : 'reviews'}</div>
+              <div className="text-sm text-gray-500">{business.reviews?.length || 0} {(business.reviews?.length || 0) === 1 ? 'review' : 'reviews'}</div>
             </div>
           </div>
         )}
         
-        {/* Individual reviews */}
-        {sortedReviews.map((review) => (
-          <div key={review.id} className="border-b pb-4">
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">{review.userName}</span>
-              <span className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</span>
-            </div>
-            <div className="flex text-yellow-400 mb-2">
-              {[...Array(5)].map((_, i) => (
-                <FaStar key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-200"} size={14} />
-              ))}
-            </div>
-            <p className="text-gray-700">{review.comment}</p>
+        {/* Review/Inquiry Form - only show if user is logged in */}
+        {user ? (
+          <div 
+            ref={reviewFormRef}
+            className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200"
+          >
+            <h3 className="font-medium text-gray-800 mb-3">
+              Leave a Review or Inquiry
+            </h3>
+            
+            {submitSuccess && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded mb-4">
+                {submitSuccess}
+              </div>
+            )}
+            
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4">
+                {submitError}
+              </div>
+            )}
+            
+            <form 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!user) return;
+                
+                setIsSubmitting(true);
+                setSubmitError('');
+                setSubmitSuccess('');
+                
+                try {
+                  // Prepare review data - only include rating if not an inquiry
+                  const reviewData: any = {
+                    userId: user.id,
+                    userName: `${user.firstName} ${user.lastName}`,
+                    comment: reviewText
+                  };
+                  
+                  // Only include rating if this is a review (not an inquiry)
+                  if (!isInquiry) {
+                    reviewData.rating = rating;
+                  }
+                  
+                  // Submit review/inquiry
+                  await reviewApi.add(business.id, reviewData);
+                  
+                  setReviewText('');
+                  setRating(5);
+                  setIsInquiry(false);
+                  setSubmitSuccess(isInquiry ? 'Your inquiry has been submitted!' : 'Your review has been submitted!');
+                  
+                  // Refresh the business data without page reload
+                  try {
+                    const updatedBusiness = await businessApi.getById(business.id);
+                    // This will ensure we have the latest data including the new review
+                    setBusiness(updatedBusiness);
+                  } catch (err) {
+                    console.error('Error refreshing business data:', err);
+                  }
+                } catch (error) {
+                  console.error('Error submitting review:', error);
+                  setSubmitError(`Failed to submit your ${isInquiry ? 'inquiry' : 'review'}. Please try again.`);
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+            >
+              {/* Toggle for Review/Inquiry type */}
+              <div className="mb-4 flex items-center">
+                <span className="text-sm font-medium text-gray-700 mr-2">This is an:</span>
+                <div className="flex bg-gray-200 rounded-full p-1">
+                  <button
+                    type="button"
+                    className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
+                      !isInquiry 
+                        ? 'bg-baby-blue text-white' 
+                        : 'text-gray-600 hover:bg-gray-300'
+                    }`}
+                    onClick={() => setIsInquiry(false)}
+                  >
+                    Review
+                  </button>
+                  <button
+                    type="button"
+                    className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
+                      isInquiry 
+                        ? 'bg-baby-blue text-white' 
+                        : 'text-gray-600 hover:bg-gray-300'
+                    }`}
+                    onClick={() => setIsInquiry(true)}
+                  >
+                    Inquiry
+                  </button>
+                </div>
+              </div>
+              
+              {/* Only show rating if not an inquiry */}
+              {!isInquiry && (
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rating
+                  </label>
+                  <div className="flex space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        className="text-2xl focus:outline-none"
+                      >
+                        <FaStar 
+                          className={star <= rating ? "text-yellow-400" : "text-gray-300"} 
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {isInquiry ? 'Your Question' : 'Your Review'}
+                </label>
+                <textarea
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  rows={4}
+                  placeholder={isInquiry 
+                    ? "Ask a question to the business owner..." 
+                    : "Write your review about your experience with this business..."}
+                  required
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isSubmitting || !reviewText.trim()}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  isSubmitting || !reviewText.trim()
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-baby-blue text-white hover:bg-blue-600'
+                }`}
+              >
+                {isSubmitting ? 'Submitting...' : isInquiry ? 'Submit Inquiry' : 'Submit Review'}
+              </button>
+            </form>
           </div>
-        ))}
+        ) : (
+          <div className="bg-gray-50 p-4 rounded-lg mb-6 text-center">
+            <p className="text-gray-600 mb-2">You need to be logged in to leave a review or inquiry.</p>
+          </div>
+        )}
+        
+        {/* Section title */}
+        <h3 className="font-semibold text-gray-800 text-lg mb-4">
+          {hasReviews ? 'Reviews & Inquiries' : 'No Reviews or Inquiries Yet'}
+        </h3>
+        
+        {/* Individual reviews */}
+        {sortedReviews.length > 0 ? (
+          <div className="space-y-6">
+            {sortedReviews.map((review) => (
+              <div key={review.id} className="border-b pb-4">
+                <div className="flex justify-between mb-2">
+                  <span className="font-medium">{review.userName}</span>
+                  <span className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</span>
+                </div>
+                {review.rating !== undefined ? (
+                  <div className="flex text-yellow-400 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar key={i} className={i < review.rating! ? "text-yellow-400" : "text-gray-200"} size={14} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center text-gray-500 mb-2">
+                    <FaQuestionCircle className="mr-1" size={14} />
+                    <span className="text-xs">Inquiry</span>
+                  </div>
+                )}
+                <p className="text-gray-700">{review.comment}</p>
+                
+                {/* Show business owner replies if they exist */}
+                {review.ownerReply && (
+                  <div className="mt-3 ml-6 p-3 bg-gray-50 rounded-lg border-l-2 border-baby-blue">
+                    <div className="flex justify-between mb-1">
+                      <span className="font-medium text-sm">Response from {business.name}</span>
+                      <span className="text-xs text-gray-500">{new Date(review.ownerReplyDate || '').toLocaleDateString()}</span>
+                    </div>
+                    <p className="text-gray-700 text-sm">{review.ownerReply}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center py-4">Be the first to leave a review or ask a question!</p>
+        )}
       </div>
     );
   };
@@ -497,10 +698,24 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
                 <p className="text-gray-600 mt-2">{business.description}</p>
               </div>
               
-              <ChatButton 
-                business={business}
-                className="text-white bg-baby-blue hover:bg-blue-600 py-2 px-4 rounded-lg text-sm font-medium"
-              />
+              {/* Remove ChatButton and replace with a button to jump to reviews section */}
+              {user && (
+                <button 
+                  onClick={() => {
+                    setActiveTab('reviews');
+                    // Scroll to review form after tab change
+                    setTimeout(() => {
+                      reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                  className="text-white bg-baby-blue hover:bg-blue-600 py-2 px-4 rounded-lg text-sm font-medium flex items-center"
+                >
+                  <FaComment className="mr-2" />
+                  {business.reviews?.some(review => review.userId === user.id) 
+                    ? 'View Reviews & Inquiries' 
+                    : 'Ask a Question'}
+                </button>
+              )}
             </div>
             
             <div className="flex flex-wrap items-center mt-4 text-sm text-gray-600">
@@ -547,7 +762,7 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ business, onClose }) 
               }`}
               onClick={() => setActiveTab('reviews')}
             >
-              Reviews
+              Reviews & Inquiries
             </button>
           </div>
         </div>

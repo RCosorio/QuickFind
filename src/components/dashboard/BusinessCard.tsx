@@ -1,7 +1,6 @@
 import React from 'react';
-import { FaMapMarkerAlt, FaPhone, FaStore, FaUtensils, FaHome, FaClock, FaStar } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhone, FaStore, FaUtensils, FaHome, FaClock, FaStar, FaComment } from 'react-icons/fa';
 import { Business } from '../../types/auth';
-import ChatButton from '../chat/ChatButton';
 
 interface BusinessCardProps {
   business: Business;
@@ -180,10 +179,23 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business, onClick }) => {
       </div>
       
       <div className="px-5 py-3 bg-white flex justify-between">
-        <ChatButton 
-          business={business}
-          className="text-baby-blue hover:underline text-sm font-medium"
-        />
+        <button 
+          className="text-baby-blue hover:underline text-sm font-medium flex items-center"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+            // Add a small delay to allow the modal to open, then select the reviews tab
+            setTimeout(() => {
+              const reviewsTab = document.querySelector('[data-tab="reviews"]') as HTMLElement;
+              if (reviewsTab) {
+                reviewsTab.click();
+              }
+            }, 100);
+          }}
+        >
+          <FaComment className="mr-1" />
+          Leave a Review
+        </button>
         <button 
           className="text-baby-blue hover:underline text-sm font-medium"
           onClick={(e) => {

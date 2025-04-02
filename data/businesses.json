@@ -8,7 +8,7 @@
       "description": "A local grocery store with fresh produce and daily necessities.",
       "location": "123 Market Street",
       "contactInfo": "555-123-4567",
-      "rating": 4.5,
+      "rating": 4.2,
       "photos": [
         "https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
         "https://images.unsplash.com/photo-1534723452862-4c874018d66d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
@@ -39,6 +39,33 @@
           "rating": 4,
           "comment": "Good neighborhood store with reasonable prices.",
           "date": "2023-10-20"
+        },
+        {
+          "id": "47e02423-4066-4655-83a3-75e2dbee527a",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 2,
+          "comment": "bruh wth is this\n",
+          "date": "2025-04-02",
+          "businessId": "1"
+        },
+        {
+          "id": "5d896039-ef63-482a-a54d-50c331da89ce",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "yes what",
+          "date": "2025-04-02",
+          "businessId": "1"
+        },
+        {
+          "id": "deea0c30-7b63-44ee-9c47-c1558f955346",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 5,
+          "comment": "what again yes",
+          "date": "2025-04-02",
+          "businessId": "1"
         }
       ],
       "items": [
@@ -70,7 +97,7 @@
       "description": "Latest gadgets and tech accessories at competitive prices.",
       "location": "456 Digital Avenue",
       "contactInfo": "555-987-6543",
-      "rating": 4.2,
+      "rating": 2,
       "photos": [
         "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
         "https://images.unsplash.com/photo-1542393545-10f5cde2c810?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
@@ -84,7 +111,17 @@
         "saturday": "10:00 AM - 9:00 PM",
         "sunday": "11:00 AM - 6:00 PM"
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "id": "e823587f-0fd0-4723-b1c2-6d1304a68e7b",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 2,
+          "comment": "test review 2 1 2 1",
+          "date": "2025-04-02",
+          "businessId": "2"
+        }
+      ],
       "items": [
         {
           "id": "t1",
@@ -138,7 +175,7 @@
       "description": "Modern apartments designed specifically for student living, close to campus.",
       "location": "555 University Drive",
       "contactInfo": "555-321-6789",
-      "rating": 4.3,
+      "rating": 3,
       "photos": [
         "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
       ],
@@ -151,7 +188,17 @@
         "saturday": "10:00 AM - 2:00 PM",
         "sunday": "Closed"
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "id": "938a29a1-ed17-49c0-b136-6cf93005bfbb",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 3,
+          "comment": "hello i want",
+          "date": "2025-04-02",
+          "businessId": "4"
+        }
+      ],
       "rooms": [
         {
           "id": "a1",
@@ -173,24 +220,94 @@
       ]
     },
     {
-      "name": "Jollibee",
+      "name": "New Business",
       "ownerEmail": "jol@gmail.com",
-      "businessType": "restaurant",
-      "description": "asdadad",
-      "location": "anywhere hahhahaa",
-      "contactInfo": "09191910919",
-      "id": "4712bd1b-1f68-4f70-b435-c8446bc20325",
-      "businessHours": {},
-      "menu": [
+      "businessType": "store",
+      "description": "A new business",
+      "location": "123 Business St",
+      "contactInfo": "555-123-4567",
+      "businessHours": {
+        "monday": "9:00 AM - 5:00 PM",
+        "tuesday": "9:00 AM - 5:00 PM",
+        "wednesday": "9:00 AM - 5:00 PM",
+        "thursday": "9:00 AM - 5:00 PM",
+        "friday": "9:00 AM - 5:00 PM",
+        "saturday": "Closed",
+        "sunday": "Closed"
+      },
+      "id": "c995876d-49b6-4858-a120-32a3848840b5"
+    },
+    {
+      "name": "KFC haha diay",
+      "ownerEmail": "tt@gmail.com",
+      "businessType": "store",
+      "description": "the key ep si",
+      "location": "didto",
+      "contactInfo": "32132131",
+      "id": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+      "reviews": [
         {
-          "id": "menu-1743441929284",
-          "name": "burger steak",
-          "description": "lami na pagkaon",
-          "price": 100,
-          "category": "Main Course",
+          "id": "7ec175f5-0a3b-4741-b152-20521ed0d182",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "asd asd",
+          "rating": 3,
+          "comment": "hello test",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+          "ownerReply": "stfu boiii",
+          "ownerReplyDate": "2025-04-02"
+        },
+        {
+          "id": "485d87f6-8493-43c2-a31c-3b3ebc31fcb2",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "rating": 3,
+          "comment": "bruh",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+          "ownerReply": "10101010101",
+          "ownerReplyDate": "2025-04-02"
+        },
+        {
+          "id": "e99e4505-0d4f-4a19-80af-d50608adbdac",
+          "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+          "userName": "hello bye",
+          "comment": "this inquire yrs",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+          "ownerReply": "test inquire reply",
+          "ownerReplyDate": "2025-04-02"
+        }
+      ],
+      "rating": 3,
+      "items": [
+        {
+          "id": "item-1743589594047",
+          "name": "cure to cancer",
+          "description": "the healllll bruh",
+          "price": 100000,
+          "category": "General",
+          "inStock": true,
           "photo": ""
         }
-      ]
+      ],
+      "businessHours": {
+        "wednesday": "9:00 AM - 7:00 PM",
+        "monday": "9:00 AM - 5:00 PM",
+        "tuesday": "9:00 AM - 5:00 PM",
+        "friday": "9:00 AM - 5:00 PM",
+        "thursday": "9:00 AM - 5:00 PM"
+      }
+    },
+    {
+      "name": "test again",
+      "ownerEmail": "aa@gmail.com",
+      "businessType": "store",
+      "description": "anither one",
+      "location": "test place",
+      "contactInfo": "191011",
+      "id": "6740ab20-ea57-4792-874b-845d2735e7f5",
+      "items": []
     }
   ]
 }

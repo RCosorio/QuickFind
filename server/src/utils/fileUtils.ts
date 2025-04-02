@@ -4,11 +4,10 @@ import { fileURLToPath } from 'url';
 import { 
   BusinessData, 
   UserData, 
-  ReviewData, 
-  MessageData,
+  ReviewData,
   Business,
   User
-} from '../models/types';
+} from '../models/types.js';
 
 // Define __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +18,6 @@ const DATA_DIR = path.resolve(__dirname, '../../../data');
 const BUSINESSES_FILE = path.join(DATA_DIR, 'businesses.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const REVIEWS_FILE = path.join(DATA_DIR, 'reviews.json');
-const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 
 // Ensure the data directory exists
 const ensureDataDir = async (): Promise<void> => {
@@ -33,7 +31,7 @@ export const initializeDataFiles = async (): Promise<void> => {
     
     // Initialize businesses data with empty array if it doesn't exist
     if (!await fs.pathExists(BUSINESSES_FILE)) {
-      // We'll import the mock data when we run the server
+      // Initialize with empty data
       await fs.writeJson(BUSINESSES_FILE, { businesses: [] } as BusinessData, { spaces: 2 });
       console.log('Initialized businesses data file');
     }
@@ -48,12 +46,6 @@ export const initializeDataFiles = async (): Promise<void> => {
     if (!await fs.pathExists(REVIEWS_FILE)) {
       await fs.writeJson(REVIEWS_FILE, { reviews: [] } as ReviewData, { spaces: 2 });
       console.log('Initialized reviews data file');
-    }
-    
-    // Initialize messages data if it doesn't exist
-    if (!await fs.pathExists(MESSAGES_FILE)) {
-      await fs.writeJson(MESSAGES_FILE, { messages: [] } as MessageData, { spaces: 2 });
-      console.log('Initialized messages data file');
     }
   } catch (error) {
     console.error('Error initializing data files:', error);

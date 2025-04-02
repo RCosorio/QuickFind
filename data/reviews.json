@@ -1,3 +1,99 @@
 {
-  "reviews": []
+  "reviews": [
+    {
+      "id": "0b858b7f-f6a5-45d0-9628-2a05bb40d3b8",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 5,
+      "comment": "Wth?",
+      "date": "2025-04-02",
+      "businessId": "1"
+    },
+    {
+      "id": "da731210-1303-4831-bda7-a5e2406c0d10",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 2,
+      "comment": "haha test",
+      "date": "2025-04-02",
+      "businessId": "a4a9c0c5-4bb6-4e5d-8897-43acc8591083"
+    },
+    {
+      "id": "47e02423-4066-4655-83a3-75e2dbee527a",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 2,
+      "comment": "bruh wth is this\n",
+      "date": "2025-04-02",
+      "businessId": "1"
+    },
+    {
+      "id": "5d896039-ef63-482a-a54d-50c331da89ce",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 5,
+      "comment": "yes what",
+      "date": "2025-04-02",
+      "businessId": "1"
+    },
+    {
+      "id": "deea0c30-7b63-44ee-9c47-c1558f955346",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 5,
+      "comment": "what again yes",
+      "date": "2025-04-02",
+      "businessId": "1"
+    },
+    {
+      "id": "938a29a1-ed17-49c0-b136-6cf93005bfbb",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 3,
+      "comment": "hello i want",
+      "date": "2025-04-02",
+      "businessId": "4"
+    },
+    {
+      "id": "e823587f-0fd0-4723-b1c2-6d1304a68e7b",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 2,
+      "comment": "test review 2 1 2 1",
+      "date": "2025-04-02",
+      "businessId": "2"
+    },
+    {
+      "id": "7ec175f5-0a3b-4741-b152-20521ed0d182",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "asd asd",
+      "rating": 3,
+      "comment": "hello test",
+      "date": "2025-04-02",
+      "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+      "ownerReply": "stfu boiii",
+      "ownerReplyDate": "2025-04-02"
+    },
+    {
+      "id": "485d87f6-8493-43c2-a31c-3b3ebc31fcb2",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "rating": 3,
+      "comment": "bruh",
+      "date": "2025-04-02",
+      "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+      "ownerReply": "10101010101",
+      "ownerReplyDate": "2025-04-02"
+    },
+    {
+      "id": "e99e4505-0d4f-4a19-80af-d50608adbdac",
+      "userId": "7b65259c-5d07-437c-a86f-58006169bb97",
+      "userName": "hello bye",
+      "comment": "this inquire yrs",
+      "date": "2025-04-02",
+      "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+      "ownerReply": "test inquire reply",
+      "ownerReplyDate": "2025-04-02"
+    }
+  ]
 }

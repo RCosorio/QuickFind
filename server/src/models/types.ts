@@ -33,10 +33,12 @@ export interface Review {
   id: string;
   userId: string;
   userName: string;
-  rating: number;
+  rating?: number;
   comment: string;
   date: string;
   businessId: string;
+  ownerReply?: string;
+  ownerReplyDate?: string;
 }
 
 export interface MenuItem {
@@ -70,15 +72,6 @@ export interface HousingUnit {
   amenities?: string[];
 }
 
-export interface Message {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  timestamp: string;
-  read: boolean;
-}
-
 export interface BusinessData {
   businesses: Business[];
 }
@@ -89,8 +82,4 @@ export interface UserData {
 
 export interface ReviewData {
   reviews: Review[];
-}
-
-export interface MessageData {
-  messages: Message[];
 } 

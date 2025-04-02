@@ -119,7 +119,7 @@ export const reviewApi = {
   add: async (businessId: string, reviewData: {
     userId: string;
     userName: string;
-    rating: number;
+    rating?: number;
     comment: string;
   }): Promise<Review> => {
     try {
@@ -139,96 +139,23 @@ export const reviewApi = {
       console.error(`Error deleting review ${reviewId}:`, error);
       throw error;
     }
+  },
+  
+  // Add a business owner reply to a review
+  addReply: async (reviewId: string, replyData: {
+    businessId: string;
+    businessOwnerEmail: string;
+    reply: string;
+  }): Promise<Review> => {
+    try {
+      const response = await api.post(`/reviews/${reviewId}/reply`, replyData);
+      return response.data;
+    } catch (error) {
+      console.error(`Error adding reply to review ${reviewId}:`, error);
+      throw error;
+    }
   }
 };
 
-// Messages API calls
-export const messageApi = {
-  // Get all messages for a user
-  getForUser: async (userId: string): Promise<any[]> => {
-    try {
-      const response = await api.get(`/messages/user/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching messages for user ${userId}:`, error);
-      throw error;
-    }
-  },
-  
-  // Get conversation between two users
-  getConversation: async (userId: string, otherUserId: string): Promise<any[]> => {
-    try {
-      const response = await api.get(`/messages/conversation/${userId}/${otherUserId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching conversation:`, error);
-      throw error;
-    }
-  },
-  
-  // Get all conversations for a user
-  getConversations: async (userId: string): Promise<any[]> => {
-    try {
-      const response = await api.get(`/messages/conversations/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching conversations for user ${userId}:`, error);
-      throw error;
-    }
-  },
-  
-  // Create a new conversation
-  createConversation: async (conversationData: { userId: string; businessId: string; messages: any[] }): Promise<any> => {
-    try {
-      const response = await api.post('/messages/conversations', conversationData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating conversation:', error);
-      throw error;
-    }
-  },
-  
-  // Send a message
-  send: async (messageData: {
-    senderId: string;
-    receiverId: string;
-    content: string;
-  }): Promise<any> => {
-    try {
-      const response = await api.post('/messages', messageData);
-      return response.data;
-    } catch (error) {
-      console.error('Error sending message:', error);
-      throw error;
-    }
-  },
-  
-  // Send a message to a specific conversation
-  sendMessage: async (conversationId: string, messageData: {
-    senderId: string;
-    receiverId: string;
-    text: string;
-  }): Promise<any> => {
-    try {
-      const response = await api.post(`/messages/conversations/${conversationId}`, {
-        ...messageData,
-        content: messageData.text
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error sending message to conversation:', error);
-      throw error;
-    }
-  },
-  
-  // Mark a message as read
-  markAsRead: async (messageId: string, userId: string): Promise<any> => {
-    try {
-      const response = await api.put(`/messages/${messageId}/read`, { userId });
-      return response.data;
-    } catch (error) {
-      console.error(`Error marking message ${messageId} as read:`, error);
-      throw error;
-    }
-  }
-}; 
+// Export default api instance
+export default api; 

@@ -67,9 +67,9 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
     const { businessId } = req.params;
     const { userId, userName, rating, comment } = req.body;
     
-    // Validate required fields
-    if (!userId || !userName || !rating || !comment) {
-      return res.status(400).json({ message: 'All fields are required' });
+    // Validate required fields (rating is now optional)
+    if (!userId || !userName || !comment) {
+      return res.status(400).json({ message: 'User ID, name, and comment are required' });
     }
     
     // Check if business exists
@@ -83,11 +83,15 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
       id: uuidv4(),
       userId,
       userName,
-      rating: Number(rating),
       comment,
       date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
       businessId
     };
+    
+    // Add rating if it was provided
+    if (rating !== undefined) {
+      newReview.rating = Number(rating);
+    }
     
     // Add review to reviews file
     const reviewsData = await readReviewsFile();
@@ -100,9 +104,16 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
     }
     business.reviews.push(newReview);
     
-    // Update business rating
-    const totalRating = business.reviews.reduce((sum, review) => sum + review.rating, 0);
-    business.rating = totalRating / business.reviews.length;
+    // Update business rating - only count reviews with ratings
+    const reviewsWithRatings = business.reviews.filter(review => review.rating !== undefined);
+    
+    // Calculate average rating if there are reviews with ratings
+    if (reviewsWithRatings.length > 0) {
+      const totalRating = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
+      business.rating = totalRating / reviewsWithRatings.length;
+    } else {
+      business.rating = 0;
+    }
     
     // Update business in file
     await updateBusiness(businessId, { 
@@ -143,10 +154,13 @@ router.delete('/:reviewId', async (req: Request, res: Response) => {
       // Remove review from business
       business.reviews = business.reviews.filter(r => r.id !== reviewId);
       
-      // Update business rating
-      if (business.reviews.length > 0) {
-        const totalRating = business.reviews.reduce((sum, r) => sum + r.rating, 0);
-        business.rating = totalRating / business.reviews.length;
+      // Update business rating - only count reviews with ratings
+      const reviewsWithRatings = business.reviews.filter(review => review.rating !== undefined);
+      
+      // Calculate average rating if there are reviews with ratings
+      if (reviewsWithRatings.length > 0) {
+        const totalRating = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
+        business.rating = totalRating / reviewsWithRatings.length;
       } else {
         business.rating = 0;
       }
@@ -161,6 +175,71 @@ router.delete('/:reviewId', async (req: Request, res: Response) => {
     res.status(200).json({ message: 'Review deleted successfully' });
   } catch (error) {
     console.error('Error deleting review:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add a business owner reply to a review
+router.post('/:reviewId/reply', async (req: Request, res: Response) => {
+  try {
+    const { reviewId } = req.params;
+    const { businessId, businessOwnerEmail, reply } = req.body;
+    
+    // Validate required fields
+    if (!businessId || !businessOwnerEmail || !reply) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+    
+    // Check if business exists and the requestor is the owner
+    const business = await getBusinessById(businessId);
+    if (!business) {
+      return res.status(404).json({ message: 'Business not found' });
+    }
+    
+    if (business.ownerEmail !== businessOwnerEmail) {
+      return res.status(403).json({ message: 'Only the business owner can reply to reviews' });
+    }
+    
+    // Get review data
+    const reviewsData = await readReviewsFile();
+    const reviewIndex = reviewsData.reviews.findIndex(review => review.id === reviewId);
+    
+    if (reviewIndex === -1) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+    
+    // Check if review belongs to the business
+    if (reviewsData.reviews[reviewIndex].businessId !== businessId) {
+      return res.status(403).json({ message: 'This review does not belong to your business' });
+    }
+    
+    // Check if review already has a reply
+    if (reviewsData.reviews[reviewIndex].ownerReply) {
+      return res.status(400).json({ message: 'You have already replied to this review' });
+    }
+    
+    // Add reply to review
+    reviewsData.reviews[reviewIndex].ownerReply = reply;
+    reviewsData.reviews[reviewIndex].ownerReplyDate = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    
+    // Save changes
+    await writeReviewsFile(reviewsData);
+    
+    // Update business reviews as well
+    if (business.reviews) {
+      const businessReviewIndex = business.reviews.findIndex(r => r.id === reviewId);
+      if (businessReviewIndex !== -1) {
+        business.reviews[businessReviewIndex].ownerReply = reply;
+        business.reviews[businessReviewIndex].ownerReplyDate = reviewsData.reviews[reviewIndex].ownerReplyDate;
+        
+        // Update business in file
+        await updateBusiness(businessId, { reviews: business.reviews });
+      }
+    }
+    
+    res.status(200).json(reviewsData.reviews[reviewIndex]);
+  } catch (error) {
+    console.error('Error adding reply to review:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

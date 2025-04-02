@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaStore, FaUtensils, FaHome, FaSearch, FaUser, FaSignOutAlt, FaCog, FaCamera, FaKey, FaAngleDown, FaArrowLeft, FaTrash, FaComment } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
-import { useChat } from '../context/ChatContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Business, BusinessType } from '../types/auth';
 import BusinessCard from '../components/dashboard/BusinessCard';
 import BusinessDetails from '../components/dashboard/BusinessDetails';
 import { businessApi } from '../services/api';
-import ActiveChat from '../components/chat/ActiveChat';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<BusinessType>('store');
@@ -40,7 +38,6 @@ const Dashboard: React.FC = () => {
   
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
-  const { getAllUnreadCount, clearActiveChat } = useChat();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -526,12 +523,6 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const handleMessagesClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    clearActiveChat();
-    navigate('/messages');
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
@@ -578,21 +569,6 @@ const Dashboard: React.FC = () => {
                 >
                   <FaHome />
                   <span>Housing</span>
-                </button>
-                
-                <button
-                  onClick={handleMessagesClick}
-                  className="flex items-center space-x-1 py-2 px-3 rounded-lg transition-colors text-gray-500 hover:bg-gray-100"
-                >
-                  <div className="relative">
-                    <FaComment />
-                    {getAllUnreadCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                        {getAllUnreadCount() > 9 ? '9+' : getAllUnreadCount()}
-                      </span>
-                    )}
-                  </div>
-                  <span>Messages</span>
                 </button>
               </div>
               
@@ -662,7 +638,7 @@ const Dashboard: React.FC = () => {
       {/* Business details modal */}
       {selectedBusiness && (
         <BusinessDetails
-          business={selectedBusiness}
+          initialBusiness={selectedBusiness}
           onClose={closeBusinessDetails}
         />
       )}
@@ -671,9 +647,6 @@ const Dashboard: React.FC = () => {
       {showProfileMenu && (
         <ProfileMenu />
       )}
-      
-      {/* Active Chat Window - ensure it's always the last element */}
-      <ActiveChat />
     </div>
   );
 };
