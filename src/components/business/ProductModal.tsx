@@ -37,6 +37,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         description: initialData?.description || '',
         price: initialData?.price || 0,
         category: initialData?.category || 'Main Course',
+        available: initialData?.available !== undefined ? initialData.available : true,
         photo: initialData?.photo || ''
       };
     } else if (businessType === 'housing') {
@@ -208,18 +209,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 </div>
               )}
 
-              {businessType === 'store' && (
+              {(businessType === 'store' || businessType === 'restaurant') && (
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    id="inStock"
-                    name="inStock"
-                    checked={formData.inStock}
+                    id={businessType === 'store' ? "inStock" : "available"}
+                    name={businessType === 'store' ? "inStock" : "available"}
+                    checked={businessType === 'store' ? formData.inStock : formData.available}
                     onChange={handleChange}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="inStock" className="ml-2 block text-sm text-gray-700">
-                    In Stock
+                  <label htmlFor={businessType === 'store' ? "inStock" : "available"} className="ml-2 block text-sm text-gray-700">
+                    {businessType === 'store' ? "In Stock" : "Available"}
                   </label>
                 </div>
               )}

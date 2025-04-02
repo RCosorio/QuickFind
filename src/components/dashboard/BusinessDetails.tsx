@@ -225,6 +225,13 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
             <p className="font-medium text-gray-700">${item.price.toFixed(2)}</p>
           </div>
           <p className="text-sm text-gray-600">{item.description}</p>
+          {item.available !== undefined && (
+            <div className="mt-1">
+              <span className={`text-xs px-2 py-0.5 rounded ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {item.available ? 'Available' : 'Not Available'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     );

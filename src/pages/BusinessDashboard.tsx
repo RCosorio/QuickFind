@@ -926,23 +926,28 @@ const BusinessDashboard: React.FC = () => {
                               Category: {item.category}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                            <div className="mt-2 flex justify-end space-x-2">
+                            <div className="mt-2 flex justify-between items-center">
+                              <span className={`text-xs px-2 py-0.5 rounded ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                {item.available ? 'Available' : 'Not Available'}
+                              </span>
+                              <div className="flex space-x-2">
                               <button 
                                 onClick={() => openProductModal(item)}
-                                className="text-blue-600 hover:text-blue-800"
-                                title="Edit"
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Edit"
                               >
-                                <FaEdit />
+                                  <FaEdit />
                               </button>
                               <button 
                                 onClick={() => handleDeleteProduct(item.id)}
-                                className="text-red-600 hover:text-red-800"
-                                title="Delete"
+                                  className="text-red-600 hover:text-red-800"
+                                  title="Delete"
                               >
-                                <FaTrash />
+                                  <FaTrash />
                               </button>
                             </div>
                           </div>
+                      </div>
                       </div>
                       ))
                     ) : (

@@ -163,6 +163,7 @@
           "description": "Our signature medium roast coffee",
           "price": 3.5,
           "category": "Beverages",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
         }
       ]
@@ -1229,6 +1230,7 @@
           "description": "Classic Roman pasta with eggs, pecorino cheese, pancetta, and black pepper",
           "price": 18.99,
           "category": "Pasta",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1600803734709-83f30a59f16e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1237,6 +1239,7 @@
           "description": "Traditional pizza with San Marzano tomatoes, fresh mozzarella, and basil",
           "price": 16.99,
           "category": "Pizza",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1245,6 +1248,7 @@
           "description": "Braised veal shanks with gremolata and saffron risotto",
           "price": 29.99,
           "category": "Main Courses",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1608835291093-394b0c943a75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1253,6 +1257,7 @@
           "description": "Classic coffee-flavored Italian dessert with mascarpone and cocoa",
           "price": 9.99,
           "category": "Desserts",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
@@ -1306,6 +1311,7 @@
           "description": "Tender chicken in a rich, creamy tomato sauce with Indian spices",
           "price": 17.99,
           "category": "Main Courses",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1314,6 +1320,7 @@
           "description": "Crispy pastries filled with spiced potatoes and peas",
           "price": 7.99,
           "category": "Appetizers",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1322,6 +1329,7 @@
           "description": "Fragrant basmati rice with tender lamb and aromatic spices",
           "price": 19.99,
           "category": "Rice Dishes",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1330,6 +1338,7 @@
           "description": "Soft flatbread with garlic and butter, baked in tandoor oven",
           "price": 4.99,
           "category": "Breads",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
@@ -1384,6 +1393,7 @@
           "description": "Locally harvested oysters served with mignonette sauce",
           "price": 19.99,
           "category": "Raw Bar",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1466553556096-7e2c59ea6486?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1392,6 +1402,7 @@
           "description": "Pacific salmon with lemon herb butter and seasonal vegetables",
           "price": 28.99,
           "category": "Main Courses",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1400,6 +1411,7 @@
           "description": "Saffron rice with mussels, clams, shrimp, and fish",
           "price": 32.99,
           "category": "House Specialties",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1408,6 +1420,7 @@
           "description": "Lump crab meat cakes with minimal filler, served with remoulade",
           "price": 16.99,
           "category": "Appetizers",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1581788604067-915fd44f4268?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
@@ -1462,6 +1475,7 @@
           "description": "Creamy arborio rice with seasonal wild mushrooms and truffle oil",
           "price": 18.99,
           "category": "Main Courses",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1470,6 +1484,7 @@
           "description": "Mixed greens with roasted beets, goat cheese, candied walnuts, and balsamic reduction",
           "price": 12.99,
           "category": "Salads",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1478,6 +1493,7 @@
           "description": "Crispy cauliflower florets in spicy buffalo sauce with vegan ranch dipping sauce",
           "price": 10.99,
           "category": "Appetizers",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1631228198154-90a1bc712263?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1486,6 +1502,7 @@
           "description": "Rich chocolate mousse made with avocado and coconut milk, topped with berries",
           "price": 8.99,
           "category": "Desserts",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1622621746668-59fb299bc4d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
@@ -1540,6 +1557,7 @@
           "description": "6oz Angus beef patty with aged cheddar, lettuce, tomato, onion, and house sauce",
           "price": 13.99,
           "category": "Burgers",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1548,6 +1566,7 @@
           "description": "Beef patty with bourbon BBQ sauce, crispy onion strings, bacon, and smoked gouda",
           "price": 16.99,
           "category": "Specialty Burgers",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1556,6 +1575,7 @@
           "description": "Crispy fries tossed with truffle oil, parmesan cheese, and herbs",
           "price": 7.99,
           "category": "Sides",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1585109649139-366815a0d713?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1564,6 +1584,7 @@
           "description": "Sampler of four local craft beers",
           "price": 12.99,
           "category": "Drinks",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
@@ -1626,6 +1647,7 @@
           "description": "Multi-course dining experience featuring the freshest seasonal selections",
           "price": 85,
           "category": "Specialty",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1579398937948-576d4e3fb9de?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1634,6 +1656,7 @@
           "description": "Chef's selection of fresh fish over seasoned rice",
           "price": 32.99,
           "category": "Sushi",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1615361200098-9e630ec29b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1642,6 +1665,7 @@
           "description": "Eel and cucumber roll topped with avocado and eel sauce",
           "price": 18.99,
           "category": "Specialty Rolls",
+          "available": false,
           "photo": "https://images.unsplash.com/photo-1553621042-f6e147245754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
@@ -1650,7 +1674,17 @@
           "description": "Traditional Japanese soup with tofu, seaweed, and green onion",
           "price": 4.99,
           "category": "Appetizers",
+          "available": true,
           "photo": "https://images.unsplash.com/photo-1623424402552-462883124615?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "menu-1743607145584",
+          "name": "Water",
+          "description": "just water",
+          "price": 10,
+          "category": "Beverage",
+          "available": true,
+          "photo": ""
         }
       ]
     },
