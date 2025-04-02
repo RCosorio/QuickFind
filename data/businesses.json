@@ -277,6 +277,24 @@
           "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
           "ownerReply": "test inquire reply",
           "ownerReplyDate": "2025-04-02"
+        },
+        {
+          "id": "bbf19391-0d1b-4c69-bac6-f535822ac541",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "ASD user asd",
+          "comment": "i am backkkk",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+          "rating": 5
+        },
+        {
+          "id": "a5811281-f721-4fda-939e-5c35a10ec9c2",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "THE ASD asd",
+          "comment": "uno star review test",
+          "date": "2025-04-02",
+          "businessId": "c5df1006-0326-45a0-9bac-c0e90c7088a8",
+          "rating": 1
         }
       ],
       "rating": 3,
@@ -293,11 +311,16 @@
       ],
       "businessHours": {
         "wednesday": "9:00 AM - 7:00 PM",
-        "monday": "9:00 AM - 5:00 PM",
+        "monday": "10:00 AM - 5:00 PM",
         "tuesday": "9:00 AM - 5:00 PM",
         "friday": "9:00 AM - 5:00 PM",
         "thursday": "9:00 AM - 5:00 PM"
-      }
+      },
+      "photos": [
+        "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "name": "test again",
@@ -307,7 +330,18 @@
       "location": "test place",
       "contactInfo": "191011",
       "id": "6740ab20-ea57-4792-874b-845d2735e7f5",
-      "items": []
+      "items": [],
+      "reviews": [
+        {
+          "id": "45483226-a26a-4cb1-9885-ac25aaa340ce",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "THE ASD asd",
+          "comment": "hello u there?",
+          "date": "2025-04-02",
+          "businessId": "6740ab20-ea57-4792-874b-845d2735e7f5"
+        }
+      ],
+      "rating": 0
     }
   ]
 }

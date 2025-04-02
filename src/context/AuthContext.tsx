@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { User, Business, AuthState } from '../types/auth';
-import { authApi, businessApi } from '../services/api';
+import { authApi, businessApi, userApi } from '../services/api';
 
 // Initial auth state
 const initialState: AuthState = {
@@ -18,6 +18,9 @@ interface AuthContextType extends AuthState {
   logout: () => void;
   createBusiness: (businessData: Partial<Business>) => Promise<Business>;
   updateBusiness: (businessData: Partial<Business>) => Promise<Business>;
+  updateUserProfile: (userData: { firstName?: string; lastName?: string }) => Promise<boolean>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  deleteAccount: (password: string) => Promise<boolean>;
 }
 
 // Create context
@@ -237,6 +240,65 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Update user profile
+  const updateUserProfile = async (userData: { firstName?: string; lastName?: string }): Promise<boolean> => {
+    try {
+      if (!authState.user) {
+        throw new Error('User must be logged in to update profile');
+      }
+      
+      const updatedUser = await userApi.updateUser(authState.user.id, userData);
+      
+      setAuthState({
+        ...authState,
+        user: updatedUser
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      return false;
+    }
+  };
+  
+  // Change password
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+      if (!authState.user) {
+        throw new Error('User must be logged in to change password');
+      }
+      
+      await userApi.changePassword(authState.user.id, {
+        currentPassword,
+        newPassword
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error changing password:', error);
+      return false;
+    }
+  };
+  
+  // Delete account
+  const deleteAccount = async (password: string): Promise<boolean> => {
+    try {
+      if (!authState.user) {
+        throw new Error('User must be logged in to delete account');
+      }
+      
+      await userApi.deleteAccount(authState.user.id, password);
+      
+      // Log out the user
+      setAuthState(initialState);
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      return false;
+    }
+  };
+
   // Provide auth context
   return (
     <AuthContext.Provider
@@ -247,7 +309,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         registerBusiness,
         logout,
         createBusiness,
-        updateBusiness
+        updateBusiness,
+        updateUserProfile,
+        changePassword,
+        deleteAccount
       }}
     >
       {children}

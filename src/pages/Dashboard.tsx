@@ -37,8 +37,19 @@ const Dashboard: React.FC = () => {
   const [isFading, setIsFading] = useState(false);
   
   const profileMenuRef = useRef<HTMLDivElement>(null);
-  const { user, logout } = useAuth();
+  const { user, logout, updateUserProfile, changePassword, deleteAccount } = useAuth();
   const navigate = useNavigate();
+
+  const [deleteForm, setDeleteForm] = useState({
+    password: '',
+    confirmDelete: false
+  });
+
+  const [formStatus, setFormStatus] = useState({
+    profile: { success: false, error: null as string | null },
+    password: { success: false, error: null as string | null },
+    delete: { success: false, error: null as string | null }
+  });
 
   useEffect(() => {
     // Fetch businesses from API
@@ -82,7 +93,16 @@ const Dashboard: React.FC = () => {
   // Close profile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+      // Skip if clicking on an input element or within the menu
+      const target = event.target as HTMLElement;
+      const isFormElement = 
+        target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.tagName === 'SELECT' || 
+        target.tagName === 'BUTTON' ||
+        target.closest('label') !== null;
+      
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node) && !isFormElement) {
         setShowProfileMenu(false);
         // Reset to main menu when closing
         setActiveProfileSection('main');
@@ -134,6 +154,11 @@ const Dashboard: React.FC = () => {
       ...prev,
       [name]: value
     }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      profile: { success: false, error: null }
+    }));
   };
 
   const handlePasswordFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,6 +166,24 @@ const Dashboard: React.FC = () => {
     setPasswordForm(prev => ({
       ...prev,
       [name]: value
+    }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      password: { success: false, error: null }
+    }));
+  };
+
+  const handleDeleteFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setDeleteForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      delete: { success: false, error: null }
     }));
   };
 
@@ -151,41 +194,105 @@ const Dashboard: React.FC = () => {
     }));
   };
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would update the user profile with an API call
-    console.log('Saving profile:', profileForm);
-    // Simulate success
-    setTimeout(() => {
-      handleProfileNavigation('main');
-      // Update local display
-      // In a real app, this would happen after API confirms success
-    }, 500);
+    try {
+      // Extract only firstName and lastName (email can't be changed)
+      const { firstName, lastName } = profileForm;
+      const success = await updateUserProfile({ firstName, lastName });
+      
+      if (success) {
+        setFormStatus(prev => ({
+          ...prev,
+          profile: { success: true, error: null }
+        }));
+        
+        // Go back to main menu after short delay
+        setTimeout(() => {
+          handleProfileNavigation('main');
+        }, 1500);
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        profile: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
   };
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would update the password with an API call
-    console.log('Changing password:', passwordForm);
-    // Simulate success
-    setTimeout(() => {
-      setPasswordForm({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
-      handleProfileNavigation('main');
-    }, 500);
+    
+    // Validate passwords match
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setFormStatus(prev => ({
+        ...prev,
+        password: { success: false, error: 'Passwords do not match' }
+      }));
+      return;
+    }
+    
+    try {
+      const success = await changePassword(passwordForm.currentPassword, passwordForm.newPassword);
+      
+      if (success) {
+        setFormStatus(prev => ({
+          ...prev,
+          password: { success: true, error: null }
+        }));
+        
+        // Reset form
+        setPasswordForm({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        
+        // Go back to main menu after short delay
+        setTimeout(() => {
+          handleProfileNavigation('main');
+        }, 1500);
+      } else {
+        throw new Error('Failed to change password');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        password: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
   };
 
-  const handleSaveSettings = (e: React.FormEvent) => {
+  const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would update settings with an API call
-    console.log('Saving settings:', accountSettings);
-    // Simulate success
-    setTimeout(() => {
-      handleProfileNavigation('main');
-    }, 500);
+    
+    // Verify user confirmed deletion
+    if (!deleteForm.confirmDelete) {
+      setFormStatus(prev => ({
+        ...prev,
+        delete: { success: false, error: 'Please confirm account deletion' }
+      }));
+      return;
+    }
+    
+    try {
+      const success = await deleteAccount(deleteForm.password);
+      
+      if (success) {
+        // Account deletion is handled by AuthContext by calling logout
+        // We'll navigate to login page just to be sure
+        navigate('/login');
+      } else {
+        throw new Error('Failed to delete account');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        delete: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
   };
 
   // Modified navigation with fade transition
@@ -195,332 +302,6 @@ const Dashboard: React.FC = () => {
     // Use a more immediate transition instead of the fade approach
     // which was causing flickering
     setActiveProfileSection(section);
-  };
-
-  // User profile modal component
-  const ProfileMenu = () => {
-    // Main menu with updated navigation
-    const renderMainMenu = () => (
-      <div className="py-2">
-        <button 
-          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
-          onClick={() => handleSectionTransition('edit-profile')}
-        >
-          <FaUser className="mr-3 text-gray-500" />
-          <span>Edit Profile</span>
-        </button>
-        <button 
-          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
-          onClick={() => handleSectionTransition('change-password')}
-        >
-          <FaKey className="mr-3 text-gray-500" />
-          <span>Change Password</span>
-        </button>
-        <button 
-          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
-          onClick={() => handleSectionTransition('account-settings')}
-        >
-          <FaCog className="mr-3 text-gray-500" />
-          <span>Account Settings</span>
-        </button>
-        <div className="border-t my-2"></div>
-        <button 
-          className="w-full px-6 py-3 flex items-center text-red-600 hover:bg-gray-50"
-          onClick={handleLogout}
-        >
-          <FaSignOutAlt className="mr-3" />
-          <span>Log Out</span>
-        </button>
-      </div>
-    );
-
-    // Edit profile form with back button using transitions
-    const renderEditProfile = () => (
-      <div className="p-6">
-        <div className="flex items-center mb-4">
-          <button 
-            className="p-2 mr-3 rounded-full hover:bg-gray-100"
-            onClick={() => handleSectionTransition('main')}
-          >
-            <FaArrowLeft className="text-gray-500" />
-          </button>
-          <h3 className="text-lg font-medium">Edit Profile</h3>
-        </div>
-        
-        <form onSubmit={handleSaveProfile}>
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-baby-blue flex items-center justify-center text-white text-2xl">
-                {profileForm.firstName.charAt(0)}
-              </div>
-              <button type="button" className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow">
-                <FaCamera className="text-baby-blue" />
-              </button>
-            </div>
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={profileForm.firstName}
-              onChange={handleProfileFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={profileForm.lastName}
-              onChange={handleProfileFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={profileForm.email}
-              onChange={handleProfileFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-          </div>
-          
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-baby-blue text-white rounded-lg hover:bg-blue-500 transition-colors"
-          >
-            Save Changes
-          </button>
-        </form>
-      </div>
-    );
-
-    // Change password form with back button using transitions
-    const renderChangePassword = () => (
-      <div className="p-6">
-        <div className="flex items-center mb-4">
-          <button 
-            className="p-2 mr-3 rounded-full hover:bg-gray-100"
-            onClick={() => handleSectionTransition('main')}
-          >
-            <FaArrowLeft className="text-gray-500" />
-          </button>
-          <h3 className="text-lg font-medium">Change Password</h3>
-        </div>
-        
-        <form onSubmit={handleChangePassword}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-            <input
-              type="password"
-              name="currentPassword"
-              value={passwordForm.currentPassword}
-              onChange={handlePasswordFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-            <input
-              type="password"
-              name="newPassword"
-              value={passwordForm.newPassword}
-              onChange={handlePasswordFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={passwordForm.confirmPassword}
-              onChange={handlePasswordFormChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-              required
-            />
-            {passwordForm.newPassword && passwordForm.confirmPassword && 
-             passwordForm.newPassword !== passwordForm.confirmPassword && (
-              <p className="mt-1 text-xs text-red-500">Passwords do not match</p>
-            )}
-          </div>
-          
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-baby-blue text-white rounded-lg hover:bg-blue-500 transition-colors"
-            disabled={passwordForm.newPassword !== passwordForm.confirmPassword}
-          >
-            Update Password
-          </button>
-        </form>
-      </div>
-    );
-
-    // Account settings form with back button using transitions
-    const renderAccountSettings = () => (
-      <div className="p-6">
-        <div className="flex items-center mb-4">
-          <button 
-            className="p-2 mr-3 rounded-full hover:bg-gray-100"
-            onClick={() => handleSectionTransition('main')}
-          >
-            <FaArrowLeft className="text-gray-500" />
-          </button>
-          <h3 className="text-lg font-medium">Account Settings</h3>
-        </div>
-        
-        <form onSubmit={handleSaveSettings}>
-          <div className="mb-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-              <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                <input 
-                  type="checkbox" 
-                  id="toggleEmail"
-                  checked={accountSettings.emailNotifications} 
-                  onChange={() => handleSettingsChange('emailNotifications', !accountSettings.emailNotifications)}
-                  className="sr-only"
-                />
-                <label 
-                  htmlFor="toggleEmail"
-                  className={`block overflow-hidden h-6 rounded-full cursor-pointer ${accountSettings.emailNotifications ? 'bg-baby-blue' : 'bg-gray-300'}`}
-                >
-                  <span className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform ${accountSettings.emailNotifications ? 'translate-x-4' : 'translate-x-0'}`}></span>
-                </label>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Receive email notifications about new listings and updates</p>
-          </div>
-          
-          <div className="mb-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Dark Mode</label>
-              <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                <input 
-                  type="checkbox" 
-                  id="toggleDarkMode"
-                  checked={accountSettings.darkMode} 
-                  onChange={() => handleSettingsChange('darkMode', !accountSettings.darkMode)}
-                  className="sr-only"
-                />
-                <label 
-                  htmlFor="toggleDarkMode"
-                  className={`block overflow-hidden h-6 rounded-full cursor-pointer ${accountSettings.darkMode ? 'bg-baby-blue' : 'bg-gray-300'}`}
-                >
-                  <span className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform ${accountSettings.darkMode ? 'translate-x-4' : 'translate-x-0'}`}></span>
-                </label>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Switch between light and dark theme</p>
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
-            <select
-              value={accountSettings.language}
-              onChange={(e) => handleSettingsChange('language', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
-            >
-              <option value="english">English</option>
-              <option value="spanish">Spanish</option>
-              <option value="french">French</option>
-              <option value="german">German</option>
-            </select>
-          </div>
-          
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-baby-blue text-white rounded-lg hover:bg-blue-500 transition-colors"
-          >
-            Save Settings
-          </button>
-          
-          <div className="mt-8 pt-6 border-t">
-            <button
-              type="button"
-              className="w-full py-2 px-4 flex items-center justify-center text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
-            >
-              <FaTrash className="mr-2" />
-              <span>Delete Account</span>
-            </button>
-            <p className="text-xs text-gray-500 mt-2 text-center">This action is permanent and cannot be undone.</p>
-          </div>
-        </form>
-      </div>
-    );
-
-    // Get the current active content to display
-    const getActiveContent = () => {
-      switch (activeProfileSection) {
-        case 'edit-profile':
-          return renderEditProfile();
-        case 'change-password':
-          return renderChangePassword();
-        case 'account-settings':
-          return renderAccountSettings();
-        default:
-          return renderMainMenu();
-      }
-    };
-
-    return (
-      <div className="fixed inset-0 z-20">
-        {/* Backdrop - always present */}
-        <div 
-          className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm animate-fadeIn"
-          onClick={() => {
-            setShowProfileMenu(false);
-            setActiveProfileSection('main');
-          }}
-        ></div>
-        
-        {/* Menu content */}
-        <div 
-          ref={profileMenuRef}
-          className="absolute right-4 top-16 mt-2 z-30 w-80 bg-white rounded-xl shadow-xl overflow-hidden animate-slideIn"
-          style={{ maxHeight: 'calc(100vh - 5rem)', overflowY: 'auto' }}
-        >
-          {/* Profile header - only show on main menu */}
-          {activeProfileSection === 'main' && (
-            <div className="bg-gradient-to-r from-baby-blue to-blue-400 p-6 text-white">
-              <div className="flex items-center">
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-white bg-opacity-30 flex items-center justify-center overflow-hidden text-xl">
-                    {user?.firstName?.charAt(0)}
-                  </div>
-                  <button className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow">
-                    <FaCamera className="text-baby-blue text-xs" />
-                  </button>
-                </div>
-                <div className="ml-4">
-                  <h3 className="font-bold text-lg">{user?.firstName} {user?.lastName}</h3>
-                  <p className="text-sm text-blue-100">{user?.email}</p>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Dynamic content with key-based animation */}
-          <div className="transition-all duration-150 ease-in-out">
-            {getActiveContent()}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -643,12 +424,328 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Profile menu modal - rendered as a portal in a fixed container */}
-      {showProfileMenu && (
-        <ProfileMenu />
-      )}
+      {/* Profile menu modal - Always rendered but conditionally visible */}
+      <div className={`fixed inset-0 z-20 ${showProfileMenu ? 'block' : 'hidden'}`}>
+        {/* Backdrop - always present */}
+        <div 
+          className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm animate-fadeIn"
+          onClick={() => {
+            setShowProfileMenu(false);
+            setActiveProfileSection('main');
+          }}
+        ></div>
+        
+        {/* Menu content */}
+        <div 
+          ref={profileMenuRef}
+          className="absolute right-4 top-16 mt-2 z-30 w-80 bg-white rounded-xl shadow-xl overflow-hidden animate-slideIn"
+          style={{ maxHeight: 'calc(100vh - 5rem)', overflowY: 'auto' }}
+        >
+          {/* Profile header - only show on main menu */}
+          {activeProfileSection === 'main' && (
+            <div className="bg-gradient-to-r from-baby-blue to-blue-400 p-6 text-white">
+              <div className="flex items-center">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full bg-white bg-opacity-30 flex items-center justify-center overflow-hidden text-xl">
+                    {user?.firstName?.charAt(0)}
+                  </div>
+                  <button className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow">
+                    <FaCamera className="text-baby-blue text-xs" />
+                  </button>
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-bold text-lg">{user?.firstName} {user?.lastName}</h3>
+                  <p className="text-sm text-blue-100">{user?.email}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Dynamic content with key-based animation */}
+          <div className="transition-all duration-150 ease-in-out">
+            {activeProfileSection === 'edit-profile' && renderEditProfile()}
+            {activeProfileSection === 'change-password' && renderChangePassword()}
+            {activeProfileSection === 'account-settings' && renderAccountSettings()}
+            {activeProfileSection === 'main' && renderMainMenu()}
+          </div>
+        </div>
+      </div>
     </div>
   );
+
+  // Edit profile form with back button using transitions
+  function renderEditProfile() {
+    return (
+      <div className="p-6">
+        <div className="flex items-center mb-4">
+          <button 
+            className="p-2 mr-3 rounded-full hover:bg-gray-100"
+            onClick={() => handleSectionTransition('main')}
+          >
+            <FaArrowLeft className="text-gray-500" />
+          </button>
+          <h3 className="text-lg font-medium">Edit Profile</h3>
+        </div>
+        
+        <form onSubmit={handleSaveProfile}>
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full bg-baby-blue flex items-center justify-center text-white text-2xl">
+                {profileForm.firstName.charAt(0)}
+              </div>
+              <button type="button" className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow">
+                <FaCamera className="text-baby-blue" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <input
+              type="text"
+              name="firstName"
+              value={profileForm.firstName}
+              onChange={handleProfileFormChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={profileForm.lastName}
+              onChange={handleProfileFormChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+              required
+            />
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={profileForm.email}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+              disabled
+              title="Email cannot be changed"
+            />
+            <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+          </div>
+          
+          {formStatus.profile.success && (
+            <div className="mb-4 p-2 bg-green-50 text-green-700 rounded-lg">
+              Profile updated successfully!
+            </div>
+          )}
+          
+          {formStatus.profile.error && (
+            <div className="mb-4 p-2 bg-red-50 text-red-700 rounded-lg">
+              {formStatus.profile.error}
+            </div>
+          )}
+          
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-baby-blue text-white rounded-lg hover:bg-blue-500 transition-colors"
+          >
+            Save Changes
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // Change password form with back button using transitions
+  function renderChangePassword() {
+    return (
+      <div className="p-6">
+        <div className="flex items-center mb-4">
+          <button 
+            className="p-2 mr-3 rounded-full hover:bg-gray-100"
+            onClick={() => handleSectionTransition('main')}
+          >
+            <FaArrowLeft className="text-gray-500" />
+          </button>
+          <h3 className="text-lg font-medium">Change Password</h3>
+        </div>
+        
+        <form onSubmit={handleChangePassword}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+            <input
+              type="password"
+              name="currentPassword"
+              value={passwordForm.currentPassword}
+              onChange={handlePasswordFormChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              value={passwordForm.newPassword}
+              onChange={handlePasswordFormChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+              required
+            />
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={passwordForm.confirmPassword}
+              onChange={handlePasswordFormChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+              required
+            />
+            {passwordForm.newPassword && passwordForm.confirmPassword && 
+             passwordForm.newPassword !== passwordForm.confirmPassword && (
+              <p className="mt-1 text-xs text-red-500">Passwords do not match</p>
+            )}
+          </div>
+          
+          {formStatus.password.success && (
+            <div className="mb-4 p-2 bg-green-50 text-green-700 rounded-lg">
+              Password changed successfully!
+            </div>
+          )}
+          
+          {formStatus.password.error && (
+            <div className="mb-4 p-2 bg-red-50 text-red-700 rounded-lg">
+              {formStatus.password.error}
+            </div>
+          )}
+          
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-baby-blue text-white rounded-lg hover:bg-blue-500 transition-colors"
+            disabled={passwordForm.newPassword !== passwordForm.confirmPassword}
+          >
+            Update Password
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // Account settings form with back button using transitions
+  function renderAccountSettings() {
+    return (
+      <div className="p-6">
+        <div className="flex items-center mb-4">
+          <button 
+            className="p-2 mr-3 rounded-full hover:bg-gray-100"
+            onClick={() => handleSectionTransition('main')}
+          >
+            <FaArrowLeft className="text-gray-500" />
+          </button>
+          <h3 className="text-lg font-medium">Account Settings</h3>
+        </div>
+        
+        {/* Delete Account Section */}
+        <div className="mt-8 border-t pt-6">
+          <h4 className="text-lg font-medium text-red-600 mb-4">Delete Account</h4>
+          <p className="text-sm text-gray-600 mb-4">
+            This action will permanently delete your account. Your reviews and inquiries will be preserved. This action cannot be undone.
+          </p>
+          
+          <form onSubmit={handleDeleteAccount}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm with your password</label>
+              <input
+                type="password"
+                name="password"
+                value={deleteForm.password}
+                onChange={handleDeleteFormChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                required
+              />
+            </div>
+            
+            <div className="mb-6">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="confirmDelete"
+                  checked={deleteForm.confirmDelete}
+                  onChange={handleDeleteFormChange}
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                  required
+                />
+                <span className="ml-2 text-sm text-gray-700">
+                  I understand that this action cannot be undone
+                </span>
+              </label>
+            </div>
+            
+            {formStatus.delete.error && (
+              <div className="mb-4 p-2 bg-red-50 text-red-700 rounded-lg">
+                {formStatus.delete.error}
+              </div>
+            )}
+            
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              disabled={!deleteForm.confirmDelete}
+            >
+              <div className="flex items-center justify-center">
+                <FaTrash className="mr-2" />
+                Delete My Account
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // Main menu with updated navigation
+  function renderMainMenu() {
+    return (
+      <div className="py-2">
+        <button 
+          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+          onClick={() => handleSectionTransition('edit-profile')}
+        >
+          <FaUser className="mr-3 text-gray-500" />
+          <span>Edit Profile</span>
+        </button>
+        <button 
+          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+          onClick={() => handleSectionTransition('change-password')}
+        >
+          <FaKey className="mr-3 text-gray-500" />
+          <span>Change Password</span>
+        </button>
+        <button 
+          className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+          onClick={() => handleSectionTransition('account-settings')}
+        >
+          <FaCog className="mr-3 text-gray-500" />
+          <span>Account Settings</span>
+        </button>
+        <div className="border-t my-2"></div>
+        <button 
+          className="w-full px-6 py-3 flex items-center text-red-600 hover:bg-gray-50"
+          onClick={handleLogout}
+        >
+          <FaSignOutAlt className="mr-3" />
+          <span>Log Out</span>
+        </button>
+      </div>
+    );
+  }
 };
 
 export default Dashboard; 

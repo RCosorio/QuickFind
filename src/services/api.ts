@@ -102,6 +102,50 @@ export const authApi = {
   }
 };
 
+// User API calls
+export const userApi = {
+  // Update user details
+  updateUser: async (userId: string, userData: {
+    firstName?: string;
+    lastName?: string;
+  }): Promise<User> => {
+    try {
+      const response = await api.put(`/users/${userId}`, userData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating user details:', error);
+      throw error;
+    }
+  },
+  
+  // Change user password
+  changePassword: async (userId: string, passwordData: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<{ message: string }> => {
+    try {
+      const response = await api.put(`/users/${userId}/password`, passwordData);
+      return response.data;
+    } catch (error) {
+      console.error('Error changing password:', error);
+      throw error;
+    }
+  },
+  
+  // Delete user account
+  deleteAccount: async (userId: string, password: string): Promise<{ message: string }> => {
+    try {
+      const response = await api.delete(`/users/${userId}`, {
+        data: { password }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      throw error;
+    }
+  }
+};
+
 // Reviews API calls
 export const reviewApi = {
   // Get reviews for a business

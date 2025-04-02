@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { 
@@ -6,20 +6,24 @@ import {
   FaUtensils, 
   FaHome, 
   FaEdit, 
+  FaTimes, 
+  FaSave, 
   FaTrash, 
   FaPlus, 
   FaStar, 
-  FaCheck, 
-  FaArrowLeft,
-  FaExclamationTriangle,
+  FaArrowLeft, 
   FaSignOutAlt,
+  FaChartBar, 
+  FaMapMarkerAlt, 
+  FaPhone,
+  FaUser,
+  FaKey,
+  FaCog,
+  FaAngleDown,
   FaComment,
   FaBell,
-  FaSave,
-  FaTimes,
-  FaChartBar,
-  FaMapMarkerAlt,
-  FaPhone
+  FaCheck,
+  FaExclamationTriangle
 } from 'react-icons/fa';
 import { Business, BusinessType } from '../types/auth';
 import ProductModal from '../components/business/ProductModal';
@@ -27,7 +31,7 @@ import ReviewManagement from '../components/business/ReviewManagement';
 import BusinessHours from '../components/business/BusinessHours';
 
 const BusinessDashboard: React.FC = () => {
-  const { user, business, createBusiness, logout, updateBusiness } = useAuth();
+  const { user, business, createBusiness, logout, updateBusiness, updateUserProfile, changePassword, deleteAccount } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('overview');
   const navigate = useNavigate();
   
@@ -39,9 +43,242 @@ const BusinessDashboard: React.FC = () => {
   const [showProductModal, setShowProductModal] = useState<boolean>(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
 
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [activeProfileSection, setActiveProfileSection] = useState<'main' | 'edit-profile' | 'change-password' | 'account-settings'>('main');
+  
+  // Form state
+  const [profileForm, setProfileForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [deleteForm, setDeleteForm] = useState({
+    password: '',
+    confirmDelete: false
+  });
+
+  const [formStatus, setFormStatus] = useState({
+    profile: { success: false, error: null as string | null },
+    password: { success: false, error: null as string | null },
+    delete: { success: false, error: null as string | null }
+  });
+  
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Add state for change password modal
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+
+  // Add state for business photos
+  const [businessPhotos, setBusinessPhotos] = useState<string[]>([]);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  // Initialize form with user data
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || ''
+      });
+    }
+  }, [user]);
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      // Skip if clicking on an input element or within the menu
+      const target = event.target as HTMLElement;
+      const isFormElement = 
+        target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.tagName === 'SELECT' || 
+        target.tagName === 'BUTTON' ||
+        target.closest('label') !== null;
+      
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node) && !isFormElement) {
+        setShowProfileMenu(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [profileMenuRef]);
+
+  // Load business photos when component mounts
+  useEffect(() => {
+    if (business && business.photos) {
+      setBusinessPhotos(business.photos);
+    }
+  }, [business]);
+
   const handleLogout = () => {
+    setShowProfileMenu(false);
     logout();
-    navigate('/');
+    navigate('/business-login');
+  };
+
+  const toggleProfileMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
+    // Reset to main section when toggling
+    setActiveProfileSection('main');
+  };
+
+  const handleProfileNavigation = (section: 'main' | 'edit-profile' | 'change-password' | 'account-settings') => {
+    setActiveProfileSection(section);
+  };
+
+  const handleProfileFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfileForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      profile: { success: false, error: null }
+    }));
+  };
+
+  const handlePasswordFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      password: { success: false, error: null }
+    }));
+  };
+
+  const handleDeleteFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setDeleteForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    // Reset status when form changes
+    setFormStatus(prev => ({
+      ...prev,
+      delete: { success: false, error: null }
+    }));
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Extract only firstName and lastName (email can't be changed)
+      const { firstName, lastName } = profileForm;
+      const success = await updateUserProfile({ firstName, lastName });
+      
+      if (success) {
+        setFormStatus(prev => ({
+          ...prev,
+          profile: { success: true, error: null }
+        }));
+        
+        // Go back to main menu after short delay
+        setTimeout(() => {
+          handleProfileNavigation('main');
+        }, 1500);
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        profile: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate passwords match
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setFormStatus(prev => ({
+        ...prev,
+        password: { success: false, error: 'Passwords do not match' }
+      }));
+      return;
+    }
+    
+    try {
+      const success = await changePassword(passwordForm.currentPassword, passwordForm.newPassword);
+      
+      if (success) {
+        setFormStatus(prev => ({
+          ...prev,
+          password: { success: true, error: null }
+        }));
+        
+        // Reset form
+        setPasswordForm({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        
+        // Show success message and close modal after a delay
+        setTimeout(() => {
+          setShowChangePasswordModal(false);
+          // Reset success message after closing
+          setFormStatus(prev => ({
+            ...prev,
+            password: { success: false, error: null }
+          }));
+        }, 1500);
+      } else {
+        throw new Error('Failed to change password');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        password: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
+  };
+
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Verify user confirmed deletion
+    if (!deleteForm.confirmDelete) {
+      setFormStatus(prev => ({
+        ...prev,
+        delete: { success: false, error: 'Please confirm account deletion' }
+      }));
+      return;
+    }
+    
+    try {
+      const success = await deleteAccount(deleteForm.password);
+      
+      if (success) {
+        // Account deletion is handled by AuthContext by calling logout
+        // We'll navigate to login page just to be sure
+        navigate('/login');
+      } else {
+        throw new Error('Failed to delete account');
+      }
+    } catch (error) {
+      setFormStatus(prev => ({
+        ...prev,
+        delete: { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }));
+    }
   };
 
   // Edit business details handlers
@@ -194,6 +431,50 @@ const BusinessDashboard: React.FC = () => {
     }
   };
 
+  // Add function to handle photo upload
+  const handleAddPhoto = () => {
+    setPhotoUrl('');
+    setPhotoError(null);
+    setShowPhotoModal(true);
+  };
+
+  // Add function to save photo
+  const handleSavePhoto = async () => {
+    if (!photoUrl.trim()) {
+      setPhotoError('Please enter a valid image URL');
+      return;
+    }
+    
+    try {
+      // Remove validation based on file extension and instead use an image loader to test the URL
+      // We'll validate by attempting to load the image in the preview element
+      const updatedPhotos = [...businessPhotos, photoUrl];
+      setBusinessPhotos(updatedPhotos);
+      
+      // Update business in database
+      await updateBusiness({ photos: updatedPhotos });
+      
+      setShowPhotoModal(false);
+      setPhotoUrl('');
+    } catch (error) {
+      console.error('Failed to add photo:', error);
+      setPhotoError('Failed to add photo. Please try again.');
+    }
+  };
+
+  // Add function to remove photo
+  const handleRemovePhoto = async (index: number) => {
+    try {
+      const updatedPhotos = businessPhotos.filter((_, i) => i !== index);
+      setBusinessPhotos(updatedPhotos);
+      
+      // Update business in database
+      await updateBusiness({ photos: updatedPhotos });
+    } catch (error) {
+      console.error('Failed to remove photo:', error);
+    }
+  };
+
   // If no business exists, show create business form
   if (!business) {
     return (
@@ -205,303 +486,445 @@ const BusinessDashboard: React.FC = () => {
 
   // Business dashboard content
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header Bar */}
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="text-gray-600 hover:text-gray-800">
-            <FaArrowLeft className="text-lg" />
-          </Link>
-          <h1 className="text-2xl font-bold">{business.name}</h1>
-          <span className={`text-xs px-2 py-1 rounded-full ${
-            business.businessType === 'store' ? 'bg-red-100 text-red-800' :
-            business.businessType === 'restaurant' ? 'bg-green-100 text-green-800' :
-            'bg-purple-100 text-purple-800'
-          }`}>
-            {business.businessType === 'store' ? 'Store' : 
-             business.businessType === 'restaurant' ? 'Restaurant' : 'Housing'}
-          </span>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Top Header */}
+      <header className="bg-gradient-to-r from-baby-blue to-blue-500 text-white shadow-lg">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <div>
+              <h1 className="text-2xl font-bold">Business Dashboard</h1>
+              {business && (
+                <p className="text-blue-100">{business.name}</p>
+              )}
+            </div>
+            
+            <div className="flex items-center">
+              <div className="relative">
+                <button 
+                  onClick={toggleProfileMenu}
+                  className="flex items-center space-x-2 py-2 px-3 rounded-lg text-white hover:bg-white hover:bg-opacity-20 transition-colors"
+                  aria-expanded={showProfileMenu}
+                  aria-haspopup="true"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white bg-opacity-30 flex items-center justify-center overflow-hidden">
+                    {user?.firstName?.charAt(0)}
+                  </div>
+                  <span className="text-sm">{user?.firstName}</span>
+                  <FaAngleDown className={`transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+      </header>
+      
+      {/* Profile Menu - Always mounted but conditionally visible */}
+      <div className={`fixed inset-0 z-50 ${showProfileMenu ? 'block' : 'hidden'}`}>
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm animate-fadeIn"
+          onClick={() => {
+            setShowProfileMenu(false);
+          }}
+        ></div>
         
-        <div className="flex items-center space-x-3">
-          <button 
-            onClick={handleLogout}
-            className="flex items-center text-gray-600 hover:text-gray-800"
-          >
-            <FaSignOutAlt className="mr-1" />
-            <span className="hidden md:inline">Logout</span>
-          </button>
+        {/* Menu content */}
+        <div 
+          ref={profileMenuRef}
+          className="absolute right-4 top-16 mt-2 z-50 w-52 bg-white rounded-lg shadow-lg overflow-hidden"
+        >
+          <div className="py-2">
+            <Link 
+              to="#" 
+              className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+              onClick={() => { 
+                setShowProfileMenu(false);
+                setShowChangePasswordModal(true);
+              }}
+            >
+              <FaKey className="mr-3 text-gray-500" />
+              <span>Change Password</span>
+            </Link>
+            <div className="border-t my-2"></div>
+            <button 
+              className="w-full px-6 py-3 flex items-center text-red-600 hover:bg-gray-50"
+              onClick={handleLogout}
+            >
+              <FaSignOutAlt className="mr-3" />
+              <span>Log Out</span>
+            </button>
+          </div>
         </div>
       </div>
       
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar Navigation */}
-        <div className="w-full md:w-48 bg-white p-4 rounded-lg h-min shadow-sm">
-          <nav>
-            <ul className="space-y-1">
-              <li>
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
-                    activeTab === 'overview' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaStore className="mr-2" />
-                  Overview
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('management')}
-                  className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
-                    activeTab === 'management' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaEdit className="mr-2" />
-                  {business.businessType === 'store' && 'Products'}
-                  {business.businessType === 'restaurant' && 'Menu'}
-                  {business.businessType === 'housing' && 'Rooms'}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('reviews')}
-                  className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
-                    activeTab === 'reviews' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaStar className="mr-2" />
-                  Reviews & Inquiries
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('analytics')}
-                  className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
-                    activeTab === 'analytics' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <FaChartBar className="mr-2" />
-                  Analytics
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        
-        {/* Content Area */}
-        <div className="flex-1">
-          {/* Overview Tab - Show business details and stats */}
-          {activeTab === 'overview' && (
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-xl font-semibold">Business Overview</h2>
-                {!isEditing ? (
-                  <button 
-                    onClick={startEditing}
-                    className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Sidebar Navigation */}
+          <div className="w-full md:w-48 bg-white p-4 rounded-lg h-min shadow-sm">
+            <nav>
+              <ul className="space-y-1">
+                <li>
+                  <button
+                    onClick={() => setActiveTab('overview')}
+                    className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
+                      activeTab === 'overview' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                   >
-                    <FaEdit className="mr-1" /> Edit Details
+                    <FaStore className="mr-2" />
+                    Overview
                   </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab('management')}
+                    className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
+                      activeTab === 'management' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaEdit className="mr-2" />
+                    {business.businessType === 'store' && 'Products'}
+                    {business.businessType === 'restaurant' && 'Menu'}
+                    {business.businessType === 'housing' && 'Rooms'}
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab('reviews')}
+                    className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
+                      activeTab === 'reviews' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaStar className="mr-2" />
+                    Reviews & Inquiries
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className={`w-full text-left py-2 px-3 rounded-md flex items-center ${
+                      activeTab === 'analytics' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <FaChartBar className="mr-2" />
+                    Analytics
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          
+          {/* Content Area */}
+          <div className="flex-1">
+            {/* Overview Tab - Show business details and stats */}
+            {activeTab === 'overview' && (
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-xl font-semibold">Business Overview</h2>
+                  {!isEditing ? (
+                    <button 
+                      onClick={startEditing}
+                      className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
+                    >
+                      <FaEdit className="mr-1" /> Edit Details
+                    </button>
+                  ) : (
+                    <div className="flex space-x-2">
+                      <button 
+                        onClick={cancelEditing}
+                        className="text-gray-600 hover:text-gray-800 flex items-center text-sm"
+                      >
+                        <FaTimes className="mr-1" /> Cancel
+                      </button>
+                      <button 
+                        onClick={saveBusinessDetails}
+                        className="text-green-600 hover:text-green-800 flex items-center text-sm"
+                      >
+                        <FaSave className="mr-1" /> Save
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
+                {!isEditing ? (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-gray-500 text-sm mb-1">Business Type</h3>
+                      <div className="flex items-center">
+                        {business.businessType === 'store' && <FaStore className="text-red-500 mr-2" />}
+                        {business.businessType === 'restaurant' && <FaUtensils className="text-green-500 mr-2" />}
+                        {business.businessType === 'housing' && <FaHome className="text-purple-500 mr-2" />}
+                        <span className="font-medium">
+                          {business.businessType === 'store' ? 'Store' : 
+                           business.businessType === 'restaurant' ? 'Restaurant' : 'Housing'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-gray-500 text-sm mb-1">Business Description</h3>
+                      <p>{business.description}</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-gray-500 text-sm mb-1">Location</h3>
+                      <p className="flex items-start">
+                        <FaMapMarkerAlt className="text-gray-400 mt-1 mr-2" />
+                        {business.location}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-gray-500 text-sm mb-1">Contact Information</h3>
+                      <p className="flex items-start">
+                        <FaPhone className="text-gray-400 mt-1 mr-2" />
+                        {business.contactInfo}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-gray-500 text-sm mb-1">Business Hours</h3>
+                      <BusinessHours 
+                        businessHours={business.businessHours || {}} 
+                        onChange={() => {}} 
+                        readOnly={true} 
+                      />
+                    </div>
+                    
+                    {/* Statistics Summary */}
+                    <div className="mt-8 border-t pt-6">
+                      <h3 className="text-lg font-semibold mb-4">Quick Stats</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <div className="text-blue-500 mb-1 text-sm">Average Rating</div>
+                          <div className="text-2xl font-bold flex items-center">
+                            {business.rating ? business.rating.toFixed(1) : 'N/A'}
+                            {business.rating && <FaStar className="text-yellow-400 ml-1" />}
+                          </div>
+                        </div>
+                        
+                        <div className="bg-green-50 p-4 rounded-lg">
+                          <div className="text-green-500 mb-1 text-sm">Total Reviews</div>
+                          <div className="text-2xl font-bold">
+                            {business.reviews?.length || 0}
+                          </div>
+                        </div>
+                        
+                        <div className="bg-purple-50 p-4 rounded-lg">
+                          <div className="text-purple-500 mb-1 text-sm">
+                            {business.businessType === 'store' ? 'Products' : 
+                             business.businessType === 'restaurant' ? 'Menu Items' : 'Rooms'}
+                          </div>
+                          <div className="text-2xl font-bold">
+                            {business.businessType === 'store' ? (business.items?.length || 0) : 
+                             business.businessType === 'restaurant' ? (business.menu?.length || 0) : 
+                             (business.rooms?.length || 0)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Photo Gallery Section */}
+                    <div className="mt-8 border-t pt-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-lg font-semibold mb-4">Business Photos</h3>
+                        <button 
+                          onClick={handleAddPhoto}
+                          className="text-baby-blue hover:text-blue-700 text-sm flex items-center"
+                        >
+                          <FaPlus className="mr-1" /> Add Photo
+                        </button>
+                      </div>
+                      
+                      {businessPhotos.length === 0 ? (
+                        <div className="border border-dashed border-gray-300 rounded-lg p-4 text-center">
+                          <p className="text-gray-500 mb-2">No photos added yet</p>
+                          <button 
+                            onClick={handleAddPhoto}
+                            className="text-baby-blue hover:text-blue-700 text-sm flex items-center justify-center mx-auto"
+                          >
+                            <FaPlus className="mr-1" /> Add Your First Photo
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {businessPhotos.map((photo, index) => (
+                            <div key={index} className="relative group">
+                              <img 
+                                src={photo} 
+                                alt={`Business photo ${index + 1}`} 
+                                className="w-full h-24 object-cover rounded-lg"
+                                onError={(e) => {
+                                  // Set a default image on error
+                                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Image+Error';
+                                }}
+                              />
+                              <button
+                                onClick={() => handleRemovePhoto(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <FaTrash size={12} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ) : (
-                  <div className="flex space-x-2">
-                    <button 
-                      onClick={cancelEditing}
-                      className="text-gray-600 hover:text-gray-800 flex items-center text-sm"
-                    >
-                      <FaTimes className="mr-1" /> Cancel
-                    </button>
-                    <button 
-                      onClick={saveBusinessDetails}
-                      className="text-green-600 hover:text-green-800 flex items-center text-sm"
-                    >
-                      <FaSave className="mr-1" /> Save
-                    </button>
+                  <div className="space-y-6">
+                    {/* Business editing form */}
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Business Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={editedBusiness?.name || ''}
+                        onChange={handleBusinessChange}
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Description</label>
+                      <textarea
+                        name="description"
+                        value={editedBusiness?.description || ''}
+                        onChange={handleBusinessChange}
+                        rows={4}
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Location</label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={editedBusiness?.location || ''}
+                        onChange={handleBusinessChange}
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">Contact Information</label>
+                      <input
+                        type="text"
+                        name="contactInfo"
+                        value={editedBusiness?.contactInfo || ''}
+                        onChange={handleBusinessChange}
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-2">Business Hours</label>
+                      <BusinessHours 
+                        businessHours={editedBusiness?.businessHours || {}} 
+                        onChange={handleHoursChange} 
+                      />
+                    </div>
                   </div>
                 )}
               </div>
-              
-              {!isEditing ? (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-gray-500 text-sm mb-1">Business Type</h3>
-                    <div className="flex items-center">
-                      {business.businessType === 'store' && <FaStore className="text-red-500 mr-2" />}
-                      {business.businessType === 'restaurant' && <FaUtensils className="text-green-500 mr-2" />}
-                      {business.businessType === 'housing' && <FaHome className="text-purple-500 mr-2" />}
-                      <span className="font-medium">
-                        {business.businessType === 'store' ? 'Store' : 
-                         business.businessType === 'restaurant' ? 'Restaurant' : 'Housing'}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-gray-500 text-sm mb-1">Business Description</h3>
-                    <p>{business.description}</p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-gray-500 text-sm mb-1">Location</h3>
-                    <p className="flex items-start">
-                      <FaMapMarkerAlt className="text-gray-400 mt-1 mr-2" />
-                      {business.location}
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-gray-500 text-sm mb-1">Contact Information</h3>
-                    <p className="flex items-start">
-                      <FaPhone className="text-gray-400 mt-1 mr-2" />
-                      {business.contactInfo}
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-gray-500 text-sm mb-1">Business Hours</h3>
-                    <BusinessHours 
-                      businessHours={business.businessHours || {}} 
-                      onChange={() => {}} 
-                      readOnly={true} 
-                    />
-                  </div>
-                  
-                  {/* Statistics Summary */}
-                  <div className="mt-8 border-t pt-6">
-                    <h3 className="text-lg font-semibold mb-4">Quick Stats</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-blue-500 mb-1 text-sm">Average Rating</div>
-                        <div className="text-2xl font-bold flex items-center">
-                          {business.rating ? business.rating.toFixed(1) : 'N/A'}
-                          {business.rating && <FaStar className="text-yellow-400 ml-1" />}
-                        </div>
-                      </div>
-                      
-                      <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="text-green-500 mb-1 text-sm">Total Reviews</div>
-                        <div className="text-2xl font-bold">
-                          {business.reviews?.length || 0}
-                        </div>
-                      </div>
-                      
-                      <div className="bg-purple-50 p-4 rounded-lg">
-                        <div className="text-purple-500 mb-1 text-sm">
-                          {business.businessType === 'store' ? 'Products' : 
-                           business.businessType === 'restaurant' ? 'Menu Items' : 'Rooms'}
-                        </div>
-                        <div className="text-2xl font-bold">
-                          {business.businessType === 'store' ? (business.items?.length || 0) : 
-                           business.businessType === 'restaurant' ? (business.menu?.length || 0) : 
-                           (business.rooms?.length || 0)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            )}
+            
+            {/* Products/Menu/Rooms Management Tab */}
+            {activeTab === 'management' && (
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold">
+                    {business.businessType === 'store' && 'Products Management'}
+                    {business.businessType === 'restaurant' && 'Menu Management'}
+                    {business.businessType === 'housing' && 'Rooms Management'}
+                  </h2>
+                  <button 
+                    onClick={() => openProductModal()}
+                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 flex items-center text-sm"
+                  >
+                    <FaPlus className="mr-1" /> 
+                    {business.businessType === 'store' && 'Add Product'}
+                    {business.businessType === 'restaurant' && 'Add Menu Item'}
+                    {business.businessType === 'housing' && 'Add Room'}
+                  </button>
                 </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Business editing form */}
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Business Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={editedBusiness?.name || ''}
-                      onChange={handleBusinessChange}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Description</label>
-                    <textarea
-                      name="description"
-                      value={editedBusiness?.description || ''}
-                      onChange={handleBusinessChange}
-                      rows={4}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    ></textarea>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Location</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={editedBusiness?.location || ''}
-                      onChange={handleBusinessChange}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Contact Information</label>
-                    <input
-                      type="text"
-                      name="contactInfo"
-                      value={editedBusiness?.contactInfo || ''}
-                      onChange={handleBusinessChange}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">Business Hours</label>
-                    <BusinessHours 
-                      businessHours={editedBusiness?.businessHours || {}} 
-                      onChange={handleHoursChange} 
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Products/Menu/Rooms Management Tab */}
-          {activeTab === 'management' && (
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">
-                  {business.businessType === 'store' && 'Products Management'}
-                  {business.businessType === 'restaurant' && 'Menu Management'}
-                  {business.businessType === 'housing' && 'Rooms Management'}
-                </h2>
-                <button 
-                  onClick={() => openProductModal()}
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 flex items-center text-sm"
-                >
-                  <FaPlus className="mr-1" /> 
-                  {business.businessType === 'store' && 'Add Product'}
-                  {business.businessType === 'restaurant' && 'Add Menu Item'}
-                  {business.businessType === 'housing' && 'Add Room'}
-                </button>
-              </div>
-              
-              {/* Products/Menu Items/Rooms Grid */}
-              <div className={business.businessType === 'housing' ? "space-y-4" : "grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}>
-                {/* Store Products */}
-                {business.businessType === 'store' && (
-                  business.items && business.items.length > 0 ? (
-                    business.items.map(item => (
-                      <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
-                        {item.photo && (
-                          <div className="h-40 overflow-hidden">
-                            <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
+                
+                {/* Products/Menu Items/Rooms Grid */}
+                <div className={business.businessType === 'housing' ? "space-y-4" : "grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}>
+                  {/* Store Products */}
+                  {business.businessType === 'store' && (
+                    business.items && business.items.length > 0 ? (
+                      business.items.map(item => (
+                        <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
+                          {item.photo && (
+                            <div className="h-40 overflow-hidden">
+                              <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <div className="p-4">
+                            <div className="flex justify-between items-start">
+                              <h3 className="font-medium">{item.name}</h3>
+                              <div className="font-medium">${item.price.toFixed(2)}</div>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                            <div className="mt-2 flex items-center justify-between">
+                              <span className={`text-xs px-2 py-0.5 rounded ${item.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                {item.inStock ? 'In Stock' : 'Out of Stock'}
+                              </span>
+                              <div className="flex space-x-2">
+                                <button 
+                                  onClick={() => openProductModal(item)}
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Edit"
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button 
+                                  onClick={() => handleDeleteProduct(item.id)}
+                                  className="text-red-600 hover:text-red-800"
+                                  title="Delete"
+                                >
+                                  <FaTrash />
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        )}
-                        <div className="p-4">
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-medium">{item.name}</h3>
-                            <div className="font-medium">${item.price.toFixed(2)}</div>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                          <div className="mt-2 flex items-center justify-between">
-                            <span className={`text-xs px-2 py-0.5 rounded ${item.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {item.inStock ? 'In Stock' : 'Out of Stock'}
-                            </span>
-                            <div className="flex space-x-2">
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg">
+                        <p className="text-gray-500 mb-2">No products added yet.</p>
+                        <button 
+                          onClick={() => openProductModal()}
+                          className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
+                        >
+                          <FaPlus className="mr-1" /> Add your first product
+                        </button>
+                      </div>
+                    )
+                  )}
+                  
+                  {/* Restaurant Menu Items */}
+                  {business.businessType === 'restaurant' && (
+                    business.menu && business.menu.length > 0 ? (
+                      business.menu.map(item => (
+                        <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
+                          {item.photo && (
+                            <div className="h-40 overflow-hidden">
+                              <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <div className="p-4">
+                            <div className="flex justify-between items-start">
+                              <h3 className="font-medium">{item.name}</h3>
+                              <div className="font-medium">${item.price.toFixed(2)}</div>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              Category: {item.category}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                            <div className="mt-2 flex justify-end space-x-2">
                               <button 
                                 onClick={() => openProductModal(item)}
                                 className="text-blue-600 hover:text-blue-800"
@@ -519,488 +942,437 @@ const BusinessDashboard: React.FC = () => {
                             </div>
                           </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg">
+                        <p className="text-gray-500 mb-2">No menu items added yet.</p>
+                        <button 
+                          onClick={() => openProductModal()}
+                          className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
+                        >
+                          <FaPlus className="mr-1" /> Add your first menu item
+                        </button>
                       </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg">
-                      <p className="text-gray-500 mb-2">No products added yet.</p>
-                      <button 
-                        onClick={() => openProductModal()}
-                        className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
-                      >
-                        <FaPlus className="mr-1" /> Add your first product
-                      </button>
-                    </div>
-                  )
-                )}
-                
-                {/* Restaurant Menu Items */}
-                {business.businessType === 'restaurant' && (
-                  business.menu && business.menu.length > 0 ? (
-                    business.menu.map(item => (
-                      <div key={item.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
-                        {item.photo && (
-                          <div className="h-40 overflow-hidden">
-                            <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <div className="p-4">
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-medium">{item.name}</h3>
-                            <div className="font-medium">${item.price.toFixed(2)}</div>
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            Category: {item.category}
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                          <div className="mt-2 flex justify-end space-x-2">
-                            <button 
-                              onClick={() => openProductModal(item)}
-                              className="text-blue-600 hover:text-blue-800"
-                              title="Edit"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteProduct(item.id)}
-                              className="text-red-600 hover:text-red-800"
-                              title="Delete"
-                            >
-                              <FaTrash />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg">
-                      <p className="text-gray-500 mb-2">No menu items added yet.</p>
-                      <button 
-                        onClick={() => openProductModal()}
-                        className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
-                      >
-                        <FaPlus className="mr-1" /> Add your first menu item
-                      </button>
-                    </div>
-                  )
-                )}
-                
-                {/* Housing Rooms */}
-                {business.businessType === 'housing' && (
-                  business.rooms && business.rooms.length > 0 ? (
-                    business.rooms.map(room => (
-                      <div key={room.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
-                        {room.photos && room.photos.length > 0 && (
-                          <div className="h-48 overflow-hidden relative">
-                            <img src={room.photos[0]} alt={room.name} className="w-full h-full object-cover" />
-                            {room.photos.length > 1 && (
-                              <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                +{room.photos.length - 1} photos
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        <div className="p-4">
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-medium text-lg">{room.name}</h3>
-                            <div>
-                              <div className="font-bold">${room.price}/month</div>
-                            </div>
-                          </div>
-                          <div className="flex mb-2 text-sm">
-                            <div className="mr-4">{room.bedrooms} {room.bedrooms === 1 ? 'bed' : 'beds'}</div>
-                            <div>{room.bathrooms} {room.bathrooms === 1 ? 'bath' : 'baths'}</div>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-3">{room.description}</p>
-                          
-                          {room.amenities && room.amenities.length > 0 && (
-                            <div className="mb-3">
-                              <div className="text-xs font-medium text-gray-500 mb-1">Amenities:</div>
-                              <div className="flex flex-wrap gap-1">
-                                {room.amenities.map((amenity, i) => (
-                                  <span key={i} className="text-xs bg-gray-200 px-2 py-0.5 rounded">
-                                    {amenity}
-                                  </span>
-                                ))}
-                              </div>
+                    )
+                  )}
+                  
+                  {/* Housing Rooms */}
+                  {business.businessType === 'housing' && (
+                    business.rooms && business.rooms.length > 0 ? (
+                      business.rooms.map(room => (
+                        <div key={room.id} className="border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow">
+                          {room.photos && room.photos.length > 0 && (
+                            <div className="h-48 overflow-hidden relative">
+                              <img src={room.photos[0]} alt={room.name} className="w-full h-full object-cover" />
+                              {room.photos.length > 1 && (
+                                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                  +{room.photos.length - 1} photos
+                                </div>
+                              )}
                             </div>
                           )}
-                          
-                          <div className="flex items-center justify-between">
-                            <span className={`text-xs px-2 py-0.5 rounded ${room.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {room.available ? 'Available' : 'Not Available'}
-                            </span>
-                            <div className="flex space-x-2">
-                              <button 
-                                onClick={() => openProductModal(room)}
-                                className="text-blue-600 hover:text-blue-800"
-                                title="Edit"
-                              >
-                                <FaEdit />
-                              </button>
-                              <button 
-                                onClick={() => handleDeleteProduct(room.id)}
-                                className="text-red-600 hover:text-red-800"
-                                title="Delete"
-                              >
-                                <FaTrash />
-                              </button>
+                          <div className="p-4">
+                            <div className="flex justify-between items-start mb-2">
+                              <h3 className="font-medium text-lg">{room.name}</h3>
+                              <div>
+                                <div className="font-bold">${room.price}/month</div>
+                              </div>
+                            </div>
+                            <div className="flex mb-2 text-sm">
+                              <div className="mr-4">{room.bedrooms} {room.bedrooms === 1 ? 'bed' : 'beds'}</div>
+                              <div>{room.bathrooms} {room.bathrooms === 1 ? 'bath' : 'baths'}</div>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-3">{room.description}</p>
+                            
+                            {room.amenities && room.amenities.length > 0 && (
+                              <div className="mb-3">
+                                <div className="text-xs font-medium text-gray-500 mb-1">Amenities:</div>
+                                <div className="flex flex-wrap gap-1">
+                                  {room.amenities.map((amenity, i) => (
+                                    <span key={i} className="text-xs bg-gray-200 px-2 py-0.5 rounded">
+                                      {amenity}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs px-2 py-0.5 rounded ${room.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                {room.available ? 'Available' : 'Not Available'}
+                              </span>
+                              <div className="flex space-x-2">
+                                <button 
+                                  onClick={() => openProductModal(room)}
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Edit"
+                                >
+                                  <FaEdit />
+                                </button>
+                                <button 
+                                  onClick={() => handleDeleteProduct(room.id)}
+                                  className="text-red-600 hover:text-red-800"
+                                  title="Delete"
+                                >
+                                  <FaTrash />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-12 bg-gray-50 rounded-lg">
+                        <p className="text-gray-500 mb-2">No rooms added yet.</p>
+                        <button 
+                          onClick={() => openProductModal()}
+                          className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
+                        >
+                          <FaPlus className="mr-1" /> Add your first room
+                        </button>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <p className="text-gray-500 mb-2">No rooms added yet.</p>
-                      <button 
-                        onClick={() => openProductModal()}
-                        className="text-blue-600 hover:underline flex items-center justify-center mx-auto"
-                      >
-                        <FaPlus className="mr-1" /> Add your first room
-                      </button>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'reviews' && <ReviewManagement />}
-          
-          {/* Analytics Tab */}
-          {activeTab === 'analytics' && (
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold mb-6">Business Analytics</h2>
-              
-              {/* Analytics Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  <div className="text-gray-500 text-sm mb-1">Profile Views</div>
-                  <div className="text-3xl font-bold">
-                    {(() => {
-                      // Calculate views based on business id to create consistent data
-                      const baseViews = parseInt(business.id) * 7;
-                      const randomViews = baseViews + Math.floor(baseViews * 0.3);
-                      return randomViews;
-                    })()}
-                  </div>
-                  <div className="text-green-500 text-sm mt-1">
-                    ↑ {Math.floor(business.reviews?.length || 0) * 3 + 5}% from last week
-                  </div>
-                </div>
-                
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  <div className="text-gray-500 text-sm mb-1">Inquiries</div>
-                  <div className="text-3xl font-bold">
-                    {business.reviews?.filter(r => r.rating === undefined).length || 0}
-                  </div>
-                  <div className="text-sm mt-1">
-                    {business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0} responded
-                  </div>
-                </div>
-                
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  <div className="text-gray-500 text-sm mb-1">Engagement Rate</div>
-                  <div className="text-3xl font-bold">
-                    {(() => {
-                      // Calculate engagement based on reviews and profile views
-                      const totalReviews = business.reviews?.length || 0;
-                      const baseViews = parseInt(business.id) * 7;
-                      const engagementRate = Math.min(Math.round((totalReviews / baseViews) * 100) + 5, 100);
-                      return `${engagementRate}%`;
-                    })()}
-                  </div>
-                  <div className="text-gray-500 text-sm mt-1">Based on reviews and inquiries</div>
-                </div>
-              </div>
-              
-              {/* Rating Distribution */}
-              <div className="mb-8">
-                <h3 className="text-lg font-medium mb-4">Rating Distribution</h3>
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  {business.reviews && business.reviews.filter(r => r.rating !== undefined).length > 0 ? (
-                    <div className="space-y-3">
-                      {[5, 4, 3, 2, 1].map(rating => {
-                        const count = business.reviews?.filter(r => r.rating === rating).length || 0;
-                        const percentage = business.reviews && business.reviews.filter(r => r.rating !== undefined).length > 0
-                          ? Math.round((count / business.reviews.filter(r => r.rating !== undefined).length) * 100)
-                          : 0;
-                        
-                        return (
-                          <div key={rating} className="flex items-center">
-                            <div className="w-16 flex items-center">
-                              <span className="font-medium mr-1">{rating}</span>
-                              <FaStar className="text-yellow-400" />
-                            </div>
-                            <div className="flex-1 mx-2">
-                              <div className="h-3 bg-gray-200 rounded overflow-hidden">
-                                <div 
-                                  className="h-full bg-yellow-400"
-                                  style={{ width: `${percentage}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                            <div className="w-12 text-right font-medium">{percentage}%</div>
-                            <div className="w-12 text-right text-gray-500">({count})</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="text-center py-6 text-gray-500">
-                      No rating data available yet. Encourage customers to leave reviews.
-                    </div>
+                    )
                   )}
                 </div>
               </div>
-              
-              {/* Performance Over Time */}
-              <div className="mb-8">
-                <h3 className="text-lg font-medium mb-4">Performance Metrics</h3>
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Response Rate</h4>
-                      <div className="flex items-center">
-                        <div className="w-full bg-gray-200 rounded-full h-4 mr-2">
-                          {(() => {
-                            const inquiries = business.reviews?.filter(r => r.rating === undefined).length || 0;
-                            const responses = business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0;
-                            const responseRate = inquiries > 0 ? Math.round((responses / inquiries) * 100) : 0;
-                            
-                            return (
-                              <div 
-                                className="bg-blue-600 h-4 rounded-full" 
-                                style={{ width: `${responseRate}%` }}
-                              ></div>
-                            );
-                          })()}
-                        </div>
-                        <span className="text-gray-700 font-medium">
-                          {(() => {
-                            const inquiries = business.reviews?.filter(r => r.rating === undefined).length || 0;
-                            const responses = business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0;
-                            return inquiries > 0 ? Math.round((responses / inquiries) * 100) : 0;
-                          })()}%
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Percentage of inquiries you've responded to
-                      </p>
+            )}
+            
+            {activeTab === 'reviews' && <ReviewManagement />}
+            
+            {/* Analytics Tab */}
+            {activeTab === 'analytics' && (
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h2 className="text-xl font-semibold mb-6">Business Analytics</h2>
+                
+                {/* Analytics Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    <div className="text-gray-500 text-sm mb-1">Profile Views</div>
+                    <div className="text-3xl font-bold">
+                      {(() => {
+                        // Calculate views based on business id to create consistent data
+                        const baseViews = parseInt(business.id) * 7;
+                        const randomViews = baseViews + Math.floor(baseViews * 0.3);
+                        return randomViews;
+                      })()}
                     </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Customer Satisfaction</h4>
-                      <div className="flex items-center">
-                        <div className="w-full bg-gray-200 rounded-full h-4 mr-2">
-                          {(() => {
-                            // Calculate satisfaction based on ratings
-                            const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
-                            const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
-                            const avgRating = reviewsWithRatings.length > 0 ? totalRatings / reviewsWithRatings.length : 0;
-                            const satisfactionPercentage = Math.round((avgRating / 5) * 100);
-                            
-                            return (
-                              <div 
-                                className={`h-4 rounded-full ${satisfactionPercentage >= 80 ? 'bg-green-500' : satisfactionPercentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                style={{ width: `${satisfactionPercentage}%` }}
-                              ></div>
-                            );
-                          })()}
-                        </div>
-                        <span className="text-gray-700 font-medium">
-                          {(() => {
-                            const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
-                            const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
-                            const avgRating = reviewsWithRatings.length > 0 ? totalRatings / reviewsWithRatings.length : 0;
-                            return Math.round((avgRating / 5) * 100);
-                          })()}%
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Based on {business.reviews?.filter(r => r.rating !== undefined).length || 0} ratings
-                      </p>
+                    <div className="text-green-500 text-sm mt-1">
+                      ↑ {Math.floor(business.reviews?.length || 0) * 3 + 5}% from last week
                     </div>
                   </div>
                   
-                  <div className="mt-6">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Reviews Timeline</h4>
-                    {business.reviews && business.reviews.length > 0 ? (
-                      <div className="border rounded overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Type
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                User
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Rating
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Response
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {[...business.reviews]
-                              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                              .slice(0, 5)
-                              .map((review, index) => (
-                              <tr key={index} className="hover:bg-gray-50">
-                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                                  {new Date(review.date).toLocaleDateString()}
-                                </td>
-                                <td className="px-4 py-2 whitespace-nowrap text-sm">
-                                  {review.rating !== undefined ? (
-                                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
-                                      Review
-                                    </span>
-                                  ) : (
-                                    <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                      Inquiry
-                                    </span>
-                                  )}
-                                </td>
-                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                                  {review.userName}
-                                </td>
-                                <td className="px-4 py-2 whitespace-nowrap">
-                                  {review.rating !== undefined ? (
-                                    <div className="flex text-yellow-400">
-                                      {[...Array(5)].map((_, i) => (
-                                        <FaStar 
-                                          key={i} 
-                                          className={i < review.rating! ? "text-yellow-400" : "text-gray-200"} 
-                                          size={14} 
-                                        />
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <span className="text-gray-400">-</span>
-                                  )}
-                                </td>
-                                <td className="px-4 py-2 whitespace-nowrap text-sm">
-                                  {review.ownerReply ? (
-                                    <span className="text-green-500">Responded</span>
-                                  ) : (
-                                    <span className="text-red-500">Pending</span>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    <div className="text-gray-500 text-sm mb-1">Inquiries</div>
+                    <div className="text-3xl font-bold">
+                      {business.reviews?.filter(r => r.rating === undefined).length || 0}
+                    </div>
+                    <div className="text-sm mt-1">
+                      {business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0} responded
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    <div className="text-gray-500 text-sm mb-1">Engagement Rate</div>
+                    <div className="text-3xl font-bold">
+                      {(() => {
+                        // Calculate engagement based on reviews and profile views
+                        const totalReviews = business.reviews?.length || 0;
+                        const baseViews = parseInt(business.id) * 7;
+                        const engagementRate = Math.min(Math.round((totalReviews / baseViews) * 100) + 5, 100);
+                        return `${engagementRate}%`;
+                      })()}
+                    </div>
+                    <div className="text-gray-500 text-sm mt-1">Based on reviews and inquiries</div>
+                  </div>
+                </div>
+                
+                {/* Rating Distribution */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-medium mb-4">Rating Distribution</h3>
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    {business.reviews && business.reviews.filter(r => r.rating !== undefined).length > 0 ? (
+                      <div className="space-y-3">
+                        {[5, 4, 3, 2, 1].map(rating => {
+                          const count = business.reviews?.filter(r => r.rating === rating).length || 0;
+                          const percentage = business.reviews && business.reviews.filter(r => r.rating !== undefined).length > 0
+                            ? Math.round((count / business.reviews.filter(r => r.rating !== undefined).length) * 100)
+                            : 0;
+                          
+                          return (
+                            <div key={rating} className="flex items-center">
+                              <div className="w-16 flex items-center">
+                                <span className="font-medium mr-1">{rating}</span>
+                                <FaStar className="text-yellow-400" />
+                              </div>
+                              <div className="flex-1 mx-2">
+                                <div className="h-3 bg-gray-200 rounded overflow-hidden">
+                                  <div 
+                                    className="h-full bg-yellow-400"
+                                    style={{ width: `${percentage}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                              <div className="w-12 text-right font-medium">{percentage}%</div>
+                              <div className="w-12 text-right text-gray-500">({count})</div>
+                            </div>
+                          );
+                        })}
                       </div>
                     ) : (
-                      <div className="text-center py-4 text-gray-500 border rounded">
-                        No review data available yet
+                      <div className="text-center py-6 text-gray-500">
+                        No rating data available yet. Encourage customers to leave reviews.
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-              
-              {/* Business Performance */}
-              <div>
-                <h3 className="text-lg font-medium mb-4">Business Performance</h3>
-                <div className="bg-white border rounded-lg p-4 shadow-sm">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="border rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">
-                        {business.businessType === 'store' ? 'Products' : 
-                         business.businessType === 'restaurant' ? 'Menu Items' : 'Rooms'}
-                      </h4>
-                      <div className="text-2xl font-bold mb-1">
-                        {business.businessType === 'store' ? (business.items?.length || 0) : 
-                         business.businessType === 'restaurant' ? (business.menu?.length || 0) : 
-                         (business.rooms?.length || 0)}
+                
+                {/* Performance Over Time */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-medium mb-4">Performance Metrics</h3>
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-700 mb-2">Response Rate</h4>
+                        <div className="flex items-center">
+                          <div className="w-full bg-gray-200 rounded-full h-4 mr-2">
+                            {(() => {
+                              const inquiries = business.reviews?.filter(r => r.rating === undefined).length || 0;
+                              const responses = business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0;
+                              const responseRate = inquiries > 0 ? Math.round((responses / inquiries) * 100) : 0;
+                              
+                              return (
+                                <div 
+                                  className="bg-blue-600 h-4 rounded-full" 
+                                  style={{ width: `${responseRate}%` }}
+                                ></div>
+                              );
+                            })()}
+                          </div>
+                          <span className="text-gray-700 font-medium">
+                            {(() => {
+                              const inquiries = business.reviews?.filter(r => r.rating === undefined).length || 0;
+                              const responses = business.reviews?.filter(r => r.rating === undefined && r.ownerReply).length || 0;
+                              return inquiries > 0 ? Math.round((responses / inquiries) * 100) : 0;
+                            })()}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Percentage of inquiries you've responded to
+                        </p>
                       </div>
-                      <div className="text-xs text-gray-500">
-                        {business.businessType === 'store' ? 
-                          `${business.items?.filter(i => i.inStock).length || 0} in stock` : 
-                         business.businessType === 'restaurant' ? 
-                          'Available menu items' : 
-                          `${business.rooms?.filter(r => r.available).length || 0} available`}
+                      
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-700 mb-2">Customer Satisfaction</h4>
+                        <div className="flex items-center">
+                          <div className="w-full bg-gray-200 rounded-full h-4 mr-2">
+                            {(() => {
+                              // Calculate satisfaction based on ratings
+                              const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
+                              const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
+                              const avgRating = reviewsWithRatings.length > 0 ? totalRatings / reviewsWithRatings.length : 0;
+                              const satisfactionPercentage = Math.round((avgRating / 5) * 100);
+                              
+                              return (
+                                <div 
+                                  className={`h-4 rounded-full ${satisfactionPercentage >= 80 ? 'bg-green-500' : satisfactionPercentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                  style={{ width: `${satisfactionPercentage}%` }}
+                                ></div>
+                              );
+                            })()}
+                          </div>
+                          <span className="text-gray-700 font-medium">
+                            {(() => {
+                              const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
+                              const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
+                              const avgRating = reviewsWithRatings.length > 0 ? totalRatings / reviewsWithRatings.length : 0;
+                              return Math.round((avgRating / 5) * 100);
+                            })()}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Based on {business.reviews?.filter(r => r.rating !== undefined).length || 0} ratings
+                        </p>
                       </div>
                     </div>
                     
-                    <div className="border rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Average Response Time</h4>
-                      <div className="text-2xl font-bold mb-1">
-                        {(() => {
-                          // Calculate a consistent response time based on business id
-                          return Math.max(12, Math.floor(24 / parseInt(business.id.substring(0, 1) || '1')));
-                        })()}h
-                      </div>
-                      <div className="text-xs text-gray-500">Average time to respond to inquiries</div>
-                    </div>
-                    
-                    <div className="border rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Completion Rate</h4>
-                      <div className="text-2xl font-bold mb-1">
-                        {(() => {
-                          // Business info completion percentage
-                          let total = 5; // base fields
-                          let completed = 0;
-                          
-                          if (business.name) completed++;
-                          if (business.description) completed++;
-                          if (business.location) completed++;
-                          if (business.contactInfo) completed++;
-                          if (business.businessHours) completed++;
-                          
-                          // Add product related checks
-                          if (business.businessType === 'store' && business.items && business.items.length > 0) {
-                            total++;
-                            completed++;
-                          } else if (business.businessType === 'restaurant' && business.menu && business.menu.length > 0) {
-                            total++;
-                            completed++;
-                          } else if (business.businessType === 'housing' && business.rooms && business.rooms.length > 0) {
-                            total++;
-                            completed++;
-                          }
-                          
-                          // Photos
-                          if (business.photos && business.photos.length > 0) {
-                            total++;
-                            completed++;
-                          }
-                          
-                          return `${Math.round((completed / total) * 100)}%`;
-                        })()}
-                      </div>
-                      <div className="text-xs text-gray-500">Business profile completion</div>
+                    <div className="mt-6">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Reviews Timeline</h4>
+                      {business.reviews && business.reviews.length > 0 ? (
+                        <div className="border rounded overflow-hidden">
+                          <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                              <tr>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  Date
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  Type
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  User
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  Rating
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  Response
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                              {[...business.reviews]
+                                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                                .slice(0, 5)
+                                .map((review, index) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
+                                    {new Date(review.date).toLocaleDateString()}
+                                  </td>
+                                  <td className="px-4 py-2 whitespace-nowrap text-sm">
+                                    {review.rating !== undefined ? (
+                                      <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                                        Review
+                                      </span>
+                                    ) : (
+                                      <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                                        Inquiry
+                                      </span>
+                                    )}
+                                  </td>
+                                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
+                                    {review.userName}
+                                  </td>
+                                  <td className="px-4 py-2 whitespace-nowrap">
+                                    {review.rating !== undefined ? (
+                                      <div className="flex text-yellow-400">
+                                        {[...Array(5)].map((_, i) => (
+                                          <FaStar 
+                                            key={i} 
+                                            className={i < review.rating! ? "text-yellow-400" : "text-gray-200"} 
+                                            size={14} 
+                                          />
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </td>
+                                  <td className="px-4 py-2 whitespace-nowrap text-sm">
+                                    {review.ownerReply ? (
+                                      <span className="text-green-500">Responded</span>
+                                    ) : (
+                                      <span className="text-red-500">Pending</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 text-gray-500 border rounded">
+                          No review data available yet
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
+                
+                {/* Business Performance */}
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Business Performance</h3>
+                  <div className="bg-white border rounded-lg p-4 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="border rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-600 mb-1">
+                          {business.businessType === 'store' ? 'Products' : 
+                           business.businessType === 'restaurant' ? 'Menu Items' : 'Rooms'}
+                        </h4>
+                        <div className="text-2xl font-bold mb-1">
+                          {business.businessType === 'store' ? (business.items?.length || 0) : 
+                           business.businessType === 'restaurant' ? (business.menu?.length || 0) : 
+                           (business.rooms?.length || 0)}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {business.businessType === 'store' ? 
+                            `${business.items?.filter(i => i.inStock).length || 0} in stock` : 
+                           business.businessType === 'restaurant' ? 
+                            'Available menu items' : 
+                            `${business.rooms?.filter(r => r.available).length || 0} available`}
+                        </div>
+                      </div>
+                      
+                      <div className="border rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-600 mb-1">Average Response Time</h4>
+                        <div className="text-2xl font-bold mb-1">
+                          {(() => {
+                            // Calculate a consistent response time based on business id
+                            return Math.max(12, Math.floor(24 / parseInt(business.id.substring(0, 1) || '1')));
+                          })()}h
+                        </div>
+                        <div className="text-xs text-gray-500">Average time to respond to inquiries</div>
+                      </div>
+                      
+                      <div className="border rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-600 mb-1">Completion Rate</h4>
+                        <div className="text-2xl font-bold mb-1">
+                          {(() => {
+                            // Business info completion percentage
+                            let total = 5; // base fields
+                            let completed = 0;
+                            
+                            if (business.name) completed++;
+                            if (business.description) completed++;
+                            if (business.location) completed++;
+                            if (business.contactInfo) completed++;
+                            if (business.businessHours) completed++;
+                            
+                            // Add product related checks
+                            if (business.businessType === 'store' && business.items && business.items.length > 0) {
+                              total++;
+                              completed++;
+                            } else if (business.businessType === 'restaurant' && business.menu && business.menu.length > 0) {
+                              total++;
+                              completed++;
+                            } else if (business.businessType === 'housing' && business.rooms && business.rooms.length > 0) {
+                              total++;
+                              completed++;
+                            }
+                            
+                            // Photos
+                            if (business.photos && business.photos.length > 0) {
+                              total++;
+                              completed++;
+                            }
+                            
+                            return `${Math.round((completed / total) * 100)}%`;
+                          })()}
+                        </div>
+                        <div className="text-xs text-gray-500">Business profile completion</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Usage Tips */}
+                <div className="mt-8 bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-blue-800 mb-2">Analytics Insights</h3>
+                  <ul className="text-sm text-blue-700 space-y-2">
+                    <li>• Your business has received {business.reviews?.length || 0} total interactions.</li>
+                    <li>• {business.reviews?.filter(r => r.ownerReply).length || 0} of your responses have been sent to customers.</li>
+                    <li>• Your average rating is {
+                      (() => {
+                        const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
+                        const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
+                        const avgRating = reviewsWithRatings.length > 0 ? (totalRatings / reviewsWithRatings.length).toFixed(1) : "N/A";
+                        return avgRating;
+                      })()
+                    } out of 5.</li>
+                  </ul>
+                </div>
               </div>
-              
-              {/* Usage Tips */}
-              <div className="mt-8 bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-medium text-blue-800 mb-2">Analytics Insights</h3>
-                <ul className="text-sm text-blue-700 space-y-2">
-                  <li>• Your business has received {business.reviews?.length || 0} total interactions.</li>
-                  <li>• {business.reviews?.filter(r => r.ownerReply).length || 0} of your responses have been sent to customers.</li>
-                  <li>• Your average rating is {
-                    (() => {
-                      const reviewsWithRatings = business.reviews?.filter(r => r.rating !== undefined) || [];
-                      const totalRatings = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
-                      const avgRating = reviewsWithRatings.length > 0 ? (totalRatings / reviewsWithRatings.length).toFixed(1) : "N/A";
-                      return avgRating;
-                    })()
-                  } out of 5.</li>
-                </ul>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       
@@ -1013,6 +1385,186 @@ const BusinessDashboard: React.FC = () => {
           onClose={closeProductModal}
           isOpen={showProductModal}
         />
+      )}
+
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4">
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
+              onClick={() => setShowChangePasswordModal(false)}
+            ></div>
+            
+            <div className="relative bg-white rounded-lg max-w-md w-full mx-auto shadow-xl p-6 z-50">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Change Password</h3>
+                <button 
+                  onClick={() => setShowChangePasswordModal(false)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    value={passwordForm.currentPassword}
+                    onChange={handlePasswordFormChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordForm.newPassword}
+                    onChange={handlePasswordFormChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordForm.confirmPassword}
+                    onChange={handlePasswordFormChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+                    required
+                  />
+                  {passwordForm.newPassword && passwordForm.confirmPassword && 
+                   passwordForm.newPassword !== passwordForm.confirmPassword && (
+                    <p className="mt-1 text-xs text-red-500">Passwords do not match</p>
+                  )}
+                </div>
+                
+                {formStatus.password.success && (
+                  <div className="p-2 bg-green-50 text-green-700 rounded-lg">
+                    Password changed successfully!
+                  </div>
+                )}
+                
+                {formStatus.password.error && (
+                  <div className="p-2 bg-red-50 text-red-700 rounded-lg">
+                    {formStatus.password.error}
+                  </div>
+                )}
+                
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowChangePasswordModal(false)}
+                    className="mr-2 px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm bg-baby-blue text-white rounded-md hover:bg-blue-500"
+                    disabled={passwordForm.newPassword !== passwordForm.confirmPassword}
+                  >
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Photo Upload Modal */}
+      {showPhotoModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4">
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
+              onClick={() => setShowPhotoModal(false)}
+            ></div>
+            
+            <div className="relative bg-white rounded-lg max-w-md w-full mx-auto shadow-xl p-6 z-50">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Add Business Photo</h3>
+                <button 
+                  onClick={() => setShowPhotoModal(false)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                  <input
+                    type="text"
+                    value={photoUrl}
+                    onChange={(e) => {
+                      setPhotoUrl(e.target.value);
+                      // Clear any error when the user types
+                      if (photoError) setPhotoError(null);
+                    }}
+                    placeholder="https://example.com/your-image.jpg"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-baby-blue focus:border-transparent"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Enter a URL to an image. The image should be publicly accessible.
+                  </p>
+                  {photoError && (
+                    <p className="mt-1 text-xs text-red-500">{photoError}</p>
+                  )}
+                </div>
+                
+                {photoUrl && (
+                  <div className="border rounded-lg p-2">
+                    <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                    <img 
+                      src={photoUrl} 
+                      alt="Preview" 
+                      className="max-h-40 mx-auto object-contain"
+                      onError={(e) => {
+                        // Set error message if image fails to load
+                        setPhotoError('Unable to load image from this URL. Please check the URL and try again.');
+                        // Show error border on invalid image
+                        (e.target as HTMLElement).classList.add('border', 'border-red-500');
+                      }}
+                      onLoad={() => {
+                        // Clear any errors when image loads successfully
+                        if (photoError) setPhotoError(null);
+                      }}
+                    />
+                  </div>
+                )}
+                
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowPhotoModal(false)}
+                    className="mr-2 px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSavePhoto}
+                    className="px-4 py-2 text-sm bg-baby-blue text-white rounded-md hover:bg-blue-500"
+                  >
+                    Add Photo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
