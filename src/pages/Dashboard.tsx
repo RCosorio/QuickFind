@@ -305,7 +305,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-blue-200 to-white flex flex-col">
       {/* Header */}
       <header className="sticky top-4 z-10 mb-4">
         <div className="container mx-auto px-4">
