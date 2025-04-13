@@ -12,20 +12,36 @@ const NotFound = () => <div className="p-8 text-center"><h1 className="text-3xl"
 
 // Protected route component
 const ProtectedRoute = ({ children, requiresBusinessRole = false }: { children: React.ReactElement, requiresBusinessRole?: boolean }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, businessAccount } = useAuth();
+  
+  console.log("ProtectedRoute check:", { 
+    isAuthenticated, 
+    hasUser: !!user, 
+    hasBusinessAccount: !!businessAccount, 
+    requiresBusinessRole 
+  });
   
   if (!isAuthenticated) {
+    console.log("Not authenticated, redirecting to login");
     return <Navigate to="/login" replace />;
   }
   
-  if (requiresBusinessRole && user?.role !== 'business') {
-    return <Navigate to="/dashboard" replace />;
+  // For business dashboard, check if we have a business account
+  if (requiresBusinessRole && !businessAccount) {
+    console.log("Business account required but not found, redirecting to dashboard");
+    return <Navigate to="/login" replace />;
   }
   
-  if (!requiresBusinessRole && user?.role !== 'student') {
+  // For regular dashboard, redirect business accounts to business dashboard
+  if (!requiresBusinessRole && businessAccount) {
+    console.log("User has a business account, redirecting to business dashboard");
     return <Navigate to="/business-dashboard" replace />;
   }
   
+  console.log("Rendering protected content for:", {
+    user: user?.email,
+    businessAccount: businessAccount?.email
+  });
   return children;
 };
 

@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'business';
+export type UserRole = 'student';
 export type BusinessType = 'housing' | 'restaurant' | 'store';
 
 export interface User {
@@ -8,6 +8,13 @@ export interface User {
   lastName: string;
   role: UserRole;
   password?: string; // Only for auth, never sent to client
+}
+
+export interface BusinessAccount {
+  id: string;
+  email: string;
+  password?: string; // Only for auth, never sent to client
+  businessId: string; // Reference to the business this account is for
 }
 
 export interface Business {
@@ -83,4 +90,8 @@ export interface UserData {
 
 export interface ReviewData {
   reviews: Review[];
+}
+
+export interface BusinessAccountData {
+  businessAccounts: BusinessAccount[];
 } 

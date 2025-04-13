@@ -162,8 +162,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price ($)
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                  Price (₱)
                   {businessType === 'housing' ? ' per month' : ''}
                 </label>
                 <input

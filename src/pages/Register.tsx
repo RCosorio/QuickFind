@@ -14,6 +14,7 @@ const Register: React.FC = () => {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const { register, loading } = useAuth();
   const navigate = useNavigate();
@@ -77,7 +78,25 @@ const Register: React.FC = () => {
       );
       
       if (success) {
-        navigate('/dashboard');
+        setSuccessMessage('Account created successfully! Redirecting to login...');
+        
+        // Clear form data
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+        
+        // Navigate to login page after a short delay
+        setTimeout(() => {
+          navigate('/login', { 
+            state: { 
+              message: 'Registration successful! Please sign in with your new account.' 
+            } 
+          });
+        }, 1500);
       }
     } catch (err) {
       setErrors({ 
@@ -102,6 +121,13 @@ const Register: React.FC = () => {
         {errors.form && (
           <div className="mb-4 p-3 bg-red-100 border border-red-200 rounded-lg text-red-700 text-sm">
             {errors.form}
+          </div>
+        )}
+        
+        {successMessage && (
+          <div className="mb-4 p-3 bg-green-100 border border-green-200 rounded-lg text-green-700 text-sm flex items-center">
+            <FaCheckCircle className="mr-2" />
+            {successMessage}
           </div>
         )}
         

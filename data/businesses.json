@@ -66,6 +66,14 @@
           "comment": "what again yes",
           "date": "2025-04-02",
           "businessId": "1"
+        },
+        {
+          "id": "419124b5-4115-4d94-ad2c-ac1d6f68c876",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "EY ES DI haha",
+          "comment": "Do you sell stuff here?\n",
+          "date": "2025-04-13",
+          "businessId": "1"
         }
       ],
       "items": [
@@ -538,7 +546,7 @@
       "description": "Everything you need to make your house a home. Quality furniture, decor, and household essentials at affordable prices.",
       "location": "789 Interior Lane, Chicago, IL",
       "contactInfo": "312-555-9034",
-      "rating": 4.3,
+      "rating": 4.5,
       "photos": [
         "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         "https://images.unsplash.com/photo-1583847268964-b28fef5b6b95?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -570,6 +578,27 @@
           "date": "2024-01-15",
           "ownerReply": "Yes, we offer assembly services for a small fee. Please inquire at the time of purchase for details.",
           "ownerReplyDate": "2024-01-16"
+        },
+        {
+          "id": "e93a4b0a-90dc-4e73-aa4c-6c164ed87444",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "THE ASD asd",
+          "comment": "hahah",
+          "date": "2025-04-07",
+          "businessId": "store-103",
+          "rating": 5,
+          "ownerReply": "test1",
+          "ownerReplyDate": "2025-04-07"
+        },
+        {
+          "id": "9fa38728-04cb-42e9-9598-9f4f57d2d232",
+          "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+          "userName": "THE ASD asd",
+          "comment": "hahah2",
+          "date": "2025-04-07",
+          "businessId": "store-103",
+          "ownerReply": "testetsetstest2",
+          "ownerReplyDate": "2025-04-07"
         }
       ],
       "items": [
@@ -599,15 +628,6 @@
           "category": "Kitchen",
           "inStock": true,
           "photo": "https://images.unsplash.com/photo-1603199866259-80b3c0b38b0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          "id": "he-004",
-          "name": "LED Floor Lamp",
-          "description": "Modern floor lamp with adjustable brightness and color temperature",
-          "price": 129.99,
-          "category": "Lighting",
-          "inStock": true,
-          "photo": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
       ]
     },
@@ -1897,19 +1917,23 @@
           "id": "cvr-001",
           "name": "Shared Two Bedroom",
           "description": "Furnished 2 bedroom/1 bathroom apartment with shared common areas and individual leases",
-          "price": 950,
-          "category": "Shared",
+          "price": 900,
+          "bedrooms": 1,
+          "bathrooms": 1,
           "available": true,
-          "photo": "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          "photos": [],
+          "amenities": []
         },
         {
           "id": "cvr-002",
           "name": "Private Studio",
           "description": "Compact 400 sq ft studio with full kitchen, furnished options available",
-          "price": 1350,
-          "category": "Studio",
+          "price": 1300,
+          "bedrooms": 1,
+          "bathrooms": 1,
           "available": true,
-          "photo": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          "photos": [],
+          "amenities": []
         },
         {
           "id": "cvr-003",
@@ -1928,6 +1952,20 @@
           "category": "2 Bedroom",
           "available": true,
           "photo": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        },
+        {
+          "id": "room-1744023177792",
+          "name": "GLE 703",
+          "description": "jiahsvijaejtva",
+          "price": 10000000,
+          "bedrooms": 10,
+          "bathrooms": 2,
+          "available": false,
+          "photos": [],
+          "amenities": [
+            "Wifi",
+            "Parking"
+          ]
         }
       ]
     },

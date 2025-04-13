@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaLock, FaSchool, FaSearch } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FaUser, FaEnvelope, FaLock, FaSchool, FaSearch, FaCheckCircle } from 'react-icons/fa';
 import FormInput from '../components/auth/FormInput';
 import Button from '../components/auth/Button';
 import { useAuth } from '../context/AuthContext';
@@ -9,28 +9,56 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const { login, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check for success message in location state (from registration)
+  useEffect(() => {
+    if (location.state && (location.state as any).message) {
+      setSuccessMessage((location.state as any).message);
+      
+      // Clear the message from location state after displaying it
+      window.history.replaceState({}, document.title);
+      
+      // Clear success message after 5 seconds
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     
+    // Clear previous error and success message
+    setError('');
+    setSuccessMessage(null);
+    
+    // Validate inputs
     if (!email || !password) {
       setError('Please enter both email and password');
       return;
     }
     
     try {
+      // Try regular user login
       const success = await login(email, password);
+      console.log("Login result in Login.tsx:", { success, email });
+      
       if (success) {
         navigate('/dashboard');
       } else {
-        setError('Invalid email or password');
+        // If login failed, it could be because this is a business account
+        setError('Invalid credentials or this might be a business account. Please use the Business Portal below if you have a business account.');
       }
-    } catch (err) {
-      setError('An error occurred. Please try again later.');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Invalid email or password');
     }
   };
 
@@ -56,6 +84,13 @@ const Login: React.FC = () => {
         {error && (
           <div className="mb-4 p-3 bg-red-100 border border-red-200 rounded-lg text-red-700 text-sm">
             {error}
+          </div>
+        )}
+        
+        {successMessage && (
+          <div className="mb-4 p-3 bg-green-100 border border-green-200 rounded-lg text-green-700 text-sm flex items-center">
+            <FaCheckCircle className="mr-2" />
+            {successMessage}
           </div>
         )}
         

@@ -40,7 +40,41 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
 
   // Update business state if props change
   useEffect(() => {
+    console.log("Business details updated from props:", initialBusiness);
+    console.log("Business has reviews:", initialBusiness.reviews?.length || 0);
     setBusiness(initialBusiness);
+    
+    // ENHANCED: Always fetch reviews directly when component mounts or business changes
+    const fetchReviews = async () => {
+      try {
+        if (initialBusiness.id) {
+          console.log(`Fetching reviews directly for business: ${initialBusiness.id}`);
+          const fetchedReviews = await reviewApi.getForBusiness(initialBusiness.id);
+          console.log(`Fetched ${fetchedReviews.length} reviews from API:`, 
+            fetchedReviews.map(r => ({ id: r.id, userName: r.userName, comment: r.comment?.substring(0, 20) })));
+          
+          // Always update with the latest reviews
+          const updatedBusiness = {
+            ...initialBusiness,
+            reviews: fetchedReviews,
+            // Recalculate rating based on fetched reviews
+            rating: fetchedReviews.length > 0 
+              ? fetchedReviews
+                  .filter(r => r.rating !== undefined)
+                  .reduce((sum, r) => sum + (r.rating || 0), 0) / 
+                fetchedReviews.filter(r => r.rating !== undefined).length
+              : initialBusiness.rating
+          };
+          
+          console.log('Setting business state with', fetchedReviews.length, 'reviews');
+          setBusiness(updatedBusiness);
+        }
+      } catch (error) {
+        console.error('Error fetching reviews for business', error);
+      }
+    };
+    
+    fetchReviews();
   }, [initialBusiness]);
 
   const getTypeIcon = () => {
@@ -222,7 +256,7 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
         <div className="flex-1">
           <div className="flex justify-between">
             <h4 className="font-medium">{item.name}</h4>
-            <p className="font-medium text-gray-700">${item.price.toFixed(2)}</p>
+            <p className="font-medium text-gray-700">₱{item.price.toFixed(2)}</p>
           </div>
           <p className="text-sm text-gray-600">{item.description}</p>
           {item.available !== undefined && (
@@ -274,7 +308,7 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
         <div className="p-3">
           <div className="flex justify-between items-start">
             <h4 className="font-medium">{item.name}</h4>
-            <p className="font-medium text-gray-700">${item.price.toFixed(2)}</p>
+            <p className="font-medium text-gray-700">₱{item.price.toFixed(2)}</p>
           </div>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">{item.description}</p>
           <div className="mt-2">
@@ -318,7 +352,7 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
           <div className="flex justify-between items-start">
             <h4 className="font-medium text-lg">{unit.name}</h4>
             <div>
-              <p className="font-bold text-gray-800">${unit.price.toFixed(0)}</p>
+              <p className="font-bold text-gray-800">₱{unit.price.toFixed(0)}</p>
               <p className="text-xs text-gray-500">per month</p>
             </div>
           </div>
@@ -355,13 +389,34 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
 
   // Render reviews with inquiry form
   const renderReviews = () => {
+    console.log("Rendering reviews section");
+    console.log("Business state:", { 
+      id: business.id, 
+      name: business.name,
+      hasReviews: !!business.reviews?.length,
+      reviewsCount: business.reviews?.length || 0 
+    });
+    
     // If no reviews, show empty state but still show the form
     const hasReviews = business.reviews && business.reviews.length > 0;
+    
+    // Log review details if they exist
+    if (hasReviews) {
+      console.log("Reviews to display:", business.reviews?.map(review => ({
+        id: review.id,
+        userName: review.userName,
+        date: review.date,
+        comment: review.comment?.substring(0, 20) + '...'
+      })));
+    }
     
     // Sort reviews by date (most recent first)
     const sortedReviews = hasReviews && business.reviews 
       ? [...business.reviews].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       : [];
+
+    // Access user data more safely
+    const userIdExists = user && user.id !== undefined && user.id !== null;
 
     return (
       <div className="space-y-6">
@@ -380,7 +435,7 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
           </div>
         )}
         
-        {/* Review/Inquiry Form - only show if user is logged in */}
+        {/* Review/Inquiry Form - only show if user is logged in and has ID */}
         {user ? (
           <div 
             ref={reviewFormRef}
@@ -402,132 +457,192 @@ const BusinessDetails: React.FC<BusinessDetailsProps> = ({ initialBusiness, onCl
               </div>
             )}
             
-            <form 
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (!user) return;
-                
-                setIsSubmitting(true);
-                setSubmitError('');
-                setSubmitSuccess('');
-                
-                try {
-                  // Prepare review data - only include rating if not an inquiry
-                  const reviewData: any = {
-                    userId: user.id,
-                    userName: `${user.firstName} ${user.lastName}`,
-                    comment: reviewText
-                  };
-                  
-                  // Only include rating if this is a review (not an inquiry)
-                  if (!isInquiry) {
-                    reviewData.rating = rating;
-                  }
-                  
-                  // Submit review/inquiry
-                  await reviewApi.add(business.id, reviewData);
-                  
-                  setReviewText('');
-                  setRating(5);
-                  setIsInquiry(false);
-                  setSubmitSuccess(isInquiry ? 'Your inquiry has been submitted!' : 'Your review has been submitted!');
-                  
-                  // Refresh the business data without page reload
-                  try {
-                    const updatedBusiness = await businessApi.getById(business.id);
-                    // This will ensure we have the latest data including the new review
-                    setBusiness(updatedBusiness);
-                  } catch (err) {
-                    console.error('Error refreshing business data:', err);
-                  }
-                } catch (error) {
-                  console.error('Error submitting review:', error);
-                  setSubmitError(`Failed to submit your ${isInquiry ? 'inquiry' : 'review'}. Please try again.`);
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
-            >
-              {/* Toggle for Review/Inquiry type */}
-              <div className="mb-4 flex items-center">
-                <span className="text-sm font-medium text-gray-700 mr-2">This is an:</span>
-                <div className="flex bg-gray-200 rounded-full p-1">
-                  <button
-                    type="button"
-                    className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
-                      !isInquiry 
-                        ? 'bg-baby-blue text-white' 
-                        : 'text-gray-600 hover:bg-gray-300'
-                    }`}
-                    onClick={() => setIsInquiry(false)}
-                  >
-                    Review
-                  </button>
-                  <button
-                    type="button"
-                    className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
-                      isInquiry 
-                        ? 'bg-baby-blue text-white' 
-                        : 'text-gray-600 hover:bg-gray-300'
-                    }`}
-                    onClick={() => setIsInquiry(true)}
-                  >
-                    Inquiry
-                  </button>
-                </div>
+            {!userIdExists ? (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4">
+                User ID is not available. Please log out and log in again.
               </div>
-              
-              {/* Only show rating if not an inquiry */}
-              {!isInquiry && (
-                <div className="mb-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Rating
-                  </label>
-                  <div className="flex space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setRating(star)}
-                        className="text-2xl focus:outline-none"
-                      >
-                        <FaStar 
-                          className={star <= rating ? "text-yellow-400" : "text-gray-300"} 
-                        />
-                      </button>
-                    ))}
+            ) : (
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!user) return;
+                  
+                  console.log("Starting review submission process");
+                  console.log("User:", user);
+                  setIsSubmitting(true);
+                  setSubmitError('');
+                  setSubmitSuccess('');
+                  
+                  try {
+                    // Make sure we have valid user data
+                    if (!user.id) {
+                      console.error("Invalid user ID:", user.id);
+                      setSubmitError("User ID is not available. Please log out and log in again.");
+                      return;
+                    }
+                    
+                    // Ensure we have proper user names
+                    const firstName = user.firstName || 'Guest';
+                    const lastName = user.lastName || `${Math.floor(Math.random() * 1000)}`;
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    
+                    // Prepare review data - only include rating if not an inquiry
+                    const reviewData: any = {
+                      userId: user.id,
+                      userName: fullName !== ' ' ? fullName : 'Guest User',
+                      comment: reviewText
+                    };
+                    
+                    console.log("User ID from context:", user.id);
+                    console.log("Type of user.id:", typeof user.id);
+                    
+                    // Only include rating if this is a review (not an inquiry)
+                    if (!isInquiry) {
+                      reviewData.rating = rating;
+                    }
+                    
+                    console.log("Submitting review/inquiry data:", reviewData);
+                    console.log("Business ID:", business.id);
+                    console.log("Type of business.id:", typeof business.id);
+                    
+                    // Submit review/inquiry
+                    const submittedReview = await reviewApi.add(business.id, reviewData);
+                    console.log("Review submitted successfully:", submittedReview);
+                    
+                    setReviewText('');
+                    setRating(5);
+                    setIsInquiry(false);
+                    setSubmitSuccess(isInquiry ? 'Your inquiry has been submitted!' : 'Your review has been submitted!');
+                    
+                    // Refresh the business data without page reload
+                    try {
+                      console.log("Refreshing business data for ID:", business.id);
+                      
+                      // First get the updated business
+                      const updatedBusiness = await businessApi.getById(business.id);
+                      console.log("Updated business data received:", updatedBusiness);
+                      
+                      // Then explicitly fetch the latest reviews
+                      const latestReviews = await reviewApi.getForBusiness(business.id);
+                      console.log(`Fetched ${latestReviews.length} latest reviews from API`);
+                      
+                      // Make sure we have the latest reviews
+                      updatedBusiness.reviews = latestReviews;
+                      
+                      // Recalculate rating if needed
+                      if (latestReviews.length > 0) {
+                        const reviewsWithRatings = latestReviews.filter(r => r.rating !== undefined);
+                        if (reviewsWithRatings.length > 0) {
+                          updatedBusiness.rating = reviewsWithRatings.reduce((sum, r) => sum + (r.rating || 0), 0) / 
+                            reviewsWithRatings.length;
+                        }
+                      }
+                      
+                      console.log("Final business with reviews:", {
+                        name: updatedBusiness.name,
+                        reviewCount: updatedBusiness.reviews.length,
+                        rating: updatedBusiness.rating
+                      });
+                      
+                      // This will ensure we have the latest data including the new review
+                      setBusiness(updatedBusiness);
+                    } catch (err) {
+                      console.error('Error refreshing business data:', err);
+                    }
+                  } catch (error) {
+                    console.error('Error submitting review:', error);
+                    if (error instanceof Error) {
+                      console.error('Error details:', error.message);
+                      setSubmitError(`Failed to submit your ${isInquiry ? 'inquiry' : 'review'}: ${error.message}`);
+                    } else {
+                      setSubmitError(`Failed to submit your ${isInquiry ? 'inquiry' : 'review'}. Please try again.`);
+                    }
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+              >
+                {/* Toggle for Review/Inquiry type */}
+                <div className="mb-4 flex items-center">
+                  <span className="text-sm font-medium text-gray-700 mr-2">This is an:</span>
+                  <div className="flex bg-gray-200 rounded-full p-1">
+                    <button
+                      type="button"
+                      className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
+                        !isInquiry 
+                          ? 'bg-baby-blue text-white' 
+                          : 'text-gray-600 hover:bg-gray-300'
+                      }`}
+                      onClick={() => setIsInquiry(false)}
+                    >
+                      Review
+                    </button>
+                    <button
+                      type="button"
+                      className={`py-1 px-3 rounded-full text-sm font-medium transition-colors ${
+                        isInquiry 
+                          ? 'bg-baby-blue text-white' 
+                          : 'text-gray-600 hover:bg-gray-300'
+                      }`}
+                      onClick={() => setIsInquiry(true)}
+                    >
+                      Inquiry
+                    </button>
                   </div>
                 </div>
-              )}
-              
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {isInquiry ? 'Your Question' : 'Your Review'}
-                </label>
-                <textarea
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  rows={4}
-                  placeholder={isInquiry 
-                    ? "Ask a question to the business owner..." 
-                    : "Write your review about your experience with this business..."}
-                  required
-                />
-              </div>
-              
-              <button
-                type="submit"
-                disabled={isSubmitting || !reviewText.trim()}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  isSubmitting || !reviewText.trim()
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-baby-blue text-white hover:bg-blue-600'
-                }`}
-              >
-                {isSubmitting ? 'Submitting...' : isInquiry ? 'Submit Inquiry' : 'Submit Review'}
-              </button>
-            </form>
+                
+                {/* Only show rating if not an inquiry */}
+                {!isInquiry && (
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Rating
+                    </label>
+                    <div className="flex space-x-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setRating(star)}
+                          className="text-2xl focus:outline-none"
+                        >
+                          <FaStar 
+                            className={star <= rating ? "text-yellow-400" : "text-gray-300"} 
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {isInquiry ? 'Your Question' : 'Your Review'}
+                  </label>
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    rows={4}
+                    placeholder={isInquiry 
+                      ? "Ask a question to the business owner..." 
+                      : "Write your review about your experience with this business..."}
+                    required
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !reviewText.trim()}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    isSubmitting || !reviewText.trim()
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-baby-blue text-white hover:bg-blue-600'
+                  }`}
+                >
+                  {isSubmitting ? 'Submitting...' : isInquiry ? 'Submit Inquiry' : 'Submit Review'}
+                </button>
+              </form>
+            )}
           </div>
         ) : (
           <div className="bg-gray-50 p-4 rounded-lg mb-6 text-center">

@@ -1,0 +1,11 @@
+{
+  "name": "quickfind-scripts",
+  "version": "1.0.0",
+  "description": "Scripts for QuickFind application",
+  "scripts": {
+    "migrate": "node migrateAccounts.cjs",
+    "seed": "node seedDatabase.cjs",
+    "clear": "node clearDatabase.cjs",
+    "reset": "npm run clear && npm run seed"
+  }
+} 

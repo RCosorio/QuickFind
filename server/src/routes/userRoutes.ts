@@ -1,45 +1,15 @@
 import express, { Request, Response } from 'express';
-import fs from 'fs-extra';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { 
   getUsers, 
   getUserById, 
   updateUser, 
-  deleteUser
-} from '../utils/fileUtils.js';
-import { ReviewData } from '../models/types.js';
-
-// Define __dirname equivalent in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Path to review data file
-const DATA_DIR = path.resolve(__dirname, '../../../data');
-const REVIEWS_FILE = path.join(DATA_DIR, 'reviews.json');
+  deleteUser,
+  getReviews,
+  updateReview
+} from '../utils/mongoUtils.js';
+import { Review } from '../models/types.js';
 
 const router = express.Router();
-
-// Read reviews data
-const readReviewsFile = async (): Promise<ReviewData> => {
-  try {
-    const data = await fs.readJson(REVIEWS_FILE) as ReviewData;
-    return data;
-  } catch (error) {
-    console.error('Error reading reviews file:', error);
-    throw error;
-  }
-};
-
-// Write reviews data
-const writeReviewsFile = async (data: ReviewData): Promise<void> => {
-  try {
-    await fs.writeJson(REVIEWS_FILE, data, { spaces: 2 });
-  } catch (error) {
-    console.error('Error writing reviews file:', error);
-    throw error;
-  }
-};
 
 // Get all users (for admin purposes, in a real app this would be protected)
 router.get('/', async (_req: Request, res: Response) => {
@@ -81,20 +51,41 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Update user
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const { password, email, ...updateData } = req.body;
+    const { id } = req.params;
+    const { firstName, lastName } = req.body;
     
-    // Don't allow email updates as per requirement
+    console.log(`Updating user ${id} with:`, req.body);
     
-    const updatedUser = await updateUser(req.params.id, updateData);
+    // Validate required fields
+    if (!firstName && !lastName) {
+      console.log('Update rejected: No valid fields provided');
+      return res.status(400).json({ message: 'Please provide at least one field to update' });
+    }
     
-    if (!updatedUser) {
+    // Check if user exists
+    const user = await getUserById(id);
+    if (!user) {
+      console.log(`Update failed: User with ID ${id} not found`);
       return res.status(404).json({ message: 'User not found' });
     }
     
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = updatedUser;
+    // Create update payload
+    const updateData: { firstName?: string; lastName?: string } = {};
+    if (firstName !== undefined) updateData.firstName = firstName;
+    if (lastName !== undefined) updateData.lastName = lastName;
     
-    res.status(200).json(userWithoutPassword);
+    // Update user
+    const updatedUser = await updateUser(id, updateData);
+    
+    // Don't return the password to the client
+    if (updatedUser && updatedUser.password) {
+      const { password, ...userWithoutPassword } = updatedUser;
+      console.log(`User ${id} updated successfully`);
+      return res.status(200).json(userWithoutPassword);
+    }
+    
+    console.log(`User ${id} updated successfully`);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ message: 'Server error' });
@@ -154,20 +145,14 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
     
     // Update reviews to anonymize them
-    const reviewsData = await readReviewsFile();
-    let reviewsUpdated = false;
+    const reviews = await getReviews();
     
-    for (let i = 0; i < reviewsData.reviews.length; i++) {
-      if (reviewsData.reviews[i].userId === req.params.id) {
+    // Update any reviews by this user to anonymize them
+    for (const review of reviews) {
+      if (review.userId === req.params.id) {
         // Keep the review but mark it as from a deleted account
-        reviewsData.reviews[i].userName = 'Deleted User';
-        reviewsUpdated = true;
+        await updateReview(review.id, { userName: 'Deleted User' });
       }
-    }
-    
-    // Save updates to reviews if needed
-    if (reviewsUpdated) {
-      await writeReviewsFile(reviewsData);
     }
     
     // Delete the user

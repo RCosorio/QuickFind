@@ -1,47 +1,24 @@
 import express, { Request, Response } from 'express';
-import fs from 'fs-extra';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { ReviewData, Review } from '../models/types.js';
 import { v4 as uuidv4 } from 'uuid';
-import { getBusinessById, updateBusiness } from '../utils/fileUtils.js';
-
-// Define __dirname equivalent in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Path to review data file
-const DATA_DIR = path.resolve(__dirname, '../../../data');
-const REVIEWS_FILE = path.join(DATA_DIR, 'reviews.json');
+import {
+  getReviewById,
+  getReviewsByBusinessId,
+  createReview,
+  updateReview,
+  deleteReview,
+  getBusinessById, 
+  updateBusiness,
+  getReviews
+} from '../utils/mongoUtils.js';
+import { Review } from '../models/types.js';
 
 const router = express.Router();
-
-// Read reviews data
-const readReviewsFile = async (): Promise<ReviewData> => {
-  try {
-    const data = await fs.readJson(REVIEWS_FILE) as ReviewData;
-    return data;
-  } catch (error) {
-    console.error('Error reading reviews file:', error);
-    throw error;
-  }
-};
-
-// Write reviews data
-const writeReviewsFile = async (data: ReviewData): Promise<void> => {
-  try {
-    await fs.writeJson(REVIEWS_FILE, data, { spaces: 2 });
-  } catch (error) {
-    console.error('Error writing reviews file:', error);
-    throw error;
-  }
-};
 
 // Get all reviews
 router.get('/', async (_req: Request, res: Response) => {
   try {
-    const data = await readReviewsFile();
-    res.status(200).json(data.reviews);
+    const reviews = await getReviews();
+    res.status(200).json(reviews);
   } catch (error) {
     console.error('Error fetching reviews:', error);
     res.status(500).json({ message: 'Server error' });
@@ -52,8 +29,7 @@ router.get('/', async (_req: Request, res: Response) => {
 router.get('/business/:businessId', async (req: Request, res: Response) => {
   try {
     const { businessId } = req.params;
-    const data = await readReviewsFile();
-    const businessReviews = data.reviews.filter(review => review.businessId === businessId);
+    const businessReviews = await getReviewsByBusinessId(businessId);
     res.status(200).json(businessReviews);
   } catch (error) {
     console.error('Error fetching business reviews:', error);
@@ -67,16 +43,35 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
     const { businessId } = req.params;
     const { userId, userName, rating, comment } = req.body;
     
+    console.log('Review submission request received:');
+    console.log('Business ID:', businessId);
+    console.log('Request body:', req.body);
+    console.log('User ID:', userId, 'Type:', typeof userId);
+    console.log('User Name:', userName, 'Type:', typeof userName);
+    console.log('Comment:', comment, 'Type:', typeof comment);
+    console.log('Rating:', rating, 'Type:', typeof rating);
+    
     // Validate required fields (rating is now optional)
     if (!userId || !userName || !comment) {
-      return res.status(400).json({ message: 'User ID, name, and comment are required' });
+      console.log('Validation failed:', { 
+        hasUserId: !!userId, 
+        hasUserName: !!userName, 
+        hasComment: !!comment 
+      });
+      return res.status(400).json({ 
+        message: 'User ID, name, and comment are required',
+        received: { userId, userName, comment }
+      });
     }
     
     // Check if business exists
     const business = await getBusinessById(businessId);
     if (!business) {
+      console.log(`Business not found with ID: ${businessId}`);
       return res.status(404).json({ message: 'Business not found' });
     }
+    
+    console.log('Business found:', business.name);
     
     // Create new review
     const newReview: Review = {
@@ -93,16 +88,28 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
       newReview.rating = Number(rating);
     }
     
-    // Add review to reviews file
-    const reviewsData = await readReviewsFile();
-    reviewsData.reviews.push(newReview);
-    await writeReviewsFile(reviewsData);
+    console.log('New review object created:', newReview);
     
-    // Update business with new review
+    // Save review to MongoDB Review collection
+    const savedReview = await createReview(newReview);
+    console.log('Review saved to MongoDB Review collection:', savedReview.id);
+    
+    // Initialize business reviews array if it doesn't exist
     if (!business.reviews) {
       business.reviews = [];
     }
-    business.reviews.push(newReview);
+    
+    // Check if the review already exists in the business to avoid duplicates
+    const existingReviewIndex = business.reviews.findIndex(r => r.id === newReview.id);
+    if (existingReviewIndex !== -1) {
+      // Replace the existing review
+      console.log(`Review with ID ${newReview.id} already exists in business, replacing it`);
+      business.reviews[existingReviewIndex] = newReview;
+    } else {
+      // Add the new review to the business
+      business.reviews.push(newReview);
+      console.log(`Added new review with ID ${newReview.id} to business`);
+    }
     
     // Update business rating - only count reviews with ratings
     const reviewsWithRatings = business.reviews.filter(review => review.rating !== undefined);
@@ -111,20 +118,36 @@ router.post('/business/:businessId', async (req: Request, res: Response) => {
     if (reviewsWithRatings.length > 0) {
       const totalRating = reviewsWithRatings.reduce((sum, review) => sum + (review.rating || 0), 0);
       business.rating = totalRating / reviewsWithRatings.length;
+      console.log(`Calculated new rating for business: ${business.rating.toFixed(1)}`);
     } else {
       business.rating = 0;
+      console.log('No rated reviews, setting business rating to 0');
     }
     
-    // Update business in file
-    await updateBusiness(businessId, { 
+    console.log(`Updating business with new review. New rating: ${business.rating}`);
+    console.log(`Business now has ${business.reviews.length} reviews`);
+    
+    // Update business in MongoDB with explicit fields to update
+    const updatedBusiness = await updateBusiness(businessId, { 
       reviews: business.reviews,
       rating: business.rating 
     });
     
-    res.status(201).json(newReview);
+    if (!updatedBusiness) {
+      console.error('Business update failed after adding review');
+      // Still return success for the review since it was saved to the Review collection
+    } else {
+      console.log(`Business updated with review. Now has ${updatedBusiness.reviews?.length || 0} reviews`);
+    }
+    
+    // Fetch the updated business to verify
+    const verifiedBusiness = await getBusinessById(businessId);
+    console.log(`Verification: Updated business has ${verifiedBusiness?.reviews?.length || 0} reviews`);
+    
+    res.status(201).json(savedReview);
   } catch (error) {
     console.error('Error adding review:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: (error as Error).message });
   }
 });
 
@@ -133,20 +156,17 @@ router.delete('/:reviewId', async (req: Request, res: Response) => {
   try {
     const { reviewId } = req.params;
     
-    // Get review data
-    const reviewsData = await readReviewsFile();
-    const reviewIndex = reviewsData.reviews.findIndex(review => review.id === reviewId);
+    // Get review from MongoDB
+    const review = await getReviewById(reviewId);
     
-    if (reviewIndex === -1) {
+    if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }
     
-    const review = reviewsData.reviews[reviewIndex];
     const businessId = review.businessId;
     
-    // Remove review from reviews file
-    reviewsData.reviews.splice(reviewIndex, 1);
-    await writeReviewsFile(reviewsData);
+    // Delete review from MongoDB
+    await deleteReview(reviewId);
     
     // Update business
     const business = await getBusinessById(businessId);
@@ -165,7 +185,7 @@ router.delete('/:reviewId', async (req: Request, res: Response) => {
         business.rating = 0;
       }
       
-      // Update business in file
+      // Update business in MongoDB
       await updateBusiness(businessId, { 
         reviews: business.reviews,
         rating: business.rating 
@@ -200,44 +220,42 @@ router.post('/:reviewId/reply', async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Only the business owner can reply to reviews' });
     }
     
-    // Get review data
-    const reviewsData = await readReviewsFile();
-    const reviewIndex = reviewsData.reviews.findIndex(review => review.id === reviewId);
+    // Get review from MongoDB
+    const review = await getReviewById(reviewId);
     
-    if (reviewIndex === -1) {
+    if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }
     
     // Check if review belongs to the business
-    if (reviewsData.reviews[reviewIndex].businessId !== businessId) {
+    if (review.businessId !== businessId) {
       return res.status(403).json({ message: 'This review does not belong to your business' });
     }
     
     // Check if review already has a reply
-    if (reviewsData.reviews[reviewIndex].ownerReply) {
+    if (review.ownerReply) {
       return res.status(400).json({ message: 'You have already replied to this review' });
     }
     
-    // Add reply to review
-    reviewsData.reviews[reviewIndex].ownerReply = reply;
-    reviewsData.reviews[reviewIndex].ownerReplyDate = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-    
-    // Save changes
-    await writeReviewsFile(reviewsData);
+    // Add reply to review in MongoDB
+    const updatedReview = await updateReview(reviewId, {
+      ownerReply: reply,
+      ownerReplyDate: new Date().toISOString().split('T')[0] // Format as YYYY-MM-DD
+    });
     
     // Update business reviews as well
     if (business.reviews) {
       const businessReviewIndex = business.reviews.findIndex(r => r.id === reviewId);
       if (businessReviewIndex !== -1) {
         business.reviews[businessReviewIndex].ownerReply = reply;
-        business.reviews[businessReviewIndex].ownerReplyDate = reviewsData.reviews[reviewIndex].ownerReplyDate;
+        business.reviews[businessReviewIndex].ownerReplyDate = updatedReview?.ownerReplyDate;
         
-        // Update business in file
+        // Update business in MongoDB
         await updateBusiness(businessId, { reviews: business.reviews });
       }
     }
     
-    res.status(200).json(reviewsData.reviews[reviewIndex]);
+    res.status(200).json(updatedReview);
   } catch (error) {
     console.error('Error adding reply to review:', error);
     res.status(500).json({ message: 'Server error' });

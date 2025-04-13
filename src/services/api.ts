@@ -27,7 +27,22 @@ export const businessApi = {
   // Get business by ID
   getById: async (id: string): Promise<Business> => {
     try {
+      console.log(`Fetching business with ID: ${id}`);
       const response = await api.get(`/businesses/${id}`);
+      
+      // Log the response to help debug
+      console.log(`Business data received from API:`, {
+        id: response.data.id,
+        name: response.data.name,
+        reviewsCount: response.data.reviews?.length || 0
+      });
+      
+      if (response.data.reviews) {
+        console.log(`Business has ${response.data.reviews.length} reviews from API`);
+      } else {
+        console.log('No reviews found in API response');
+      }
+      
       return response.data;
     } catch (error) {
       console.error(`Error fetching business ${id}:`, error);
@@ -65,6 +80,22 @@ export const businessApi = {
       console.error(`Error deleting business ${id}:`, error);
       throw error;
     }
+  },
+
+  getBusinessByOwnerEmail: async (email: string): Promise<Business> => {
+    try {
+      const response = await fetch(`${API_URL}/api/businesses/owner/${email}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error fetching business: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error in getBusinessByOwnerEmail:', error);
+      throw error;
+    }
   }
 };
 
@@ -76,13 +107,31 @@ export const authApi = {
     firstName: string;
     lastName: string;
     password: string;
-    role: 'student' | 'business';
   }): Promise<{ user: User; message: string }> => {
     try {
       const response = await api.post('/auth/register', userData);
       return response.data;
     } catch (error) {
       console.error('Error registering user:', error);
+      throw error;
+    }
+  },
+  
+  // Register a new business
+  businessRegister: async (businessData: {
+    email: string;
+    password: string;
+    businessName: string;
+    businessType?: string;
+    location?: string;
+    contactInfo?: string;
+    description?: string;
+  }): Promise<{ businessAccount: any; businessId: string; message: string }> => {
+    try {
+      const response = await api.post('/auth/business-register', businessData);
+      return response.data;
+    } catch (error) {
+      console.error('Error registering business:', error);
       throw error;
     }
   },
@@ -97,6 +146,20 @@ export const authApi = {
       return response.data;
     } catch (error) {
       console.error('Error logging in:', error);
+      throw error;
+    }
+  },
+  
+  // Login business
+  businessLogin: async (credentials: {
+    email: string;
+    password: string;
+  }): Promise<{ businessAccount: any; business: Business; message: string }> => {
+    try {
+      const response = await api.post('/auth/business-login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('Error logging in business:', error);
       throw error;
     }
   }
@@ -151,7 +214,9 @@ export const reviewApi = {
   // Get reviews for a business
   getForBusiness: async (businessId: string): Promise<Review[]> => {
     try {
+      console.log(`Fetching reviews for business ID: ${businessId}`);
       const response = await api.get(`/reviews/business/${businessId}`);
+      console.log(`Received ${response.data.length} reviews from API`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching reviews for business ${businessId}:`, error);
@@ -167,10 +232,30 @@ export const reviewApi = {
     comment: string;
   }): Promise<Review> => {
     try {
+      console.log(`Adding review to business ${businessId}:`, reviewData);
+      
+      // Validate data before sending
+      if (!reviewData.userId || !reviewData.userName || !reviewData.comment) {
+        console.error('Review data validation failed:', reviewData);
+        throw new Error('Invalid review data: Missing required fields');
+      }
+      
+      // Log detailed information for debugging
+      console.log('Review data details:');
+      console.log('- userId:', reviewData.userId, '(type:', typeof reviewData.userId, ')');
+      console.log('- userName:', reviewData.userName, '(type:', typeof reviewData.userName, ')');
+      console.log('- comment:', reviewData.comment.substring(0, 20) + '...', '(type:', typeof reviewData.comment, ')');
+      console.log('- rating:', reviewData.rating, '(type:', typeof reviewData.rating, ')');
+      
       const response = await api.post(`/reviews/business/${businessId}`, reviewData);
+      console.log('Review successfully added:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error adding review:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Server response:', error.response.data);
+        throw new Error(`Server error: ${error.response.data.message || 'Unknown error'}`);
+      }
       throw error;
     }
   },
@@ -178,7 +263,9 @@ export const reviewApi = {
   // Delete a review
   delete: async (reviewId: string, userId: string): Promise<void> => {
     try {
+      console.log(`Deleting review ${reviewId} for user ${userId}`);
       await api.delete(`/reviews/${reviewId}`, { data: { userId } });
+      console.log('Review successfully deleted');
     } catch (error) {
       console.error(`Error deleting review ${reviewId}:`, error);
       throw error;
@@ -192,7 +279,9 @@ export const reviewApi = {
     reply: string;
   }): Promise<Review> => {
     try {
+      console.log(`Adding reply to review ${reviewId}:`, replyData);
       const response = await api.post(`/reviews/${reviewId}/reply`, replyData);
+      console.log('Reply successfully added:', response.data);
       return response.data;
     } catch (error) {
       console.error(`Error adding reply to review ${reviewId}:`, error);

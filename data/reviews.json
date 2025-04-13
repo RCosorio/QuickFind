@@ -172,7 +172,9 @@
       "rating": 4,
       "comment": "Great selection of home goods. Found everything I needed to furnish my new apartment.",
       "date": "2023-10-25",
-      "businessId": "store-103"
+      "businessId": "store-103",
+      "ownerReply": "asdhgahjsfgjahsgdfhj",
+      "ownerReplyDate": "2025-04-07"
     },
     {
       "id": "store-rev-006",
@@ -271,6 +273,35 @@
       "comment": "Do you have sushi?",
       "date": "2025-04-02",
       "businessId": "restaurant-106"
+    },
+    {
+      "id": "e93a4b0a-90dc-4e73-aa4c-6c164ed87444",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "THE ASD asd",
+      "comment": "hahah",
+      "date": "2025-04-07",
+      "businessId": "store-103",
+      "rating": 5,
+      "ownerReply": "test1",
+      "ownerReplyDate": "2025-04-07"
+    },
+    {
+      "id": "9fa38728-04cb-42e9-9598-9f4f57d2d232",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "THE ASD asd",
+      "comment": "hahah2",
+      "date": "2025-04-07",
+      "businessId": "store-103",
+      "ownerReply": "testetsetstest2",
+      "ownerReplyDate": "2025-04-07"
+    },
+    {
+      "id": "419124b5-4115-4d94-ad2c-ac1d6f68c876",
+      "userId": "0865d4ee-7ce6-4da7-b3c4-0d92481aeeae",
+      "userName": "EY ES DI haha",
+      "comment": "Do you sell stuff here?\n",
+      "date": "2025-04-13",
+      "businessId": "1"
     }
   ]
 }

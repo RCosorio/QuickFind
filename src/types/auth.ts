@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'business';
+export type UserRole = 'student';
 export type BusinessType = 'housing' | 'restaurant' | 'store';
 
 export interface User {
@@ -7,6 +7,14 @@ export interface User {
   firstName: string;
   lastName: string;
   role: UserRole;
+  _id?: string; // MongoDB ID
+}
+
+export interface BusinessAccount {
+  id: string; 
+  email: string;
+  businessId: string;
+  _id?: string; // MongoDB ID
 }
 
 export interface Business {
@@ -26,11 +34,13 @@ export interface Business {
   menu?: MenuItem[];
   items?: StoreItem[];
   rooms?: HousingUnit[];
+  _id?: string; // MongoDB ID
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
+  businessAccount: BusinessAccount | null;
   business: Business | null;
   loading: boolean;
 }
@@ -42,7 +52,7 @@ export interface Review {
   rating?: number;
   comment: string;
   date: string;
-  businessId?: string;
+  businessId: string;
   ownerReply?: string;
   ownerReplyDate?: string;
 }

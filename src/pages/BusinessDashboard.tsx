@@ -871,7 +871,7 @@ const BusinessDashboard: React.FC = () => {
                           <div className="p-4">
                             <div className="flex justify-between items-start">
                               <h3 className="font-medium">{item.name}</h3>
-                              <div className="font-medium">${item.price.toFixed(2)}</div>
+                              <div className="font-medium">₱{item.price.toFixed(2)}</div>
                             </div>
                             <p className="text-sm text-gray-600 mt-1">{item.description}</p>
                             <div className="mt-2 flex items-center justify-between">
@@ -924,7 +924,7 @@ const BusinessDashboard: React.FC = () => {
                           <div className="p-4">
                             <div className="flex justify-between items-start">
                               <h3 className="font-medium">{item.name}</h3>
-                              <div className="font-medium">${item.price.toFixed(2)}</div>
+                              <div className="font-medium">₱{item.price.toFixed(2)}</div>
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
                               Category: {item.category}
@@ -986,7 +986,7 @@ const BusinessDashboard: React.FC = () => {
                             <div className="flex justify-between items-start mb-2">
                               <h3 className="font-medium text-lg">{room.name}</h3>
                               <div>
-                                <div className="font-bold">${room.price}/month</div>
+                                <div className="font-bold">₱{room.price}/month</div>
                               </div>
                               </div>
                             <div className="flex mb-2 text-sm">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBriefcase, FaEnvelope, FaLock, FaMapMarkerAlt, FaPhone, FaBuilding, FaStore, FaUtensils, FaHome } from 'react-icons/fa';
+import { FaBriefcase, FaEnvelope, FaLock, FaMapMarkerAlt, FaPhone, FaBuilding, FaStore, FaUtensils, FaHome, FaCheckCircle } from 'react-icons/fa';
 import FormInput from '../components/auth/FormInput';
 import Button from '../components/auth/Button';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +18,7 @@ const BusinessRegister: React.FC = () => {
     contactInfo: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const { registerBusiness, loading } = useAuth();
   const navigate = useNavigate();
@@ -87,7 +88,28 @@ const BusinessRegister: React.FC = () => {
       );
       
       if (success) {
-        navigate('/business-dashboard');
+        setSuccessMessage('Business account created successfully! Redirecting to login...');
+        
+        // Clear form data
+        setFormData({
+          businessName: '',
+          ownerEmail: '',
+          password: '',
+          confirmPassword: '',
+          businessType: 'store' as BusinessType,
+          description: '',
+          location: '',
+          contactInfo: ''
+        });
+        
+        // Navigate to business login page after a short delay
+        setTimeout(() => {
+          navigate('/business-login', { 
+            state: { 
+              message: 'Business registration successful! Please sign in with your new account.' 
+            } 
+          });
+        }, 2000);
       }
     } catch (err) {
       setErrors({ 
@@ -155,6 +177,13 @@ const BusinessRegister: React.FC = () => {
         {errors.form && (
           <div className="mb-4 p-3 bg-red-100 border border-red-200 rounded-lg text-red-700 text-sm">
             {errors.form}
+          </div>
+        )}
+        
+        {successMessage && (
+          <div className="mb-4 p-3 bg-green-100 border border-green-200 rounded-lg text-green-700 text-sm flex items-center">
+            <FaCheckCircle className="mr-2" />
+            {successMessage}
           </div>
         )}
         
